@@ -58,15 +58,16 @@ export default function Home() {
 
             <div className="flex h-full flex-col justify-between p-2 sm:p-4">
               <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-start justify-between">
+                <div className="flex items-start justify-between gap-4">
                   <div className="space-y-1 sm:space-y-1.5">
+                    <Skeleton className="!mb-4 h-3 w-16 sm:h-4 sm:w-24" />
                     <div className="flex items-center gap-2">
                       <Skeleton className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <Skeleton className="h-3 w-16 sm:h-4 sm:w-24" />
+                      <Skeleton className="h-3 w-16 sm:h-4 sm:w-20" />
                     </div>
                     <div className="flex items-center gap-2">
                       <Skeleton className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <Skeleton className="h-3 w-24 sm:h-4 sm:w-32" />
+                      <Skeleton className="h-3 w-20 sm:h-4 sm:w-24" />
                     </div>
                   </div>
                   <div className="flex flex-col items-center gap-1">
