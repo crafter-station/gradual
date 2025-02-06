@@ -1,0 +1,10 @@
+{
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.([tj]sx?|json|css|[mc]js)$",
+        "cmd": "bunx biome lint --write --unsafe ${file} && bunx biome format --write ${file}"
+      }
+    ]
+  }
+}
