@@ -8,6 +8,7 @@ import {
   integer,
   pgEnum,
   jsonb,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -113,29 +114,24 @@ export type StepContent =
   | TutorialStepContent
   | ExampleStepContent
   | QuestionStepContent;
-
-export const steps = pgTable('steps', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  type: stepTypeEnum('type').notNull(),
-  order: integer('order').notNull(),
-  content: jsonb('content').$type<StepContent>().notNull(),
-  taskId: uuid('task_id')
-    .notNull()
-    .references(() => tasks.id),
-});
-
-const baseStepColumns = {
-  id: uuid('id').primaryKey().defaultRandom(),
-  order: integer('order').notNull(),
-  taskId: uuid('task_id')
-    .notNull()
-    .references(() => tasks.id),
-};
-
-const baseContentStepColumns = {
-  ...baseStepColumns,
-  content: text('content').notNull(),
-};
+export const steps = pgTable(
+  'steps',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    type: stepTypeEnum('type').notNull(),
+    order: integer('order').notNull(),
+    content: jsonb('content').$type<StepContent>().notNull(),
+    taskId: uuid('task_id')
+      .notNull()
+      .references(() => tasks.id),
+  },
+  (table) => ({
+    orderTaskIdUnique: uniqueIndex('steps_order_task_id_unique').on(
+      table.order,
+      table.taskId,
+    ),
+  }),
+);
 
 export const enrollments = pgTable('enrollments', {
   id: uuid('id').primaryKey().defaultRandom(),
