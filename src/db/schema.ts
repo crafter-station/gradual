@@ -7,6 +7,7 @@ import {
   boolean,
   integer,
   pgEnum,
+  jsonb,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -82,6 +83,47 @@ export const tasks = pgTable('tasks', {
     .references(() => modules.id),
 });
 
+export const stepTypeEnum = pgEnum('step_type', [
+  'TUTORIAL',
+  'EXAMPLE',
+  'QUESTION',
+]);
+
+export type TutorialStepContent = {
+  body: string;
+};
+
+export type ExampleStepContent = {
+  body: string;
+  answer: string;
+};
+
+export type QuestionStepContent = {
+  question: string;
+  choices: {
+    order: number;
+    content: string;
+    explanation: string;
+    isCorrect: boolean;
+  }[];
+  answer: number;
+};
+
+export type StepContent =
+  | TutorialStepContent
+  | ExampleStepContent
+  | QuestionStepContent;
+
+export const steps = pgTable('steps', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  type: stepTypeEnum('type').notNull(),
+  order: integer('order').notNull(),
+  content: jsonb('content').$type<StepContent>().notNull(),
+  taskId: uuid('task_id')
+    .notNull()
+    .references(() => tasks.id),
+});
+
 const baseStepColumns = {
   id: uuid('id').primaryKey().defaultRandom(),
   order: integer('order').notNull(),
@@ -94,21 +136,6 @@ const baseContentStepColumns = {
   ...baseStepColumns,
   content: text('content').notNull(),
 };
-
-export const tutorialSteps = pgTable('tutorial_steps', baseContentStepColumns);
-
-export const exampleSteps = pgTable('example_steps', baseContentStepColumns);
-
-export const questionSteps = pgTable('question_steps', {
-  ...baseStepColumns,
-  question: text('question').notNull(),
-  choice1: text('choice1').notNull(),
-  choice2: text('choice2').notNull(),
-  choice3: text('choice3').notNull(),
-  choice4: text('choice4').notNull(),
-  rightChoice: integer('right_choice').notNull(),
-  explanation: text('explanation').notNull(),
-});
 
 export const enrollments = pgTable('enrollments', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -160,9 +187,7 @@ export const modulesRelations = relations(modules, ({ many, one }) => ({
 }));
 
 export const tasksRelations = relations(tasks, ({ many, one }) => ({
-  tutorialSteps: many(tutorialSteps),
-  exampleSteps: many(exampleSteps),
-  questionSteps: many(questionSteps),
+  steps: many(steps),
   module: one(modules, {
     fields: [tasks.moduleId],
     references: [modules.id],

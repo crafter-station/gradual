@@ -7,10 +7,8 @@ import {
   units,
   modules,
   tasks,
-  tutorialSteps,
-  exampleSteps,
-  questionSteps,
   enrollments,
+  steps,
 } from './schema';
 
 async function seed() {
@@ -143,10 +141,13 @@ async function seed() {
   await Promise.all(
     taskIds.map(async (taskId) => {
       // Create 1 tutorial step
-      await db.insert(tutorialSteps).values({
+      await db.insert(steps).values({
         order: 1,
         taskId,
-        content: faker.lorem.paragraphs(2),
+        type: 'TUTORIAL',
+        content: {
+          body: faker.lorem.paragraphs(2),
+        },
       });
 
       // Create 2 example steps
@@ -154,10 +155,14 @@ async function seed() {
         Array(2)
           .fill(null)
           .map((_, index) =>
-            db.insert(exampleSteps).values({
+            db.insert(steps).values({
               order: index + 2, // starts at 2 (after tutorial)
               taskId,
-              content: faker.lorem.paragraphs(1),
+              type: 'EXAMPLE',
+              content: {
+                body: faker.lorem.paragraphs(1),
+                answer: faker.lorem.paragraphs(1),
+              },
             }),
           ),
       );
@@ -168,16 +173,20 @@ async function seed() {
         Array(questionStepsCount)
           .fill(null)
           .map((_, index) =>
-            db.insert(questionSteps).values({
+            db.insert(steps).values({
               order: index + 4, // starts at 4 (after tutorial and 2 examples)
               taskId,
-              question: `${faker.lorem.sentence()}?`,
-              choice1: faker.lorem.sentence(),
-              choice2: faker.lorem.sentence(),
-              choice3: faker.lorem.sentence(),
-              choice4: faker.lorem.sentence(),
-              rightChoice: faker.number.int({ min: 1, max: 4 }),
-              explanation: faker.lorem.paragraph(),
+              type: 'QUESTION',
+              content: {
+                question: `${faker.lorem.sentence()}?`,
+                choices: Array.from({ length: 4 }, (_, i) => ({
+                  order: i + 1,
+                  content: faker.lorem.sentence(),
+                  explanation: faker.lorem.paragraph(),
+                  isCorrect: faker.datatype.boolean(),
+                })),
+                answer: faker.number.int({ min: 1, max: 4 }),
+              },
             }),
           ),
       );

@@ -7,5 +7,6 @@
         "cmd": "bunx biome lint --write --unsafe ${file} && bunx biome format --write ${file}"
       }
     ]
-  }
+  },
+  "editor.tabSize": 2
 }
