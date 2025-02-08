@@ -28,6 +28,8 @@ export const metadata = {
   title: 'Courses',
 };
 
+export const revalidate = 0;
+
 export default async function CoursesPage() {
   const t = await getI18n();
 

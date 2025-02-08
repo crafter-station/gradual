@@ -26,10 +26,12 @@ import {
   ChevronRightIcon,
   LockIcon,
 } from 'lucide-react';
+
 export const metadata = {
   title: 'Course',
 };
 
+export const revalidate = 0;
 export default async function CoursePage({
   params,
 }: {
