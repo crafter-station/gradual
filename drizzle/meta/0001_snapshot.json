@@ -47,12 +47,8 @@
           "name": "courses_creator_id_users_id_fk",
           "tableFrom": "courses",
           "tableTo": "users",
-          "columnsFrom": [
-            "creator_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["creator_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -124,12 +120,8 @@
           "name": "enrollments_course_id_courses_id_fk",
           "tableFrom": "enrollments",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["course_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -137,12 +129,8 @@
           "name": "enrollments_user_id_users_id_fk",
           "tableFrom": "enrollments",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -189,12 +177,8 @@
           "name": "modules_unit_id_units_id_fk",
           "tableFrom": "modules",
           "tableTo": "units",
-          "columnsFrom": [
-            "unit_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["unit_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -255,12 +239,8 @@
           "name": "sources_creator_id_users_id_fk",
           "tableFrom": "sources",
           "tableTo": "users",
-          "columnsFrom": [
-            "creator_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["creator_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -268,12 +248,8 @@
           "name": "sources_course_id_courses_id_fk",
           "tableFrom": "sources",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["course_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -349,12 +325,8 @@
           "name": "steps_task_id_tasks_id_fk",
           "tableFrom": "steps",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -414,12 +386,8 @@
           "name": "tasks_module_id_modules_id_fk",
           "tableFrom": "tasks",
           "tableTo": "modules",
-          "columnsFrom": [
-            "module_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["module_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -472,12 +440,8 @@
           "name": "units_course_id_courses_id_fk",
           "tableFrom": "units",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["course_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -531,28 +495,17 @@
     "public.source_type": {
       "name": "source_type",
       "schema": "public",
-      "values": [
-        "FILE",
-        "URL"
-      ]
+      "values": ["FILE", "URL"]
     },
     "public.step_type": {
       "name": "step_type",
       "schema": "public",
-      "values": [
-        "TUTORIAL",
-        "EXAMPLE",
-        "QUESTION"
-      ]
+      "values": ["TUTORIAL", "EXAMPLE", "QUESTION"]
     },
     "public.task_type": {
       "name": "task_type",
       "schema": "public",
-      "values": [
-        "LESSON",
-        "QUIZ",
-        "MULTISTEP"
-      ]
+      "values": ["LESSON", "QUIZ", "MULTISTEP"]
     }
   },
   "schemas": {},

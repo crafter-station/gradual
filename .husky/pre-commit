@@ -1,1 +1,9 @@
-bun format
+# Get list of staged files
+files=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
+
+# Format only staged files
+if [ -n "$files" ]; then
+  bunx biome lint --write --unsafe $files && bunx biome format --write $files
+  # Re-stage the formatted files
+  echo "$files" | xargs git add
+fi

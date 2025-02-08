@@ -50,6 +50,7 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+        <span className="hidden">Hidden</span>
         <Card className="group transition-all duration-300 hover:shadow-md">
           <div className="grid h-full grid-cols-[120px_1fr] sm:grid-cols-[160px_1fr]">
             <div className="flex items-center justify-center border-r bg-muted/5 p-2 sm:p-4">
