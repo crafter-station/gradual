@@ -1,6 +1,6 @@
 {
-  "id": "d743cadc-5515-4cdc-bdb8-d2fb50f54fc1",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "74d8f3c9-cf20-4ba4-b343-80230fecf48a",
+  "prevId": "d743cadc-5515-4cdc-bdb8-d2fb50f54fc1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -141,54 +141,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.example_steps": {
-      "name": "example_steps",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "order": {
-          "name": "order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "task_id": {
-          "name": "task_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "example_steps_task_id_tasks_id_fk": {
-          "name": "example_steps_task_id_tasks_id_fk",
-          "tableFrom": "example_steps",
-          "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.modules": {
       "name": "modules",
       "schema": "",
@@ -226,90 +178,6 @@
           "tableFrom": "modules",
           "tableTo": "units",
           "columnsFrom": ["unit_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.question_steps": {
-      "name": "question_steps",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "order": {
-          "name": "order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "task_id": {
-          "name": "task_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "question": {
-          "name": "question",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "choice1": {
-          "name": "choice1",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "choice2": {
-          "name": "choice2",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "choice3": {
-          "name": "choice3",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "choice4": {
-          "name": "choice4",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "right_choice": {
-          "name": "right_choice",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "explanation": {
-          "name": "explanation",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "question_steps_task_id_tasks_id_fk": {
-          "name": "question_steps_task_id_tasks_id_fk",
-          "tableFrom": "question_steps",
-          "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -392,6 +260,83 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.steps": {
+      "name": "steps",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "type": {
+          "name": "type",
+          "type": "step_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "task_id": {
+          "name": "task_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "steps_order_task_id_unique": {
+          "name": "steps_order_task_id_unique",
+          "columns": [
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "task_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "steps_task_id_tasks_id_fk": {
+          "name": "steps_task_id_tasks_id_fk",
+          "tableFrom": "steps",
+          "tableTo": "tasks",
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.tasks": {
       "name": "tasks",
       "schema": "",
@@ -442,54 +387,6 @@
           "tableFrom": "tasks",
           "tableTo": "modules",
           "columnsFrom": ["module_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.tutorial_steps": {
-      "name": "tutorial_steps",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "order": {
-          "name": "order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "task_id": {
-          "name": "task_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tutorial_steps_task_id_tasks_id_fk": {
-          "name": "tutorial_steps_task_id_tasks_id_fk",
-          "tableFrom": "tutorial_steps",
-          "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -599,6 +496,11 @@
       "name": "source_type",
       "schema": "public",
       "values": ["FILE", "URL"]
+    },
+    "public.step_type": {
+      "name": "step_type",
+      "schema": "public",
+      "values": ["TUTORIAL", "EXAMPLE", "QUESTION"]
     },
     "public.task_type": {
       "name": "task_type",

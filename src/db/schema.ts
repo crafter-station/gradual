@@ -7,6 +7,8 @@ import {
   boolean,
   integer,
   pgEnum,
+  jsonb,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -82,33 +84,55 @@ export const tasks = pgTable('tasks', {
     .references(() => modules.id),
 });
 
-const baseStepColumns = {
-  id: uuid('id').primaryKey().defaultRandom(),
-  order: integer('order').notNull(),
-  taskId: uuid('task_id')
-    .notNull()
-    .references(() => tasks.id),
+export const stepTypeEnum = pgEnum('step_type', [
+  'TUTORIAL',
+  'EXAMPLE',
+  'QUESTION',
+]);
+
+export type TutorialStepContent = {
+  body: string;
 };
 
-const baseContentStepColumns = {
-  ...baseStepColumns,
-  content: text('content').notNull(),
+export type ExampleStepContent = {
+  body: string;
+  answer: string;
 };
 
-export const tutorialSteps = pgTable('tutorial_steps', baseContentStepColumns);
+export type QuestionStepContent = {
+  question: string;
+  choices: {
+    order: number;
+    content: string;
+    explanation: string;
+    isCorrect: boolean;
+  }[];
+  answer: number;
+};
 
-export const exampleSteps = pgTable('example_steps', baseContentStepColumns);
+export type StepContent =
+  | TutorialStepContent
+  | ExampleStepContent
+  | QuestionStepContent;
 
-export const questionSteps = pgTable('question_steps', {
-  ...baseStepColumns,
-  question: text('question').notNull(),
-  choice1: text('choice1').notNull(),
-  choice2: text('choice2').notNull(),
-  choice3: text('choice3').notNull(),
-  choice4: text('choice4').notNull(),
-  rightChoice: integer('right_choice').notNull(),
-  explanation: text('explanation').notNull(),
-});
+export const steps = pgTable(
+  'steps',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    type: stepTypeEnum('type').notNull(),
+    order: integer('order').notNull(),
+    content: jsonb('content').$type<StepContent>().notNull(),
+    taskId: uuid('task_id')
+      .notNull()
+      .references(() => tasks.id),
+  },
+  (table) => ({
+    orderTaskIdUnique: uniqueIndex('steps_order_task_id_unique').on(
+      table.order,
+      table.taskId,
+    ),
+  }),
+);
 
 export const enrollments = pgTable('enrollments', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -143,6 +167,13 @@ export const coursesRelations = relations(courses, ({ many, one }) => ({
   }),
 }));
 
+export const sourcesRelations = relations(sources, ({ one }) => ({
+  course: one(courses, {
+    fields: [sources.courseId],
+    references: [courses.id],
+  }),
+}));
+
 export const unitsRelations = relations(units, ({ many, one }) => ({
   modules: many(modules),
   course: one(courses, {
@@ -160,11 +191,23 @@ export const modulesRelations = relations(modules, ({ many, one }) => ({
 }));
 
 export const tasksRelations = relations(tasks, ({ many, one }) => ({
-  tutorialSteps: many(tutorialSteps),
-  exampleSteps: many(exampleSteps),
-  questionSteps: many(questionSteps),
+  steps: many(steps),
   module: one(modules, {
     fields: [tasks.moduleId],
     references: [modules.id],
+  }),
+}));
+
+export const stepsRelations = relations(steps, ({ one }) => ({
+  task: one(tasks, {
+    fields: [steps.taskId],
+    references: [tasks.id],
+  }),
+}));
+
+export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
+  course: one(courses, {
+    fields: [enrollments.courseId],
+    references: [courses.id],
   }),
 }));

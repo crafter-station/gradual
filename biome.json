@@ -18,7 +18,7 @@
     "enabled": true
   },
   "linter": {
-    "ignore": ["node_modules", ".next"],
+    "ignore": ["node_modules", ".next", "src/db/test.ts"],
     "enabled": true,
     "rules": {
       "recommended": true,
