@@ -114,6 +114,7 @@ export type StepContent =
   | TutorialStepContent
   | ExampleStepContent
   | QuestionStepContent;
+
 export const steps = pgTable(
   'steps',
   {
@@ -166,6 +167,13 @@ export const coursesRelations = relations(courses, ({ many, one }) => ({
   }),
 }));
 
+export const sourcesRelations = relations(sources, ({ one }) => ({
+  course: one(courses, {
+    fields: [sources.courseId],
+    references: [courses.id],
+  }),
+}));
+
 export const unitsRelations = relations(units, ({ many, one }) => ({
   modules: many(modules),
   course: one(courses, {
@@ -187,5 +195,19 @@ export const tasksRelations = relations(tasks, ({ many, one }) => ({
   module: one(modules, {
     fields: [tasks.moduleId],
     references: [modules.id],
+  }),
+}));
+
+export const stepsRelations = relations(steps, ({ one }) => ({
+  task: one(tasks, {
+    fields: [steps.taskId],
+    references: [tasks.id],
+  }),
+}));
+
+export const enrollmentsRelations = relations(enrollments, ({ one }) => ({
+  course: one(courses, {
+    fields: [enrollments.courseId],
+    references: [courses.id],
   }),
 }));

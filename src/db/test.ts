@@ -1,15 +1,15 @@
 // @ts-nocheck
 
-import { db } from ".";
-import { tasks, steps } from "./schema";
-import { eq } from "drizzle-orm";
+import { db } from '.';
+import { tasks, steps } from './schema';
+import { eq } from 'drizzle-orm';
 
 async function getRandomTaskStepsA() {
   // Get a random task first
   const [randomTask] = await db.select({ id: tasks.id }).from(tasks).limit(1);
 
   if (!randomTask) {
-    throw new Error("No tasks found");
+    throw new Error('No tasks found');
   }
 
   // Get all steps for this task
@@ -35,7 +35,7 @@ async function getRandomTaskStepsB() {
   const [randomTask] = await db.select({ id: tasks.id }).from(tasks).limit(1);
 
   if (!randomTask) {
-    throw new Error("No tasks found");
+    throw new Error('No tasks found');
   }
 
   // Get all tutorial steps for this task

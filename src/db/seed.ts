@@ -12,6 +12,15 @@ import {
 } from './schema';
 
 async function seed() {
+  await db.delete(steps);
+  await db.delete(tasks);
+  await db.delete(modules);
+  await db.delete(units);
+  await db.delete(sources);
+  await db.delete(enrollments);
+  await db.delete(courses);
+  await db.delete(users);
+
   // Create 5 users
   const userIds = await Promise.all(
     Array(5)

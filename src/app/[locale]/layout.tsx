@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { I18nProviderClient } from '@/locales/client';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -17,17 +18,21 @@ export const metadata: Metadata = {
   description: 'Gradual',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
+  params,
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  params: Promise<{ locale: string }>;
+  children: React.ReactElement;
+}) {
+  const { locale } = await params;
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
       </body>
     </html>
   );
