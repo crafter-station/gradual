@@ -11,6 +11,7 @@ import { and, asc, eq, lte } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { ExampleStep } from './example-step';
 import {
+  calculateEarnedExperiencePoints,
   getCurrentStep,
   getLastStep,
   getOrCreateStepProgress,
@@ -18,6 +19,7 @@ import {
 } from './helpers';
 import { QuestionStep } from './question-step';
 import { TutorialStep } from './tutorial-step';
+import StatsCard from './stats';
 
 type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
@@ -88,36 +90,47 @@ export default async function TaskPage({ params }: PageProps) {
 
   let stats:
     | {
-        incorrect: number;
+        incorrectQuestionsCount: number;
+        questionsCount: number;
         time: number;
       }
     | undefined;
 
   if (isLastStep && currentStepProgress.completedAt) {
-    if (!currentTaskProgress.completedAt) {
+    stats = {
+      incorrectQuestionsCount: visibleSteps.filter(
+        (step) =>
+          step.type === 'QUESTION' &&
+          stepsProgress.find((progress) => progress.stepId === step.id)
+            ?.isCorrect === false,
+      ).length,
+      time:
+        currentStepProgress.completedAt.getTime() -
+        currentTaskProgress.startedAt.getTime(),
+      questionsCount: visibleSteps.filter((step) => step.type === 'QUESTION')
+        .length,
+    };
+
+    const earnedExperiencePoints = calculateEarnedExperiencePoints(
+      stats.incorrectQuestionsCount,
+      stats.time,
+    );
+
+    if (
+      !currentTaskProgress.completedAt ||
+      !currentTaskProgress.earnedExperiencePoints
+    ) {
       [currentTaskProgress] = await db
         .update(taskProgress)
         .set({
           completedAt: currentStepProgress.completedAt,
+          earnedExperiencePoints,
         })
         .where(eq(taskProgress.id, currentTaskProgress.id))
         .returning();
     }
-
-    if (currentTaskProgress.completedAt) {
-      stats = {
-        incorrect: visibleSteps.filter(
-          (step) =>
-            step.type === 'QUESTION' &&
-            stepsProgress.find((progress) => progress.stepId === step.id)
-              ?.isCorrect === false,
-        ).length,
-        time:
-          currentTaskProgress.completedAt.getTime() -
-          currentTaskProgress.startedAt.getTime(),
-      };
-    }
   }
+  console.log(currentStep.content);
 
   return (
     <div className="flex flex-col">
@@ -189,19 +202,12 @@ export default async function TaskPage({ params }: PageProps) {
       </div>
 
       {stats && (
-        <div className="mx-auto flex max-w-2xl flex-col gap-4">
-          <div>
-            <div>Incorrect: {stats.incorrect}</div>
-            <div>Time: {formatTime(stats.time)}</div>
-          </div>
-        </div>
+        <StatsCard
+          xp={currentTaskProgress.earnedExperiencePoints ?? 0}
+          time={stats.time}
+          precision={1 - stats.incorrectQuestionsCount / stats.questionsCount}
+        />
       )}
     </div>
   );
-}
-
-function formatTime(time: number) {
-  const minutes = Math.floor(time / 60000);
-  const seconds = Math.floor((time % 60000) / 1000);
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }

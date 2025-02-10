@@ -84,7 +84,7 @@ export default async function CoursePage({
       ),
     )
     .sort(() => Math.random() - 0.5)
-    .slice(0, 4);
+    .slice(0, 10);
 
   return (
     <div className="flex h-full flex-col">

@@ -132,3 +132,35 @@ export async function getOrCreateStepProgress(
 
   return progress;
 }
+
+export function calculateEarnedExperiencePoints(
+  incorrectQuestionsCount: number,
+  time: number,
+) {
+  let earnedExperiencePoints = 0;
+
+  if (incorrectQuestionsCount > 3) {
+    return earnedExperiencePoints;
+  }
+
+  earnedExperiencePoints = 10;
+
+  if (incorrectQuestionsCount === 0) {
+    earnedExperiencePoints += 2;
+
+    const timeThresholds = [
+      1000 * 60 * 5, // 5 minutes
+      1000 * 60 * 3, // 3 minutes
+      1000 * 60 * 2, // 2 minutes
+      1000 * 60, // 1 minute
+    ];
+
+    for (const threshold of timeThresholds) {
+      if (time < threshold) {
+        earnedExperiencePoints += 1;
+      }
+    }
+  }
+
+  return earnedExperiencePoints;
+}
