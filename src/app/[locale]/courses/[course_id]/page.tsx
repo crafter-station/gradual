@@ -31,6 +31,10 @@ import {
   LayersIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { getCurrentUser } from './tasks/[task_id]/helpers';
+import { eq, inArray } from 'drizzle-orm';
+import { taskProgress } from '@/db/schema';
+import { and } from 'drizzle-orm';
 
 export const metadata = {
   title: 'Course',
@@ -64,8 +68,6 @@ export default async function CoursePage({
     return <div>{t('course.notFound')}</div>;
   }
 
-  console.log(course.units[0].modules[0]);
-
   // Select 4 random tasks and track their modules
   const selectedTasks = course.units
     .flatMap((unit) =>
@@ -85,6 +87,19 @@ export default async function CoursePage({
     )
     .sort(() => Math.random() - 0.5)
     .slice(0, 10);
+
+  const currentUser = await getCurrentUser();
+  const selectedTasksProgresses = currentUser
+    ? await db.query.taskProgress.findMany({
+        where: and(
+          eq(taskProgress.userId, currentUser.id),
+          inArray(
+            taskProgress.taskId,
+            selectedTasks.map((task) => task.id),
+          ),
+        ),
+      })
+    : [];
 
   return (
     <div className="flex h-full flex-col">
@@ -222,7 +237,8 @@ export default async function CoursePage({
                             Math.random() * (100 - mastery100),
                           );
                           const mastery50 = Math.round(
-                            Math.random() * (100 - mastery100 - mastery75),
+                            (Math.random() * (100 - mastery100 - mastery75)) /
+                              2,
                           );
 
                           return (
@@ -236,19 +252,19 @@ export default async function CoursePage({
                                   style={{
                                     gridColumn: `span ${mastery100} / span ${mastery100}`,
                                   }}
-                                  className="h-2 bg-accent"
+                                  className="h-2 bg-foreground"
                                 />
                                 <div
                                   style={{
                                     gridColumn: `span ${mastery75} / span ${mastery75}`,
                                   }}
-                                  className="h-2 bg-accent/60"
+                                  className="h-2 bg-foreground/60"
                                 />
                                 <div
                                   style={{
                                     gridColumn: `span ${mastery50} / span ${mastery50}`,
                                   }}
-                                  className="h-2 bg-accent/40"
+                                  className="h-2 bg-foreground/40"
                                 />
                               </div>
                             </div>
@@ -262,7 +278,7 @@ export default async function CoursePage({
             </div>
 
             <div className="order-1 col-span-1 grid h-min gap-4 sm:order-2 sm:col-span-1 sm:grid-cols-1 lg:col-span-2 lg:grid-cols-2">
-              {selectedTasks.map((task, index) => {
+              {selectedTasks.map((task) => {
                 return (
                   <Card
                     key={task.id}
@@ -299,11 +315,23 @@ export default async function CoursePage({
                             {task.module.title}
                           </p>
                         </div>
+                        <TaskProgress
+                          stepsCount={task.stepsCount}
+                          stepsCompletedCount={
+                            selectedTasksProgresses.find(
+                              (progress) => progress.taskId === task.id,
+                            )?.stepsCompletedCount ?? 0
+                          }
+                        />
                         <Link
                           href={`/courses/${course.id}/tasks/${task.id}`}
                           className={cn(buttonVariants({ variant: 'outline' }))}
                         >
-                          {t('course.stats.continue.title')}
+                          {(selectedTasksProgresses.find(
+                            (progress) => progress.taskId === task.id,
+                          )?.stepsCompletedCount ?? 0) > 0
+                            ? 'Continue'
+                            : 'Start'}
                         </Link>
                       </div>
                     </CardContent>
@@ -315,5 +343,20 @@ export default async function CoursePage({
         </div>
       </div>
     </div>
+  );
+}
+
+async function TaskProgress({
+  stepsCount,
+  stepsCompletedCount,
+}: {
+  stepsCount: number;
+  stepsCompletedCount: number;
+}) {
+  return (
+    <Progress
+      value={(stepsCompletedCount / stepsCount) * 100}
+      className="h-2"
+    />
   );
 }

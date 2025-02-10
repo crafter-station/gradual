@@ -5,7 +5,12 @@ import { stepProgress, taskProgress } from '@/db/schema';
 import type { ActionState } from '@/lib/utils';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { getCurrentStep, getStepProgress, getTaskProgress } from './helpers';
+import {
+  getCurrentStep,
+  getCurrentUser,
+  getStepProgress,
+  getTaskProgress,
+} from './helpers';
 
 export type SubmitAnswerForm = {
   taskId: string;
@@ -27,7 +32,7 @@ export async function submitAnswerAction(
   console.log(form);
   try {
     const date = new Date();
-    const currentUser = await db.query.users.findFirst();
+    const currentUser = await getCurrentUser();
     if (!currentUser) {
       throw new Error('User not found');
     }
@@ -86,6 +91,7 @@ export async function submitAnswerAction(
       .update(taskProgress)
       .set({
         lastCompletedStepId: currentStep.id,
+        stepsCompletedCount: currentTaskProgress.stepsCompletedCount + 1,
       })
       .where(eq(taskProgress.id, currentTaskProgress.id));
 

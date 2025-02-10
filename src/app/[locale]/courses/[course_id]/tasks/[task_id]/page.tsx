@@ -112,6 +112,7 @@ export default async function TaskPage({ params }: PageProps) {
     };
 
     const earnedExperiencePoints = calculateEarnedExperiencePoints(
+      currentTask.experiencePoints,
       stats.incorrectQuestionsCount,
       stats.time,
     );
@@ -130,7 +131,6 @@ export default async function TaskPage({ params }: PageProps) {
         .returning();
     }
   }
-  console.log(currentStep.content);
 
   return (
     <div className="flex flex-col">

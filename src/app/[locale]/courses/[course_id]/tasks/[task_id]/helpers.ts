@@ -7,6 +7,10 @@ import {
 } from '@/db/schema';
 import { and, asc, desc, eq } from 'drizzle-orm';
 
+export async function getCurrentUser() {
+  return db.query.users.findFirst();
+}
+
 export async function getTaskProgress(userId: string, taskId: string) {
   const progress = await db.query.taskProgress.findFirst({
     where: and(
@@ -27,14 +31,12 @@ export async function getOrCreateTaskProgress(
 
   if (!progress) {
     [progress] = await db
-
       .insert(taskProgress)
       .values({
         userId: userId,
         taskId: taskId,
         startedAt,
       })
-
       .returning();
   }
 
@@ -134,6 +136,7 @@ export async function getOrCreateStepProgress(
 }
 
 export function calculateEarnedExperiencePoints(
+  baseExperiencePoints: number,
   incorrectQuestionsCount: number,
   time: number,
 ) {
@@ -143,16 +146,15 @@ export function calculateEarnedExperiencePoints(
     return earnedExperiencePoints;
   }
 
-  earnedExperiencePoints = 10;
+  earnedExperiencePoints = baseExperiencePoints;
 
   if (incorrectQuestionsCount === 0) {
     earnedExperiencePoints += 2;
 
     const timeThresholds = [
-      1000 * 60 * 5, // 5 minutes
-      1000 * 60 * 3, // 3 minutes
+      1000 * 60 * 6, // 6 minutes
+      1000 * 60 * 4, // 4 minutes
       1000 * 60 * 2, // 2 minutes
-      1000 * 60, // 1 minute
     ];
 
     for (const threshold of timeThresholds) {

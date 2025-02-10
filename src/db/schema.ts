@@ -83,6 +83,7 @@ export const tasks = pgTable('tasks', {
     .notNull()
     .references(() => modules.id),
   experiencePoints: integer('experience_points').notNull().default(10),
+  stepsCount: integer('steps_count').notNull(),
 });
 export type SelectTask = typeof tasks.$inferSelect;
 
@@ -176,12 +177,14 @@ export const taskProgress = pgTable('task_progress', {
   taskId: uuid('task_id')
     .notNull()
     .references(() => tasks.id),
-  lastCompletedStepId: uuid('last_completed_step_id').references(
-    () => steps.id,
-  ),
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id),
+
+  lastCompletedStepId: uuid('last_completed_step_id').references(
+    () => steps.id,
+  ),
+  stepsCompletedCount: integer('steps_completed_count').notNull().default(0),
 
   earnedExperiencePoints: integer('earned_experience_points'),
 
@@ -190,20 +193,24 @@ export const taskProgress = pgTable('task_progress', {
 });
 export type SelectTaskProgress = typeof taskProgress.$inferSelect;
 
-export const taskProgressRelations = relations(taskProgress, ({ one }) => ({
-  task: one(tasks, {
-    fields: [taskProgress.taskId],
-    references: [tasks.id],
+export const taskProgressRelations = relations(
+  taskProgress,
+  ({ one, many }) => ({
+    task: one(tasks, {
+      fields: [taskProgress.taskId],
+      references: [tasks.id],
+    }),
+    lastCompletedStep: one(steps, {
+      fields: [taskProgress.lastCompletedStepId],
+      references: [steps.id],
+    }),
+    user: one(users, {
+      fields: [taskProgress.userId],
+      references: [users.id],
+    }),
+    stepsProgress: many(stepProgress),
   }),
-  lastCompletedStep: one(steps, {
-    fields: [taskProgress.lastCompletedStepId],
-    references: [steps.id],
-  }),
-  user: one(users, {
-    fields: [taskProgress.userId],
-    references: [users.id],
-  }),
-}));
+);
 
 export const stepProgress = pgTable('step_progress', {
   id: uuid('id').primaryKey().defaultRandom(),

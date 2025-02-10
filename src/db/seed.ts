@@ -130,10 +130,10 @@ async function seed() {
   ).flat();
 
   // Create 2-4 tasks per module
-  const taskIds = (
+  const createdTasks = (
     await Promise.all(
       moduleIds.flatMap(async (moduleId) => {
-        const count = faker.number.int({ min: 2, max: 4 });
+        const count = faker.number.int({ min: 1, max: 3 });
         const createdTasks = await db
           .insert(tasks)
           .values(
@@ -150,21 +150,22 @@ async function seed() {
                 ]),
                 moduleId,
                 experiencePoints: faker.number.int({ min: 10, max: 20 }),
+                stepsCount: faker.number.int({ min: 8, max: 12 }),
               })),
           )
-          .returning({ id: tasks.id });
-        return createdTasks.map((task) => task.id);
+          .returning();
+        return createdTasks;
       }),
     )
   ).flat();
 
   // Create steps for each task
   await Promise.all(
-    taskIds.map(async (taskId) => {
+    createdTasks.map(async (task) => {
       // Create 1 tutorial step
       await db.insert(steps).values({
         order: 1,
-        taskId,
+        taskId: task.id,
         type: 'TUTORIAL',
         content: {
           title: faker.lorem.words(3),
@@ -179,7 +180,7 @@ async function seed() {
           .map((_, index) =>
             db.insert(steps).values({
               order: index + 2, // starts at 2 (after tutorial)
-              taskId,
+              taskId: task.id,
               type: 'EXAMPLE',
               content: {
                 body: faker.lorem.paragraphs(1),
@@ -190,14 +191,14 @@ async function seed() {
       );
 
       // Create 5-8 question steps
-      const questionStepsCount = faker.number.int({ min: 5, max: 8 });
+      const questionStepsCount = task.stepsCount - 3;
       await Promise.all(
         Array(questionStepsCount)
           .fill(null)
           .map((_, index) =>
             db.insert(steps).values({
               order: index + 4, // starts at 4 (after tutorial and 2 examples)
-              taskId,
+              taskId: task.id,
               type: 'QUESTION',
               content: {
                 question: `${faker.lorem.sentence()}?`,
