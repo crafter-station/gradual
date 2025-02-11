@@ -1,134 +1,165 @@
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import {
+  ArrowRightIcon,
+  BookOpenIcon,
+  GraduationCapIcon,
+  SparklesIcon,
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-8 sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background">
+      {/* Background Patterns */}
+      <div className="-z-10 fixed inset-0">
+        <div className="absolute inset-0 animate-fade-in bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" />
+        <div className="absolute h-full w-full [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+      </div>
+
+      {/* Gradient Orbs */}
+      <div className="-z-10 fixed inset-0 overflow-hidden">
+        {/* Primary Orb */}
+        <div
+          className="absolute top-1/4 left-[15%] h-[300px] w-[300px] animate-delay-300 animate-pulse"
+          style={{
+            background:
+              'radial-gradient(circle at center, hsl(var(--primary)) 0%, transparent 70%)',
+            opacity: 0.15,
+            filter: 'blur(40px)',
+          }}
         />
-        <ol className="list-inside list-decimal text-center font-[family-name:var(--font-geist-mono)] text-sm sm:text-left">
-          <li className="mb-2">
-            Get started by editing{' '}
-            <code className="rounded bg-black/[.05] px-1 py-0.5 font-semibold dark:bg-white/[.06]">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+        {/* Secondary Orb */}
+        <div
+          className="absolute top-2/3 right-[15%] h-[250px] w-[250px] animate-delay-500 animate-pulse"
+          style={{
+            background:
+              'radial-gradient(circle at center, hsl(var(--primary)) 0%, transparent 70%)',
+            opacity: 0.1,
+            filter: 'blur(40px)',
+          }}
+        />
+        {/* Accent Orb */}
+        <div
+          className="absolute top-1/2 left-1/3 h-[400px] w-[400px] animate-delay-700 animate-pulse"
+          style={{
+            background:
+              'radial-gradient(circle at center, hsl(var(--primary)) 0%, transparent 70%)',
+            opacity: 0.05,
+            filter: 'blur(60px)',
+          }}
+        />
+      </div>
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="flex h-10 items-center justify-center gap-2 rounded-full border border-transparent border-solid bg-foreground px-4 text-background text-sm transition-colors hover:bg-[#383838] sm:h-12 sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="flex h-10 items-center justify-center rounded-full border border-black/[.08] border-solid px-4 text-sm transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:min-w-44 sm:px-5 sm:text-base dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-        <span className="hidden">Hidden</span>
-        <Card className="group transition-all duration-300 hover:shadow-md">
-          <div className="grid h-full grid-cols-[120px_1fr] sm:grid-cols-[160px_1fr]">
-            <div className="flex items-center justify-center border-r bg-muted/5 p-2 sm:p-4">
-              <Skeleton className="h-[120px] w-[90px] sm:h-[145px] sm:w-[120px]" />
-            </div>
-
-            <div className="flex h-full flex-col justify-between p-2 sm:p-4">
-              <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-1 sm:space-y-1.5">
-                    <Skeleton className="!mb-4 h-3 w-16 sm:h-4 sm:w-24" />
-                    <div className="flex items-center gap-2">
-                      <Skeleton className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <Skeleton className="h-3 w-16 sm:h-4 sm:w-20" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Skeleton className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <Skeleton className="h-3 w-20 sm:h-4 sm:w-24" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <Skeleton className="h-8 w-8 rounded-full sm:h-12 sm:w-12" />
-                    <Skeleton className="h-2 w-12 sm:h-3 sm:w-16" />
+      {/* Main Content */}
+      <main className="flex flex-1 flex-col">
+        {/* Hero Section */}
+        <div className="flex flex-1 flex-col items-center justify-center px-4 py-20 md:px-6 lg:px-8">
+          <div className="w-full max-w-5xl space-y-12">
+            {/* Badge */}
+            <div className="flex justify-center">
+              <div className="inline-flex animate-delay-[50ms] animate-duration-300 animate-fade-in items-center gap-2 border border-border/50 bg-background/50 px-4 py-1.5 text-sm backdrop-blur-sm">
+                <div className="relative flex items-center">
+                  <SparklesIcon className="h-3.5 w-3.5 text-primary" />
+                  <div className="absolute inset-0 animate-ping">
+                    <SparklesIcon className="h-3.5 w-3.5 text-primary opacity-40" />
                   </div>
                 </div>
+                <span>Introducing Gradual Learning Platform</span>
               </div>
-              <Skeleton className="mt-3 h-8 w-full sm:mt-4 sm:h-9" />
+            </div>
+
+            {/* Hero Content */}
+            <div className="relative space-y-8 text-center">
+              {/* Glow behind title */}
+              <div className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 h-32 w-96 animate-duration-[2000ms] animate-pulse bg-primary/10 blur-[120px]" />
+
+              <h1 className="relative animate-delay-[100ms] animate-duration-300 animate-fade-in bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text font-bold text-5xl text-transparent tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+                Master anything{' '}
+                <span className="animate-delay-[150ms] animate-duration-300 animate-fade-in bg-gradient-to-r from-primary via-primary/70 to-primary bg-clip-text">
+                  gradually
+                </span>
+              </h1>
+
+              <p className="mx-auto max-w-2xl animate-delay-[200ms] animate-duration-300 animate-fade-in text-lg text-muted-foreground md:text-xl">
+                A revolutionary platform that breaks down complex subjects into
+                digestible steps. Learn at your own pace with our adaptive
+                learning system.
+              </p>
+
+              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link href="/courses">
+                  <Button
+                    size="lg"
+                    className="group h-12 min-w-[160px] animate-delay-[250ms] animate-duration-300 animate-fade-in gap-2 text-base transition-all hover:scale-105"
+                  >
+                    <GraduationCapIcon className="h-4 w-4" />
+                    Start Learning
+                    <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </Button>
+                </Link>
+                <Link href="/about">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="h-12 min-w-[160px] animate-delay-[300ms] animate-duration-300 animate-fade-in gap-2 text-base transition-all hover:scale-105"
+                  >
+                    <BookOpenIcon className="h-4 w-4" />
+                    Learn More
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+              {[
+                {
+                  label: 'Active Learners',
+                  value: '10K+',
+                  description: 'Growing community',
+                  delay: '500',
+                },
+                {
+                  label: 'Courses Created',
+                  value: '500+',
+                  description: 'Curated content',
+                  delay: '600',
+                },
+                {
+                  label: 'Success Rate',
+                  value: '94%',
+                  description: 'Completion rate',
+                  delay: '700',
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className={cn(
+                    'group relative animate-fade-in border border-border/50 bg-background/50 p-6 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:border-primary/50',
+                    {
+                      'animate-delay-500': stat.delay === '500',
+                      'animate-delay-600': stat.delay === '600',
+                      'animate-delay-700': stat.delay === '700',
+                    },
+                  )}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="relative space-y-2">
+                    <div className="font-semibold text-3xl md:text-4xl">
+                      {stat.value}
+                    </div>
+                    <div className="font-medium text-sm">{stat.label}</div>
+                    <div className="text-muted-foreground text-sm">
+                      {stat.description}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </Card>
+        </div>
       </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-6">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

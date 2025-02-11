@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./shadcn.css";
+@plugin "@midudev/tailwind-animations";
 
 @theme {
   --color-background: hsl(var(--background));
