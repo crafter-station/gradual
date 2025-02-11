@@ -1,16 +1,17 @@
+import { relations } from 'drizzle-orm';
 import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgEnum,
   pgTable,
-  uuid,
-  varchar,
   text,
   timestamp,
-  boolean,
-  integer,
-  pgEnum,
-  jsonb,
   uniqueIndex,
+  uuid,
+  varchar,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -52,7 +53,6 @@ export const units = pgTable('units', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title').notNull(),
   order: integer('order').notNull(),
-  experiencePoints: integer('experience_points').notNull(),
   courseId: uuid('course_id')
     .notNull()
     .references(() => courses.id),
@@ -82,7 +82,10 @@ export const tasks = pgTable('tasks', {
   moduleId: uuid('module_id')
     .notNull()
     .references(() => modules.id),
+  experiencePoints: integer('experience_points').notNull().default(10),
+  stepsCount: integer('steps_count').notNull(),
 });
+export type SelectTask = typeof tasks.$inferSelect;
 
 export const stepTypeEnum = pgEnum('step_type', [
   'TUTORIAL',
@@ -91,6 +94,7 @@ export const stepTypeEnum = pgEnum('step_type', [
 ]);
 
 export type TutorialStepContent = {
+  title: string;
   body: string;
 };
 
@@ -101,13 +105,12 @@ export type ExampleStepContent = {
 
 export type QuestionStepContent = {
   question: string;
-  choices: {
+  alternatives: {
     order: number;
     content: string;
     explanation: string;
-    isCorrect: boolean;
   }[];
-  answer: number;
+  correctAlternativeOrder: number;
 };
 
 export type StepContent =
@@ -131,25 +134,130 @@ export const steps = pgTable(
       table.order,
       table.taskId,
     ),
+    stepsForTask: index('steps_for_task').on(table.taskId),
   }),
 );
 
+export type SelectStep = Omit<
+  Omit<typeof steps.$inferSelect, 'content'>,
+  'type'
+> &
+  (
+    | {
+        type: 'TUTORIAL';
+        content: TutorialStepContent;
+      }
+    | {
+        type: 'EXAMPLE';
+        content: ExampleStepContent;
+      }
+    | {
+        type: 'QUESTION';
+        content: QuestionStepContent;
+      }
+  );
+
 export const enrollments = pgTable('enrollments', {
   id: uuid('id').primaryKey().defaultRandom(),
-  courseId: uuid('course_id')
-    .notNull()
-    .references(() => courses.id),
+
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id),
-  lastAccessedAt: timestamp('last_accessed_at', {
-    withTimezone: true,
-  }).notNull(),
-  lastStepId: uuid('last_step_id').notNull(),
-  lastStepType: taskTypeEnum('last_step_type').notNull(),
+  courseId: uuid('course_id')
+    .notNull()
+    .references(() => courses.id),
+
   startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
   finishedAt: timestamp('finished_at', { withTimezone: true }),
 });
+
+export const taskProgress = pgTable('task_progress', {
+  id: uuid('id').primaryKey().defaultRandom(),
+
+  taskId: uuid('task_id')
+    .notNull()
+    .references(() => tasks.id),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id),
+
+  lastCompletedStepId: uuid('last_completed_step_id').references(
+    () => steps.id,
+  ),
+  stepsCompletedCount: integer('steps_completed_count').notNull().default(0),
+
+  earnedExperiencePoints: integer('earned_experience_points'),
+
+  startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+});
+export type SelectTaskProgress = typeof taskProgress.$inferSelect;
+
+export const taskProgressRelations = relations(
+  taskProgress,
+  ({ one, many }) => ({
+    task: one(tasks, {
+      fields: [taskProgress.taskId],
+      references: [tasks.id],
+    }),
+    lastCompletedStep: one(steps, {
+      fields: [taskProgress.lastCompletedStepId],
+      references: [steps.id],
+    }),
+    user: one(users, {
+      fields: [taskProgress.userId],
+      references: [users.id],
+    }),
+    stepsProgress: many(stepProgress),
+  }),
+);
+
+export const stepProgress = pgTable('step_progress', {
+  id: uuid('id').primaryKey().defaultRandom(),
+
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id),
+
+  stepId: uuid('step_id')
+    .notNull()
+    .references(() => steps.id),
+
+  taskId: uuid('task_id')
+    .notNull()
+    .references(() => tasks.id),
+
+  taskProgressId: uuid('task_progress_id')
+    .notNull()
+    .references(() => taskProgress.id),
+
+  selectedAlternativeOrder: integer('selected_alternative_order'),
+  isCorrect: boolean('is_correct'),
+
+  startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+});
+
+export type SelectStepProgress = typeof stepProgress.$inferSelect;
+
+export const stepProgressRelations = relations(stepProgress, ({ one }) => ({
+  step: one(steps, {
+    fields: [stepProgress.stepId],
+    references: [steps.id],
+  }),
+  task: one(tasks, {
+    fields: [stepProgress.taskId],
+    references: [tasks.id],
+  }),
+  taskProgress: one(taskProgress, {
+    fields: [stepProgress.taskProgressId],
+    references: [taskProgress.id],
+  }),
+  user: one(users, {
+    fields: [stepProgress.userId],
+    references: [users.id],
+  }),
+}));
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({

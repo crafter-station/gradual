@@ -1,14 +1,14 @@
 'use client';
 
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import { cva } from 'class-variance-authority';
-import type { VariantProps } from 'class-variance-authority';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Slot } from '@radix-ui/react-slot';
+import { cva } from 'class-variance-authority';
+import type { VariantProps } from 'class-variance-authority';
+import * as React from 'react';
 
 import {
   Tooltip,
@@ -16,8 +16,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { ColumnsIcon } from 'lucide-react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';

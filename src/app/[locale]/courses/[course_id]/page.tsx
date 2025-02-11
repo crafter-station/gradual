@@ -1,11 +1,11 @@
-import { getI18n } from '@/locales/server';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Separator } from '@/components/ui/separator';
 import { Book } from '@/components/book';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,18 +14,27 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { Gauge } from '@/components/gauge';
-import { cn } from '@/lib/utils';
+import { buttonVariants } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { db } from '@/db';
+import { cn } from '@/lib/utils';
+import { getI18n } from '@/locales/server';
 import {
-  HomeIcon,
-  DatabaseIcon,
-  LayersIcon,
   BookOpenIcon,
-  ClockIcon,
   ChevronRightIcon,
-  LockIcon,
+  ClockIcon,
+  DatabaseIcon,
+  HomeIcon,
+  LayersIcon,
 } from 'lucide-react';
+import Link from 'next/link';
+import { getCurrentUser } from './tasks/[task_id]/helpers';
+import { eq, inArray } from 'drizzle-orm';
+import { taskProgress } from '@/db/schema';
+import { and } from 'drizzle-orm';
 
 export const metadata = {
   title: 'Course',
@@ -45,7 +54,11 @@ export default async function CoursePage({
     with: {
       units: {
         with: {
-          modules: true,
+          modules: {
+            with: {
+              tasks: true,
+            },
+          },
         },
       },
     },
@@ -54,6 +67,39 @@ export default async function CoursePage({
   if (!course) {
     return <div>{t('course.notFound')}</div>;
   }
+
+  // Select 4 random tasks and track their modules
+  const selectedTasks = course.units
+    .flatMap((unit) =>
+      unit.modules.flatMap((module) =>
+        module.tasks.map((task) => ({
+          ...task,
+          module: {
+            ...module,
+            tasks: undefined,
+            unit: {
+              ...unit,
+              modules: undefined,
+            },
+          },
+        })),
+      ),
+    )
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 10);
+
+  const currentUser = await getCurrentUser();
+  const selectedTasksProgresses = currentUser
+    ? await db.query.taskProgress.findMany({
+        where: and(
+          eq(taskProgress.userId, currentUser.id),
+          inArray(
+            taskProgress.taskId,
+            selectedTasks.map((task) => task.id),
+          ),
+        ),
+      })
+    : [];
 
   return (
     <div className="flex h-full flex-col">
@@ -170,83 +216,147 @@ export default async function CoursePage({
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {course.units.map((unit, index) => {
-              const isAvailable = index < 3;
-              return (
-                <Card key={unit.id} className="group relative overflow-hidden">
-                  <CardContent
-                    className={cn('p-4', {
-                      'opacity-50': !isAvailable,
-                    })}
-                  >
-                    <div className="flex flex-col gap-2">
-                      <div className="flex flex-col items-center gap-3">
-                        <div
-                          className={cn(
-                            'flex size-10 shrink-0 items-center justify-center rounded-full',
-                            isAvailable
-                              ? 'bg-primary/10 text-primary'
-                              : 'bg-muted text-muted-foreground grayscale',
-                          )}
-                        >
-                          <span className="font-medium font-mono text-lg">
-                            T{Number(unit.order) + 1}
-                          </span>
-                        </div>
-                        <div className="w-full min-w-0 flex-1">
-                          <p className="text-muted-foreground text-xs">
-                            {t('course.topic.sections', {
-                              completed: unit.modules.length,
-                              total: unit.modules.length,
-                            })}
-                          </p>
+          <div className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3">
+            <div className="order-2 col-span-1 mr-0 sm:order-1 sm:mr-8">
+              <h2>Syllabus</h2>
 
-                          <div className="flex w-full items-center justify-between gap-4">
-                            <h3 className="mt-1 font-semibold leading-tight">
-                              {unit.title}
-                            </h3>
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center">
-                              <Gauge
-                                value={75}
-                                size="small"
-                                showValue
-                                className="h-full w-full"
-                              />
+              <Accordion type="single" collapsible>
+                {course.units.map((unit, unitIndex) => (
+                  <AccordionItem key={unit.id} value={unit.id}>
+                    <AccordionTrigger className="relative cursor-pointer">
+                      {unitIndex + 1}. {unit.title}
+                      <span className="-translate-y-1/2 absolute top-1/2 right-6 text-muted-foreground text-xs">
+                        {unit.modules.length} modules
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2">
+                        {unit.modules.map((module, moduleIndex) => {
+                          const mastery100 = Math.round(Math.random() * 100);
+                          const mastery75 = Math.round(
+                            Math.random() * (100 - mastery100),
+                          );
+                          const mastery50 = Math.round(
+                            (Math.random() * (100 - mastery100 - mastery75)) /
+                              2,
+                          );
+
+                          return (
+                            <div key={module.id}>
+                              <h3 className="font-medium text-sm">
+                                {unitIndex + 1}.{moduleIndex + 1}.{' '}
+                                {module.title}
+                              </h3>
+                              <div className="grid border [grid-template-columns:repeat(100,minmax(0,1fr))]">
+                                <div
+                                  style={{
+                                    gridColumn: `span ${mastery100} / span ${mastery100}`,
+                                  }}
+                                  className="h-2 bg-foreground"
+                                />
+                                <div
+                                  style={{
+                                    gridColumn: `span ${mastery75} / span ${mastery75}`,
+                                  }}
+                                  className="h-2 bg-foreground/60"
+                                />
+                                <div
+                                  style={{
+                                    gridColumn: `span ${mastery50} / span ${mastery50}`,
+                                  }}
+                                  className="h-2 bg-foreground/40"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        </div>
+                          );
+                        })}
                       </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
 
-                      {isAvailable ? (
-                        <Button variant="outline" asChild className="mt-1">
-                          <Link href={`/courses/${course.id}/units/${unit.id}`}>
-                            <span className="text-xs">
-                              {t('course.topic.study')}
+            <div className="order-1 col-span-1 grid h-min gap-4 sm:order-2 sm:col-span-1 sm:grid-cols-1 lg:col-span-2 lg:grid-cols-2">
+              {selectedTasks.map((task) => {
+                return (
+                  <Card
+                    key={task.id}
+                    className="group relative overflow-hidden"
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-3">
+                          <div
+                            className={cn(
+                              'flex items-center justify-between text-primary',
+                            )}
+                          >
+                            <Badge
+                              variant={
+                                {
+                                  QUIZ: 'outline' as const,
+                                  LESSON: 'default' as const,
+                                  MULTISTEP: 'secondary' as const,
+                                }[task.type]
+                              }
+                            >
+                              {task.type}
+                            </Badge>
+                            <span className="font-bold font-mono text-muted-foreground text-xs tabular-nums">
+                              {task.experiencePoints} XP
                             </span>
-                            <ChevronRightIcon className="h-3 w-3 opacity-50" />
-                          </Link>
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          className="mt-1 cursor-not-allowed"
-                          disabled
+                          </div>
+                          <p className="text-balance font-medium text-sm">
+                            {task.title}
+                          </p>
+                          <p className="text-muted-foreground text-sm">
+                            {task.module.unit.order}.{task.module.order}.{' '}
+                            {task.module.title}
+                          </p>
+                        </div>
+                        <TaskProgress
+                          stepsCount={task.stepsCount}
+                          stepsCompletedCount={
+                            selectedTasksProgresses.find(
+                              (progress) => progress.taskId === task.id,
+                            )?.stepsCompletedCount ?? 0
+                          }
+                        />
+                        <Link
+                          href={`/courses/${course.id}/tasks/${task.id}`}
+                          className={cn(buttonVariants({ variant: 'outline' }))}
                         >
-                          <span className="text-xs">
-                            {t('course.topic.locked')}
-                          </span>
-                          <LockIcon className="ml-1 h-3 w-3 opacity-50" />
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                          {(selectedTasksProgresses.find(
+                            (progress) => progress.taskId === task.id,
+                          )?.stepsCompletedCount ?? 0) > 0
+                            ? 'Continue'
+                            : 'Start'}
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+async function TaskProgress({
+  stepsCount,
+  stepsCompletedCount,
+}: {
+  stepsCount: number;
+  stepsCompletedCount: number;
+}) {
+  return (
+    <Progress
+      value={(stepsCompletedCount / stepsCount) * 100}
+      className="h-2"
+    />
   );
 }

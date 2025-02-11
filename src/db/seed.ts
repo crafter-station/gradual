@@ -1,26 +1,34 @@
 import { faker } from '@faker-js/faker';
 import { db } from '.'; // Assuming you have a db connection file
 import {
-  users,
   courses,
-  sources,
-  units,
-  modules,
-  tasks,
   enrollments,
+  modules,
+  sources,
+  stepProgress,
   steps,
+  taskProgress,
+  tasks,
+  units,
+  users,
 } from './schema';
 
-async function seed() {
+async function clear() {
+  await db.delete(stepProgress);
+  await db.delete(taskProgress);
+
   await db.delete(steps);
   await db.delete(tasks);
   await db.delete(modules);
   await db.delete(units);
+
   await db.delete(sources);
   await db.delete(enrollments);
   await db.delete(courses);
   await db.delete(users);
+}
 
+async function seed() {
   // Create 5 users
   const userIds = await Promise.all(
     Array(5)
@@ -77,25 +85,28 @@ async function seed() {
   );
 
   // Create 3-5 units per course
-  const unitIds = await Promise.all(
-    createdCourses.map(async (course) => {
-      const count = faker.number.int({ min: 3, max: 5 });
-      const [unit] = await db
-        .insert(units)
-        .values(
-          Array(count)
-            .fill(null)
-            .map((_, index) => ({
-              title: faker.lorem.words(2),
-              order: index + 1,
-              experiencePoints: faker.number.int({ min: 50, max: 200 }),
-              courseId: course.id,
-            })),
-        )
-        .returning({ id: units.id });
-      return unit.id;
-    }),
-  );
+  const unitIds = (
+    await Promise.all(
+      createdCourses.flatMap(async (course) => {
+        const count = faker.number.int({ min: 3, max: 5 });
+        const createdUnits = await db
+          .insert(units)
+          .values(
+            Array(count)
+              .fill(null)
+              .map((_, index) => ({
+                title: faker.lorem.words(2),
+                order: index + 1,
+                experiencePoints: faker.number.int({ min: 50, max: 200 }),
+                courseId: course.id,
+              })),
+          )
+          .returning({ id: units.id });
+        return createdUnits.map((unit) => unit.id);
+      }),
+    )
+  ).flat();
+
   // Create 2-4 modules per unit
   const moduleIds = (
     await Promise.all(
@@ -119,10 +130,10 @@ async function seed() {
   ).flat();
 
   // Create 2-4 tasks per module
-  const taskIds = (
+  const createdTasks = (
     await Promise.all(
       moduleIds.flatMap(async (moduleId) => {
-        const count = faker.number.int({ min: 2, max: 4 });
+        const count = faker.number.int({ min: 1, max: 3 });
         const createdTasks = await db
           .insert(tasks)
           .values(
@@ -138,23 +149,26 @@ async function seed() {
                   'MULTISTEP',
                 ]),
                 moduleId,
+                experiencePoints: faker.number.int({ min: 10, max: 20 }),
+                stepsCount: faker.number.int({ min: 8, max: 12 }),
               })),
           )
-          .returning({ id: tasks.id });
-        return createdTasks.map((task) => task.id);
+          .returning();
+        return createdTasks;
       }),
     )
   ).flat();
 
   // Create steps for each task
   await Promise.all(
-    taskIds.map(async (taskId) => {
+    createdTasks.map(async (task) => {
       // Create 1 tutorial step
       await db.insert(steps).values({
         order: 1,
-        taskId,
+        taskId: task.id,
         type: 'TUTORIAL',
         content: {
+          title: faker.lorem.words(3),
           body: faker.lorem.paragraphs(2),
         },
       });
@@ -166,7 +180,7 @@ async function seed() {
           .map((_, index) =>
             db.insert(steps).values({
               order: index + 2, // starts at 2 (after tutorial)
-              taskId,
+              taskId: task.id,
               type: 'EXAMPLE',
               content: {
                 body: faker.lorem.paragraphs(1),
@@ -177,24 +191,23 @@ async function seed() {
       );
 
       // Create 5-8 question steps
-      const questionStepsCount = faker.number.int({ min: 5, max: 8 });
+      const questionStepsCount = task.stepsCount - 3;
       await Promise.all(
         Array(questionStepsCount)
           .fill(null)
           .map((_, index) =>
             db.insert(steps).values({
               order: index + 4, // starts at 4 (after tutorial and 2 examples)
-              taskId,
+              taskId: task.id,
               type: 'QUESTION',
               content: {
                 question: `${faker.lorem.sentence()}?`,
-                choices: Array.from({ length: 4 }, (_, i) => ({
+                alternatives: Array.from({ length: 4 }, (_, i) => ({
                   order: i + 1,
                   content: faker.lorem.sentence(),
                   explanation: faker.lorem.paragraph(),
-                  isCorrect: faker.datatype.boolean(),
                 })),
-                answer: faker.number.int({ min: 1, max: 4 }),
+                correctAlternativeOrder: faker.number.int({ min: 1, max: 4 }),
               },
             }),
           ),
@@ -209,13 +222,7 @@ async function seed() {
         db.insert(enrollments).values({
           courseId: course.id,
           userId,
-          lastAccessedAt: faker.date.past(),
-          lastStepId: faker.helpers.arrayElement(taskIds),
-          lastStepType: faker.helpers.arrayElement([
-            'LESSON',
-            'QUIZ',
-            'MULTISTEP',
-          ]),
+
           startedAt: faker.date.past(),
           finishedAt: faker.helpers.maybe(() => faker.date.recent(), {
             probability: 0.3,
@@ -226,13 +233,9 @@ async function seed() {
   );
 }
 
-// Run the seed function
-seed()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => {
-    console.log('Seeding completed');
-    process.exit(0);
+clear().then(() => {
+  console.log('Cleared database');
+  seed().then(() => {
+    console.log('Seeded database');
   });
+});

@@ -9,13 +9,14 @@
     "ignoreUnknown": false,
     "ignore": []
   },
+  "organizeImports": {
+    "enabled": true,
+    "ignore": ["node_modules", ".next"]
+  },
   "formatter": {
     "ignore": ["node_modules", ".next"],
     "enabled": true,
     "indentStyle": "space"
-  },
-  "organizeImports": {
-    "enabled": true
   },
   "linter": {
     "ignore": ["node_modules", ".next", "src/db/test.ts"],
@@ -23,7 +24,10 @@
     "rules": {
       "recommended": true,
       "nursery": {
-        "useSortedClasses": "error"
+        "useSortedClasses": "warn"
+      },
+      "correctness": {
+        "noUnusedImports": "warn"
       }
     }
   },

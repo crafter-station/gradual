@@ -15,6 +15,34 @@
       "when": 1738991747041,
       "tag": "0001_deep_human_torch",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1739144277943,
+      "tag": "0002_tranquil_cobalt_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1739144357322,
+      "tag": "0003_optimal_vulcan",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1739151762575,
+      "tag": "0004_old_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1739210129180,
+      "tag": "0005_mute_ultimatum",
+      "breakpoints": true
     }
   ]
 }

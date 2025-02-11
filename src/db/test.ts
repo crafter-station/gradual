@@ -1,8 +1,8 @@
 // @ts-nocheck
 
-import { db } from '.';
-import { tasks, steps } from './schema';
 import { eq } from 'drizzle-orm';
+import { db } from '.';
+import { steps, tasks } from './schema';
 
 async function getRandomTaskStepsA() {
   // Get a random task first

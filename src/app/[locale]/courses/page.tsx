@@ -1,6 +1,5 @@
-import { bookStylesDark } from '@/lib/constants';
-import { getI18n } from '@/locales/server';
 import { Book } from '@/components/book';
+import { Gauge } from '@/components/gauge';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,10 +10,11 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Gauge } from '@/components/gauge';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import Link from 'next/link';
+import { db } from '@/db';
+import { bookStylesDark } from '@/lib/constants';
+import { getI18n } from '@/locales/server';
 import {
   ArrowRightIcon,
   BookOpenIcon,
@@ -22,7 +22,7 @@ import {
   HomeIcon,
   TargetIcon,
 } from 'lucide-react';
-import { db } from '@/db';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'Courses',

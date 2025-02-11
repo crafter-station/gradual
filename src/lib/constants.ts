@@ -1,14 +1,14 @@
 import {
-  BrainIcon,
+  AtomIcon,
   BinaryIcon,
   BotIcon,
+  BrainIcon,
+  CodeIcon,
   CpuIcon,
   DatabaseIcon,
-  AtomIcon,
   MicroscopeIcon,
   PuzzleIcon,
   RocketIcon,
-  CodeIcon,
 } from 'lucide-react';
 
 // Light mode (600 values)

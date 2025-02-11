@@ -1,36 +1,36 @@
 'use client';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarGroupContent,
-} from '@/components/ui/sidebar';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+} from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 
 import {
-  HomeIcon,
-  GraduationCapIcon,
-  UploadIcon,
   ChartPieIcon,
-  UserIcon,
-  SettingsIcon,
-  LogOutIcon,
   FlagIcon,
+  GraduationCapIcon,
+  HomeIcon,
+  LogOutIcon,
+  SettingsIcon,
   StarIcon,
+  UploadIcon,
+  UserIcon,
 } from 'lucide-react';
 
 import { useI18n } from '@/locales/client';
