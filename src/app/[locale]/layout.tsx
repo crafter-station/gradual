@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Heebo, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { I18nProviderClient } from '@/locales/client';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const heebo = Heebo({
+  variable: '--font-heebo',
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
 });
 
 const geistMono = Geist_Mono({
@@ -29,9 +30,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
         <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
       </body>
     </html>
