@@ -57,4 +57,15 @@
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
   --color-book: hsl(var(--book));
+
+  --color-flexoki-red: hsl(var(--flexoki-red));
+  --color-flexoki-orange: hsl(var(--flexoki-orange));
+  --color-flexoki-yellow: hsl(var(--flexoki-yellow));
+  --color-flexoki-green: hsl(var(--flexoki-green));
+  --color-flexoki-blue: hsl(var(--flexoki-blue));
+  --color-flexoki-purple: hsl(var(--flexoki-purple));
+  --color-flexoki-pink: hsl(var(--flexoki-pink));
+  --color-flexoki-gray: hsl(var(--flexoki-gray));
+  --color-flexoki-black: hsl(var(--flexoki-black));
+  --color-flexoki-white: hsl(var(--flexoki-white));
 }

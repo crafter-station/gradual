@@ -33,6 +33,25 @@ export default {
   },
   course: {
     notFound: 'Course not found',
+    about: {
+      title: 'About this course',
+      description:
+        'Master the fundamentals of database management and SQL with hands-on projects and real-world scenarios. Perfect for beginners and intermediate developers looking to strengthen their data skills.',
+    },
+    features: {
+      beginner: {
+        title: 'Beginner Friendly',
+        description: 'No prior experience needed',
+      },
+      duration: {
+        title: '6 Hours of Content',
+        description: 'Complete at your own pace',
+      },
+      certificate: {
+        title: 'Certificate',
+        description: 'Earn upon completion',
+      },
+    },
     stats: {
       topics: '{count} Topics',
       sections: '{count} Sections',
@@ -46,10 +65,128 @@ export default {
         count: '{completed} / {total}',
       },
     },
+    learningPoints: {
+      title: "What you'll learn",
+      'Database design fundamentals': 'Database design fundamentals',
+      'SQL query optimization': 'SQL query optimization',
+      'Data modeling best practices': 'Data modeling best practices',
+      'Security and access control': 'Security and access control',
+      'Performance tuning techniques': 'Performance tuning techniques',
+    },
+    prerequisites: {
+      title: 'Prerequisites',
+      'Basic computer literacy': 'Basic computer literacy',
+      'Understanding of basic programming concepts':
+        'Understanding of basic programming concepts',
+    },
     topic: {
       sections: '{completed} of {total} sections',
       study: 'Study Topic',
       locked: 'Complete Previous Topic First',
     },
+    syllabus: {
+      title: 'Course Syllabus',
+      description: 'Master the fundamentals through structured learning paths',
+      download: 'Download PDF',
+    },
+    flashcards: {
+      title: 'Flashcards',
+      description: 'Review and memorize key concepts',
+      create: 'Create New',
+      search: 'Search flashcards...',
+      showAnswer: 'Show Answer',
+      hideAnswer: 'Hide Answer',
+      filters: {
+        all: 'All Cards',
+        bookmarked: 'Bookmarked',
+        mastered: 'Mastered',
+        learning: 'Still Learning',
+      },
+    },
+    notes: {
+      title: 'My Notes',
+      description: 'Review and manage your course notes',
+      export: 'Export',
+      create: 'New Note',
+      sections: {
+        lecture: 'Lecture Notes',
+        tasks: 'Study Tasks',
+      },
+      dueDate: 'Due {date}',
+      new: 'New Note',
+      edit: 'Edit Note',
+      editDescription: 'Write down your thoughts and insights',
+      save: 'Save Note',
+      titleLabel: 'Title',
+      titlePlaceholder: 'Enter a title for your note...',
+      contentLabel: 'Content',
+      contentPlaceholder: 'Start writing your note...',
+      soundToggle: 'Toggle typing sound',
+      aiAssistant: 'AI Assistant',
+      aiSuggestions: 'Writing Suggestions',
+      lastSaved: 'Last saved at {time}',
+      emptyContent: 'Start writing or choose a template...',
+      search: "Search notes...",
+      filters: {
+        all: "All Notes",
+        "ai-generated": "AI Generated",
+        "my-notes": "My Notes"
+      },
+      selectNote: "Select a note to view or edit",
+      editor: {
+        placeholder: "Start typing or use '/' for commands...",
+        aiSuggestion: "Get AI suggestions",
+        save: "Save changes",
+        cancel: "Cancel",
+        delete: "Delete note",
+        addTag: "Add tag...",
+        autoTag: "Auto-tag",
+        lastEdited: "Last edited {{time}}"
+      },
+      actions: {
+        new: "New Note",
+        edit: "Edit",
+        save: "Save",
+        delete: "Delete",
+        share: "Share"
+      }
+    },
+  },
+  landing: {
+    badge: {
+      introducing: "Introducing Gradual",
+      alpha: "Alpha",
+      alphaDescription: "Early Access"
+    },
+    hero: {
+      description: "A adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.",
+      startButton: "Start Learning",
+      methodologyButton: "Our Method",
+      methodologyHint: "See how our system works",
+    },
+    stats: {
+      learners: {
+        label: "Early Adopters",
+        description: "Growing community",
+      },
+      courses: {
+        label: "Beta Courses",
+        description: "In development",
+      },
+      success: {
+        label: "Completion Rate",
+        description: "Beta testers",
+      },
+    },
+    waitlist: {
+      title: "Join the Waitlist",
+      description: "Be among the first to experience Gradual's adaptive learning platform.",
+      namePlaceholder: "Your name",
+      emailPlaceholder: "Your email",
+      joinButton: "Join Waitlist",
+    },
+    learnMore: {
+      text: "Learn about our methodology",
+    }
   },
 } as const;
