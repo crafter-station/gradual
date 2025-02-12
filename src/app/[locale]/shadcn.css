@@ -59,6 +59,17 @@
 
   /* Book styling */
   --book: var(--base-150);
+
+  --flexoki-red: var(--red-600);
+  --flexoki-orange: var(--orange-600);
+  --flexoki-yellow: var(--yellow-600);
+  --flexoki-green: var(--green-600);
+  --flexoki-blue: var(--blue-600);
+  --flexoki-purple: var(--purple-600);
+  --flexoki-pink: var(--pink-600);
+  --flexoki-gray: var(--base-600);
+  --flexoki-black: var(--black);
+  --flexoki-white: var(--paper);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -115,6 +126,17 @@
     --sidebar-ring: var(--blue-400);
 
     --book: var(--base-800);
+
+    --flexoki-red: var(--red-400);
+    --flexoki-orange: var(--orange-400);
+    --flexoki-yellow: var(--yellow-400);
+    --flexoki-green: var(--green-400);
+    --flexoki-blue: var(--blue-400);
+    --flexoki-purple: var(--purple-400);
+    --flexoki-pink: var(--pink-400);
+    --flexoki-gray: var(--base-400);
+    --flexoki-black: var(--base-200);
+    --flexoki-white: var(--base-900);
   }
 }
 
