@@ -131,25 +131,27 @@ export default {
   },
   landing: {
     badge: {
-      introducing: "Presentamos Gradual",
-      alpha: "Alpha",
-      alphaDescription: "Acceso Anticipado"
+      introducing: 'Presentamos Gradual',
+      alpha: 'Alpha',
+      alphaDescription: 'Acceso Anticipado',
     },
     hero: {
-      description: "Una plataforma de aprendizaje que descompone temas complejos en pasos digeribles. Aprende a tu propio ritmo con nuestro sistema de aprendizaje adaptativo.",
-      startButton: "Comenzar a Aprender",
-      methodologyButton: "Nuestro Método",
-      methodologyHint: "Descubre cómo funciona nuestro sistema",
+      description:
+        'Una plataforma de aprendizaje que descompone temas complejos en pasos digeribles. Aprende a tu propio ritmo con nuestro sistema de aprendizaje adaptativo.',
+      startButton: 'Comenzar a Aprender',
+      methodologyButton: 'Nuestro Método',
+      methodologyHint: 'Descubre cómo funciona nuestro sistema',
     },
     waitlist: {
-      title: "Únete a la Lista de Espera",
-      description: "Sé de los primeros en experimentar la plataforma de aprendizaje adaptativa de Gradual.",
-      namePlaceholder: "Tu nombre",
-      emailPlaceholder: "Tu email",
-      joinButton: "Unirse",
+      title: 'Únete a la Lista de Espera',
+      description:
+        'Sé de los primeros en experimentar la plataforma de aprendizaje adaptativa de Gradual.',
+      namePlaceholder: 'Tu nombre',
+      emailPlaceholder: 'Tu email',
+      joinButton: 'Unirse',
     },
     learnMore: {
-      text: "Conoce nuestra metodología",
-    }
+      text: 'Conoce nuestra metodología',
+    },
   },
 } as const;

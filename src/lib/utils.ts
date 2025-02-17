@@ -1,3 +1,4 @@
+import { db } from '@/db';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -19,3 +20,7 @@ export type ActionState<
       error: string;
     }
 );
+
+export async function getCurrentUser() {
+  return db.query.users.findFirst();
+}

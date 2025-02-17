@@ -6,10 +6,10 @@ import { eq, inArray } from 'drizzle-orm';
 import { and } from 'drizzle-orm';
 import { getCurrentUser } from './tasks/[task_id]/helpers';
 
+import type { CourseWithRelations } from '@/db/types';
 import { CourseHeader } from './components/course-header';
 import { CourseHero } from './components/course-hero';
 import { CourseTabs } from './components/course-tabs';
-import type { CourseWithRelations } from '@/db/types';
 
 export const metadata = {
   title: 'Course',

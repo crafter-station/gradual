@@ -126,67 +126,69 @@ export default {
       aiSuggestions: 'Writing Suggestions',
       lastSaved: 'Last saved at {time}',
       emptyContent: 'Start writing or choose a template...',
-      search: "Search notes...",
+      search: 'Search notes...',
       filters: {
-        all: "All Notes",
-        "ai-generated": "AI Generated",
-        "my-notes": "My Notes"
+        all: 'All Notes',
+        'ai-generated': 'AI Generated',
+        'my-notes': 'My Notes',
       },
-      selectNote: "Select a note to view or edit",
+      selectNote: 'Select a note to view or edit',
       editor: {
         placeholder: "Start typing or use '/' for commands...",
-        aiSuggestion: "Get AI suggestions",
-        save: "Save changes",
-        cancel: "Cancel",
-        delete: "Delete note",
-        addTag: "Add tag...",
-        autoTag: "Auto-tag",
-        lastEdited: "Last edited {{time}}"
+        aiSuggestion: 'Get AI suggestions',
+        save: 'Save changes',
+        cancel: 'Cancel',
+        delete: 'Delete note',
+        addTag: 'Add tag...',
+        autoTag: 'Auto-tag',
+        lastEdited: 'Last edited {{time}}',
       },
       actions: {
-        new: "New Note",
-        edit: "Edit",
-        save: "Save",
-        delete: "Delete",
-        share: "Share"
-      }
+        new: 'New Note',
+        edit: 'Edit',
+        save: 'Save',
+        delete: 'Delete',
+        share: 'Share',
+      },
     },
   },
   landing: {
     badge: {
-      introducing: "Introducing Gradual",
-      alpha: "Alpha",
-      alphaDescription: "Early Access"
+      introducing: 'Introducing Gradual',
+      alpha: 'Alpha',
+      alphaDescription: 'Early Access',
     },
     hero: {
-      description: "A adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.",
-      startButton: "Start Learning",
-      methodologyButton: "Our Method",
-      methodologyHint: "See how our system works",
+      description:
+        'A adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.',
+      startButton: 'Start Learning',
+      methodologyButton: 'Our Method',
+      methodologyHint: 'See how our system works',
     },
     stats: {
       learners: {
-        label: "Early Adopters",
-        description: "Growing community",
+        label: 'Early Adopters',
+        description: 'Growing community',
       },
       courses: {
-        label: "Beta Courses",
-        description: "In development",
+        label: 'Beta Courses',
+        description: 'In development',
       },
       success: {
-        label: "Completion Rate",
-        description: "Beta testers",
+        label: 'Completion Rate',
+        description: 'Beta testers',
       },
     },
     waitlist: {
-      title: "Join the Waitlist",
-      description: "Be among the first to experience Gradual's adaptive learning platform.",
-      namePlaceholder: "Your name",
-      emailPlaceholder: "Your email",
-      joinButton: "Join Waitlist",
+      title: 'Join the Waitlist',
+      description:
+        "Be among the first to experience Gradual's adaptive learning platform.",
+      namePlaceholder: 'Your name',
+      emailPlaceholder: 'Your email',
+      joinButton: 'Join Waitlist',
     },
     learnMore: {
-      text: "Learn about our methodology",
-    }
+      text: 'Learn about our methodology',
+    },
   },
 } as const;

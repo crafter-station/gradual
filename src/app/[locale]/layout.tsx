@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
-import { Heebo, Geist_Mono } from 'next/font/google';
+import { Geist_Mono, Heebo } from 'next/font/google';
 import './globals.css';
 import { I18nProviderClient } from '@/locales/client';
+
+import { Toaster } from '@/components/ui/sonner';
 
 const heebo = Heebo({
   variable: '--font-heebo',
@@ -31,7 +33,10 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
-        <I18nProviderClient locale={locale}>{children}</I18nProviderClient>
+        <I18nProviderClient locale={locale}>
+          {children}
+          <Toaster />
+        </I18nProviderClient>
       </body>
     </html>
   );

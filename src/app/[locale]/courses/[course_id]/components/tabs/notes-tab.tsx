@@ -1,23 +1,28 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useI18n } from '@/locales/client';
 import {
   BookmarkIcon,
-  SparklesIcon,
-  SearchIcon,
   ExpandIcon,
   PlusIcon,
+  SearchIcon,
+  SparklesIcon,
 } from 'lucide-react';
 import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
 import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
 
 interface Note {
@@ -187,19 +192,22 @@ System responses to disturbances:
   ];
 
   // Custom components for ReactMarkdown
-  const MarkdownComponents: Record<string, React.ComponentType<{ children: React.ReactNode }>> = {
+  const MarkdownComponents: Record<
+    string,
+    React.ComponentType<{ children: React.ReactNode }>
+  > = {
     h1: ({ children }: { children: React.ReactNode }) => (
-      <h1 className='mt-8 mb-4 scroll-m-20 border-b pb-2 font-bold text-2xl tracking-tight lg:text-3xl'>
+      <h1 className="mt-8 mb-4 scroll-m-20 border-b pb-2 font-bold text-2xl tracking-tight lg:text-3xl">
         {children}
       </h1>
     ),
     h2: ({ children }: { children: React.ReactNode }) => (
-      <h2 className='mt-8 mb-4 scroll-m-20 border-b pb-2 font-semibold text-xl tracking-tight lg:text-2xl'>
+      <h2 className="mt-8 mb-4 scroll-m-20 border-b pb-2 font-semibold text-xl tracking-tight lg:text-2xl">
         {children}
       </h2>
     ),
     h3: ({ children }: { children: React.ReactNode }) => (
-      <h3 className='mt-8 mb-4 scroll-m-20 font-semibold text-lg tracking-tight lg:text-xl'>
+      <h3 className="mt-8 mb-4 scroll-m-20 font-semibold text-lg tracking-tight lg:text-xl">
         {children}
       </h3>
     ),
@@ -213,7 +221,7 @@ System responses to disturbances:
       <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">{children}</ol>
     ),
     blockquote: ({ children }: { children: React.ReactNode }) => (
-      <blockquote className='mt-6 border-flexoki-blue border-l-2 pl-6 text-muted-foreground italic'>
+      <blockquote className="mt-6 border-flexoki-blue border-l-2 pl-6 text-muted-foreground italic">
         {children}
       </blockquote>
     ),
@@ -230,7 +238,7 @@ System responses to disturbances:
         {/* Header with Search and Create Button */}
         <div className="flex items-center justify-between gap-4">
           <div className="relative flex-1">
-            <SearchIcon className='-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground' />
+            <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={t('course.notes.search')}
               className="pl-9"
@@ -238,17 +246,14 @@ System responses to disturbances:
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button 
-            onClick={() => setIsCreateModalOpen(true)}
-            className="gap-2"
-          >
+          <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
             <PlusIcon className="h-4 w-4" />
             New Note
           </Button>
         </div>
 
         {/* Filters */}
-        <div className='flex flex-wrap gap-2'>
+        <div className="flex flex-wrap gap-2">
           {['all', 'ai-generated', 'my-notes'].map((filter) => (
             <Badge
               key={filter}
@@ -277,7 +282,7 @@ System responses to disturbances:
                     ) : (
                       <BookmarkIcon className="h-4 w-4 text-flexoki-green" />
                     )}
-                    <time className='text-muted-foreground text-xs'>
+                    <time className="text-muted-foreground text-xs">
                       {new Date(note.createdAt).toLocaleDateString()}
                     </time>
                   </div>
@@ -292,7 +297,7 @@ System responses to disturbances:
                 </div>
 
                 {/* Preview Content */}
-                <div className='prose prose-sm dark:prose-invert relative prose-headings:mb-2 max-h-[200px] overflow-hidden prose-p:leading-relaxed'>
+                <div className="prose prose-sm dark:prose-invert relative prose-headings:mb-2 max-h-[200px] overflow-hidden prose-p:leading-relaxed">
                   <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-background to-transparent" />
                   <ReactMarkdown
                     remarkPlugins={[remarkMath]}
@@ -318,12 +323,12 @@ System responses to disturbances:
       </div>
 
       {/* View Note Modal */}
-      <Dialog 
-        open={selectedNote !== null} 
+      <Dialog
+        open={selectedNote !== null}
         onOpenChange={(open) => !open && setSelectedNote(null)}
       >
-        <DialogContent className='h-[80vh] max-w-3xl'>
-            <DialogTitle className="sr-only">Note Details</DialogTitle>
+        <DialogContent className="h-[80vh] max-w-3xl">
+          <DialogTitle className="sr-only">Note Details</DialogTitle>
           <ScrollArea className="h-full pr-4">
             {selectedNote && (
               <div className="prose prose-lg dark:prose-invert max-w-none">
@@ -341,11 +346,8 @@ System responses to disturbances:
       </Dialog>
 
       {/* Create Note Modal */}
-      <Dialog 
-        open={isCreateModalOpen} 
-        onOpenChange={setIsCreateModalOpen}
-      >
-        <DialogContent className='h-[80vh] max-w-3xl'>
+      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+        <DialogContent className="h-[80vh] max-w-3xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <PlusIcon className="h-4 w-4" />
@@ -354,7 +356,9 @@ System responses to disturbances:
           </DialogHeader>
           <div className="space-y-4 p-4">
             {/* Add your note creation form here */}
-            <p className="text-muted-foreground">Note creation form coming soon...</p>
+            <p className="text-muted-foreground">
+              Note creation form coming soon...
+            </p>
           </div>
         </DialogContent>
       </Dialog>
