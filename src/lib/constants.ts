@@ -54,3 +54,5 @@ export const LOADING_MESSAGES = [
   'Polishing learning materials...',
   'Almost there...',
 ];
+
+export const CHUNK_SIZE = 1024;
