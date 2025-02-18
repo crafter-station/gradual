@@ -1,0 +1,101 @@
+{
+  "title": "Mastering the Transformer Architecture for Machine Translation",
+  "units": [
+    {
+      "title": "Unit 1: Introduction to Transformer Architecture",
+      "description": "This unit provides an overview of the Transformer architecture, its significance in machine translation, and the foundational concepts of attention mechanisms.",
+      "modules": [
+        {
+          "title": "Module 1.1: Overview of Neural Networks",
+          "description": "Students will learn about the evolution of neural networks leading to the development of the Transformer architecture.",
+          "topics": [
+            "History of Neural Networks",
+            "Limitations of RNNs and CNNs",
+            "Introduction to Attention Mechanisms"
+          ]
+        },
+        {
+          "title": "Module 1.2: The Transformer Model",
+          "description": "This module covers the structure and components of the Transformer model, including its encoder and decoder.",
+          "topics": [
+            "Architecture of the Transformer",
+            "Self-Attention Mechanism",
+            "Multi-Head Attention"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 2: Attention Mechanisms in Depth",
+      "description": "This unit delves into the various attention mechanisms used in the Transformer, focusing on their mathematical foundations and practical applications.",
+      "modules": [
+        {
+          "title": "Module 2.1: Scaled Dot-Product Attention",
+          "description": "Students will explore the scaled dot-product attention mechanism and its role in the Transformer.",
+          "topics": [
+            "Mathematics of Scaled Dot-Product Attention",
+            "Applications in Sequence Modeling",
+            "Comparison with Other Attention Mechanisms"
+          ]
+        },
+        {
+          "title": "Module 2.2: Multi-Head Attention",
+          "description": "This module examines the multi-head attention mechanism, its advantages, and its implementation in the Transformer.",
+          "topics": [
+            "Concept of Multi-Head Attention",
+            "Benefits of Multiple Attention Heads",
+            "Implementation in Neural Networks"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 3: Training the Transformer Model",
+      "description": "This unit focuses on the training process of the Transformer model, including data preparation, optimization techniques, and regularization methods.",
+      "modules": [
+        {
+          "title": "Module 3.1: Data Preparation and Tokenization",
+          "description": "Students will learn about the importance of data preparation and the techniques used for tokenization in machine translation.",
+          "topics": [
+            "Dataset Selection and Preparation",
+            "Byte-Pair Encoding",
+            "Vocabulary Management"
+          ]
+        },
+        {
+          "title": "Module 3.2: Optimization and Regularization Techniques",
+          "description": "This module covers the optimization algorithms and regularization techniques used to enhance model performance.",
+          "topics": [
+            "Adam Optimizer and Learning Rate Scheduling",
+            "Dropout and Label Smoothing",
+            "Training Strategies and Best Practices"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Unit 4: Evaluating Transformer Performance",
+      "description": "This unit addresses the evaluation metrics and methodologies used to assess the performance of the Transformer model in machine translation tasks.",
+      "modules": [
+        {
+          "title": "Module 4.1: Performance Metrics",
+          "description": "Students will learn about the various metrics used to evaluate machine translation models, focusing on BLEU scores.",
+          "topics": [
+            "Understanding BLEU Scores",
+            "Comparative Analysis of Models",
+            "Interpreting Evaluation Results"
+          ]
+        },
+        {
+          "title": "Module 4.2: Case Studies and Applications",
+          "description": "This module presents real-world applications of the Transformer model and case studies demonstrating its effectiveness.",
+          "topics": [
+            "Transformer in Machine Translation",
+            "Applications Beyond Translation",
+            "Future Directions in Research"
+          ]
+        }
+      ]
+    }
+  ]
+}

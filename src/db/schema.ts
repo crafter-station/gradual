@@ -34,20 +34,62 @@ export const courses = pgTable('courses', {
 
 export const sourceTypeEnum = pgEnum('source_type', ['FILE', 'URL']);
 
-export const sources = pgTable('sources', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  type: sourceTypeEnum('type').notNull(),
-  filePath: text('file_path').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  creatorId: uuid('creator_id')
-    .notNull()
-    .references(() => users.id),
-  courseId: uuid('course_id')
-    .notNull()
-    .references(() => courses.id),
-});
+export const sources = pgTable(
+  'sources',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    type: sourceTypeEnum('type').notNull(),
+    filePath: text('file_path').notNull(),
+
+    creatorId: uuid('creator_id')
+      .notNull()
+      .references(() => users.id),
+    courseId: uuid('course_id').references(() => courses.id),
+    summary: text('summary'),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('source_type_index').on(table.type),
+    index('source_course_id_index').on(table.courseId),
+  ],
+);
+
+export const chunks = pgTable(
+  'chunks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    sourceId: uuid('source_id')
+      .notNull()
+      .references(() => sources.id),
+
+    order: integer('order').notNull(),
+    summary: text('summary').notNull(),
+    rawContent: text('raw_content').notNull(),
+    enrichedContent: text('enriched_content').notNull(),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('source_id_order_index').on(table.sourceId, table.order),
+    index('source_id_index').on(table.sourceId),
+  ],
+);
+export type SelectChunk = typeof chunks.$inferSelect;
+export type InsertChunk = typeof chunks.$inferInsert;
+
+export const chunksRelations = relations(chunks, ({ one }) => ({
+  source: one(sources, {
+    fields: [chunks.sourceId],
+    references: [sources.id],
+  }),
+}));
 
 export const units = pgTable('units', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -129,13 +171,10 @@ export const steps = pgTable(
       .notNull()
       .references(() => tasks.id),
   },
-  (table) => ({
-    orderTaskIdUnique: uniqueIndex('steps_order_task_id_unique').on(
-      table.order,
-      table.taskId,
-    ),
-    stepsForTask: index('steps_for_task').on(table.taskId),
-  }),
+  (table) => [
+    uniqueIndex('steps_order_task_id_unique').on(table.order, table.taskId),
+    index('steps_for_task').on(table.taskId),
+  ],
 );
 
 export type SelectStep = Omit<
@@ -275,11 +314,12 @@ export const coursesRelations = relations(courses, ({ many, one }) => ({
   }),
 }));
 
-export const sourcesRelations = relations(sources, ({ one }) => ({
+export const sourcesRelations = relations(sources, ({ one, many }) => ({
   course: one(courses, {
     fields: [sources.courseId],
     references: [courses.id],
   }),
+  chunks: many(chunks),
 }));
 
 export const unitsRelations = relations(units, ({ many, one }) => ({

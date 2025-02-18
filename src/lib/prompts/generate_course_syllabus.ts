@@ -1,19 +1,37 @@
 interface GenerateCourseSyllabusInput {
   documentSummary: string;
-  documentChunksSummaries: string[];
+  documentChunksSummariesJoined: string;
 }
 
 export function getGenerateCourseSyllabusPrompt({
   documentSummary,
-  documentChunksSummaries,
+  documentChunksSummariesJoined,
 }: GenerateCourseSyllabusInput): string {
-  return `## Task:
-Your task is to generate a course syllabus for the given document. You will be given a document summary and a list of document chunks summaries. Each chunk summary starts with the chunk index. You should return a list of units for the course. Each unit should have a name, a description and the list of chunks that are covered in the unit. Finally, you should also return the name of the course.
+  return `<role>You are an expert curriculum designer.</role>
+<input>
+  <document_summary>${documentSummary}</document_summary>
+  <detailed_content>${documentChunksSummariesJoined}</detailed_content>
+</input>
 
-## Document Summary:
-${documentSummary}
+<instructions>
+  <task>Create a comprehensive course structure following these guidelines:</task>
+  <guidelines>
+    1. Analyze the content and organize it into a logical learning sequence
+    2. Break down the material into 3-5 major units
+    3. For each unit, create 2-4 focused modules
+    4. For each module, list 3-5 specific topics that will be covered
+  </guidelines>
 
-## Document Chunks Summaries:
-${documentChunksSummaries.join('\n')}
-`;
+  <requirements>
+    - The title should be clear, specific, and engaging
+    - Unit descriptions should outline the main learning objectives
+    - Module descriptions should explain what students will learn
+    - Topics should be concrete and actionable learning points
+    - Ensure a natural progression of concepts from basic to advanced
+    - Keep related concepts grouped together
+    - Use clear, professional language
+  </requirements>
+
+  <duration>Please structure the content into a course that would take approximately 4-6 weeks to complete.</duration>
+</instructions>`;
 }

@@ -1,25 +1,16 @@
 'use server';
 
-import {
-  generateQuestions,
-  generateSections,
-  generateTopics,
-} from '@v1/ai/generators';
-import type { ProgressUpdate, Section, Topic } from '@v1/ai/schemas';
-import { logger } from '@v1/logger';
+import type { Doc } from '@/lib/doc';
+import { PDFDoc, WebPageDoc } from '@/lib/doc';
+import { getGenerateCourseSyllabusPrompt } from '@/lib/prompts/generate_course_syllabus';
+import { type ActionState, getCurrentUser } from '@/lib/utils';
+import { openai } from '@ai-sdk/openai';
+import { generateObject } from 'ai';
+
 import { z } from 'zod';
-import { getUser } from '../queries';
-import type { ActionState } from '../types/action-state';
-import { splitParagraphsAdvanced } from '../utils';
-import { createCourse, updateCourseMetadata } from './course';
-import { createQuestion } from './question';
-import { createSection } from './section';
-import { uploadFile } from './storage';
-import { createTopic } from './topic';
 
 export type ProcessDocumentActionState = ActionState<
   {
-    title: string;
     file?: File;
     url?: string;
   },
@@ -30,25 +21,18 @@ export async function processDocument(
   prevState: ProcessDocumentActionState | undefined,
   formData: FormData,
 ): Promise<ProcessDocumentActionState> {
-  const startTime = Date.now();
-  const progressUpdates: ProgressUpdate[] = [];
-
-  let courseId: string | undefined;
-
   const rawFormData = Object.fromEntries(formData.entries()) as {
-    title: string;
     file?: File;
     url?: string;
   };
 
   try {
-    const user = await getUser();
+    const user = await getCurrentUser();
     if (!user) {
       throw new Error('User not found');
     }
 
     const form = z.object({
-      title: z.string().min(1),
       file: z.instanceof(File).optional(),
       url: z.string().url().optional(),
     });
@@ -59,58 +43,46 @@ export async function processDocument(
       return { success: false, error: parsed.error.message };
     }
 
-    const { title, file, url } = parsed.data;
+    const { file, url } = parsed.data;
 
-    let pdfContent: string | undefined;
+    let document: Doc;
 
-    let path: string | undefined;
     if (file) {
-      const cleanedFileName = file.name.replace(/[^a-zA-Z0-9]/g, '_');
-      const filePath = `${Date.now()}-${cleanedFileName}`;
-      progressUpdates.push({
-        type: 'status',
-        message: 'Uploading PDF file...',
-        data: { progress: 10 },
-      });
-      const { fullPath } = await uploadFile('pdfs', filePath, file);
-      path = fullPath;
-
-      pdfContent = await parsePDF(file);
-      if (!pdfContent) {
-        throw new Error('Failed to parse PDF content');
-      }
+      document = new PDFDoc(file);
     } else {
       if (!url) {
         throw new Error('Either file or url is required');
       }
-      pdfContent = await processWebPage(url);
+      document = new WebPageDoc(url);
     }
 
-    if (!pdfContent) {
-      throw new Error('Failed to process PDF or web page');
-    }
+    await document.init();
 
-    const course = await createCourse(title, user.id, url, path);
-    courseId = course.id;
-
-    const topics = await generateTopics(pdfContent, courseId);
-
-    const topicResults = await Promise.all(
-      topics.map((topic, topicIndex) =>
-        processTopic(
-          topic,
-          topicIndex,
-          topics.length,
-          courseId as string,
-          progressUpdates,
+    const result = await generateObject({
+      model: openai('gpt-4o-mini'),
+      prompt: getGenerateCourseSyllabusPrompt({
+        documentSummary: document.summary,
+        documentChunksSummariesJoined: document.enrichedChunks
+          .map((chunk) => chunk.enrichedSummary)
+          .join('\n'),
+      }),
+      schema: z.object({
+        title: z.string(),
+        units: z.array(
+          z.object({
+            title: z.string(),
+            description: z.string(),
+            modules: z.array(
+              z.object({
+                title: z.string(),
+                description: z.string(),
+                topics: z.array(z.string()),
+              }),
+            ),
+          }),
         ),
-      ),
-    );
-
-    const allSections = topicResults.flatMap((t) => t.sections.flat());
-    const totalSections = allSections.length;
-
-    await updateCourseMetadata(courseId, topics.length, totalSections);
+      }),
+    });
 
     return { success: true, data: { id: courseId }, form: { title, url } };
   } catch (error) {

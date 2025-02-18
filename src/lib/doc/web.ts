@@ -1,12 +1,35 @@
+import { db } from '@/db';
+import * as schema from '@/db/schema';
 import FireCrawlApp from '@mendable/firecrawl-js';
-import { Document } from '.';
+import { Doc } from '.';
+import { getCurrentUser } from '../utils';
 
-export class WebPageDocument extends Document {
-  private firecrawl: FireCrawlApp;
+export class WebPageDoc extends Doc {
+  private readonly firecrawl: FireCrawlApp;
 
-  constructor(url: string) {
-    super(url);
-    this.firecrawl = new FireCrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+  constructor(protected input: string) {
+    super(input);
+    this.firecrawl = new FireCrawlApp({
+      apiKey: process.env.FIRECRAWL_API_KEY,
+    });
+  }
+
+  protected async storeSource(): Promise<string> {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      throw new Error('Current user not found. Call getCurrentUser() first.');
+    }
+
+    const [source] = await db
+      .insert(schema.sources)
+      .values({
+        type: 'URL',
+        filePath: this.input,
+        creatorId: currentUser.id,
+      })
+      .returning();
+
+    return source.id;
   }
 
   protected async parse(): Promise<string> {

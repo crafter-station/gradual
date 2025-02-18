@@ -1,37 +1,97 @@
+import { db } from '@/db';
+import * as schema from '@/db/schema';
+
+import type { InsertChunk } from '@/db/schema';
 import { openai } from '@ai-sdk/openai';
-import { generateObject, generateText } from 'ai';
+import { generateText } from 'ai';
+import { eq } from 'drizzle-orm';
 import { encoding_for_model } from 'tiktoken';
-import { z } from 'zod';
 import { CHUNK_SIZE } from '../constants';
 import { getEnrichChunkPrompt } from '../prompts/enrich_chunk';
-import { getGenerateCourseSyllabusPrompt } from '../prompts/generate_course_syllabus';
 import { getSummarizeDocumentPrompt } from '../prompts/summarize-document';
 import { getSummarizeChunkPrompt } from '../prompts/summarize_chunk';
 
-interface Chunk {
-  index: number;
+export { PDFDoc } from './pdf';
+export { WebPageDoc } from './web';
 
-  content: string;
+interface Chunk {
+  order: number;
+
+  rawContent: string;
   summary: string | null;
 
   enrichedContent: string | null;
   enrichedSummary: string | null;
 }
 
-export abstract class Document {
+type EnrichedChunk = Chunk & {
+  enrichedContent: string;
+  enrichedSummary: string;
+};
+
+export abstract class Doc {
   protected _content: string | null = null;
   protected _tokens: number | null = null;
   protected _uploadedUrl: string | null = null;
   protected _chunks: Chunk[] | null = null;
   protected _summary: string | null = null;
+  protected _sourceId: string | null = null;
 
   constructor(protected input: string | File) {}
 
   protected abstract parse(): Promise<string>;
+  protected abstract storeSource(): Promise<string>;
 
   async init(): Promise<void> {
     this._content = await this.parse();
+    this.generateChunks();
+    await this.summarizeChunks();
+    await this.generateDocumentSummary();
+    await this.enrichChunks();
+    await this.enrichDocumentSummary();
+
+    if (!this._chunks) {
+      throw new Error('Chunks not generated. Call generateChunks() first.');
+    }
+
+    this._sourceId = await this.storeSource();
+
+    await db.insert(schema.chunks).values(
+      this.enrichedChunks.map(
+        (chunk) =>
+          ({
+            sourceId: this.sourceId,
+            order: chunk.order,
+            rawContent: chunk.rawContent,
+            summary: chunk.enrichedSummary,
+            enrichedContent: chunk.enrichedContent,
+          }) satisfies InsertChunk,
+      ),
+    );
+
+    await db
+      .update(schema.sources)
+      .set({
+        summary: this.summary,
+      })
+      .where(eq(schema.sources.id, this.sourceId));
   }
+
+  get sourceId(): string {
+    if (!this._sourceId) {
+      throw new Error('Source ID not generated. Call storeSource() first.');
+    }
+    return this._sourceId;
+  }
+
+  chunksSummarized(): boolean {
+    return this._chunks?.every((chunk) => chunk.summary) ?? false;
+  }
+
+  chunksEnriched(): boolean {
+    return this._chunks?.every((chunk) => chunk.enrichedContent) ?? false;
+  }
+  async upload(): Promise<void> {}
 
   get content(): string {
     if (!this._content) {
@@ -103,8 +163,8 @@ export abstract class Document {
     recursiveChunk(content);
 
     this._chunks = chunks.map((chunk, index) => ({
-      index,
-      content: chunk,
+      order: index,
+      rawContent: chunk,
       summary: null,
       enrichedContent: null,
       enrichedSummary: null,
@@ -123,7 +183,7 @@ export abstract class Document {
       chunks.map(async (chunk) => {
         const summary = await generateText({
           model: openai('gpt-4o-mini'),
-          prompt: getSummarizeChunkPrompt({ chunk: chunk.content }),
+          prompt: getSummarizeChunkPrompt({ chunk: chunk.rawContent }),
         });
 
         return { ...chunk, summary: summary.text };
@@ -138,7 +198,7 @@ export abstract class Document {
     if (!chunks) {
       throw new Error('Chunks not generated. Call generateChunks() first.');
     }
-    if (!chunks.every((chunk) => chunk.summary)) {
+    if (!this.chunksSummarized()) {
       throw new Error('Chunks not summarized. Call summarizeChunks() first.');
     }
 
@@ -162,10 +222,28 @@ export abstract class Document {
     return this._summary;
   }
 
+  get enrichedChunks() {
+    if (!this._chunks) {
+      throw new Error('Chunks not generated. Call generateChunks() first.');
+    }
+    if (!this.chunksEnriched()) {
+      throw new Error('Chunks not enriched. Call enrichChunks() first.');
+    }
+    return this._chunks as EnrichedChunk[];
+  }
+
   async enrichChunks(): Promise<Chunk[]> {
     const chunks = this._chunks;
     if (!chunks) {
       throw new Error('Chunks not generated. Call generateChunks() first.');
+    }
+    if (!this.chunksSummarized()) {
+      throw new Error('Chunks not summarized. Call summarizeChunks() first.');
+    }
+    if (!this.summary) {
+      throw new Error(
+        'Document summary not generated. Call generateDocumentSummary() first.',
+      );
     }
 
     const enrichedChunks = await Promise.all(
@@ -173,13 +251,13 @@ export abstract class Document {
         const enrichedChunkContent = await generateText({
           model: openai('gpt-4o-mini'),
           prompt: getEnrichChunkPrompt({
-            chunk: chunk.content,
+            chunk: chunk.rawContent,
             documentSummary: this.summary,
             precedingChunk:
-              chunk.index > 0 ? chunks[chunk.index - 1]?.content : null,
+              chunk.order > 0 ? chunks[chunk.order - 1]?.rawContent : null,
             succeedingChunk:
-              chunk.index < chunks.length - 1
-                ? chunks[chunk.index + 1]?.content
+              chunk.order < chunks.length - 1
+                ? chunks[chunk.order + 1]?.rawContent
                 : null,
           }),
         });
@@ -207,8 +285,12 @@ export abstract class Document {
     if (!this._chunks) {
       throw new Error('Chunks not generated. Call generateChunks() first.');
     }
-
-    if (!this._chunks.every((chunk) => chunk.enrichedSummary)) {
+    if (!this.summary) {
+      throw new Error(
+        'Document summary not generated. Call generateDocumentSummary() first.',
+      );
+    }
+    if (!this.chunksEnriched()) {
       throw new Error('Chunks not enriched. Call enrichChunks() first.');
     }
 
@@ -221,34 +303,5 @@ export abstract class Document {
 
     this._summary = enrichedDocumentSummary.text;
     return enrichedDocumentSummary.text;
-  }
-
-  async generateCourseSyllabus() {
-    const chunks = this._chunks;
-    if (!chunks) {
-      throw new Error('Chunks not generated. Call generateChunks() first.');
-    }
-
-    const courseSyllabus = await generateObject({
-      model: openai('gpt-4o-mini'),
-      prompt: getGenerateCourseSyllabusPrompt({
-        documentSummary: this.summary,
-        documentChunksSummaries: chunks
-          .map((chunk) => chunk.enrichedSummary)
-          .filter((summary): summary is string => summary !== null),
-      }),
-      schema: z.object({
-        name: z.string(),
-        units: z.array(
-          z.object({
-            name: z.string(),
-            description: z.string(),
-            chunks: z.array(z.number()),
-          }),
-        ),
-      }),
-    });
-
-    console.log(courseSyllabus.object);
   }
 }
