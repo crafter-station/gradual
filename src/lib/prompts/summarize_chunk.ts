@@ -31,14 +31,15 @@ Provide a concise summary that:
 As it reached a much larger audience, Szpilman's memoir was widely praised. Britain's Independent described it as "a compelling, harrowing masterpiece"; it is "one of the most powerful accounts ever written" of the era declared another leading British daily. The book's description of the famed Warsaw teacher and writer Janusz Korczak has been described as "overwhelmingly powerful and poignant." Korczak declined to save himself from deportation to Treblinka; instead, he walked with the children of his orphanage to the deportation site and ultimately escorted them "into the next world," as Szpilman related: 
 </input>
 
-<output>
+<response>
 Szpilman's memoir was widely praised, particularly for its powerful account of Janusz Korczak, who chose to accompany his orphanage children to Treblinka rather than save himself.
-</output>
+</response>
 </example>
 
 <input>
 ${chunk}
 </input>
 
-<output>`;
+<response>
+`;
 }

@@ -55,4 +55,6 @@ export const LOADING_MESSAGES = [
   'Almost there...',
 ];
 
-export const CHUNK_SIZE = 1024;
+export const CHUNK_SIZE = 2048;
+export const AI_GENERATION_BATCH_SIZE = 40;
+export const AI_GENERATION_DELAY = 5000;

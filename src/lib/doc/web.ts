@@ -47,7 +47,11 @@ export class WebPageDoc extends Doc {
       }
 
       if (!scrapeResult.markdown) {
-        throw new Error('No markdown found in the scraped web page');
+        if (!scrapeResult.html) {
+          throw new Error('No markdown or html found in the scraped web page');
+        }
+
+        return scrapeResult.html;
       }
 
       return scrapeResult.markdown;

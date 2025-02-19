@@ -1,12 +1,12 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { getGenerateCourseSyllabusPrompt } from '@/lib/prompts/generate_course_syllabus';
+import { formatSyllabus, syllabusSchema } from '@/lib/utils';
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
 
-const sourceId = 'a3cf464e-41c4-47f1-a764-d8ab7a104205';
+const sourceId = 'c55e8f1c-d1a8-4751-b282-51fccea96fea';
 const source = await db.query.sources.findFirst({
   where: eq(schema.sources.id, sourceId),
 });
@@ -34,24 +34,9 @@ const result = await generateObject({
       .map((chunk) => chunk.summary)
       .join('\n'),
   }),
-  schema: z.object({
-    title: z.string(),
-    units: z.array(
-      z.object({
-        title: z.string(),
-        description: z.string(),
-        modules: z.array(
-          z.object({
-            title: z.string(),
-            description: z.string(),
-            topics: z.array(z.string()),
-          }),
-        ),
-      }),
-    ),
-  }),
+  schema: syllabusSchema,
 });
 
-console.log(result.object);
+await Bun.write('cook/syllabus.json', JSON.stringify(result.object, null, 2));
 
-await Bun.write('output.json', JSON.stringify(result.object, null, 2));
+console.log(formatSyllabus(result.object));

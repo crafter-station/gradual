@@ -3,16 +3,17 @@ import * as schema from '@/db/schema';
 
 import type { InsertChunk } from '@/db/schema';
 import { openai } from '@ai-sdk/openai';
-import { generateText } from 'ai';
+import { embedMany, generateText } from 'ai';
 import { eq } from 'drizzle-orm';
 import { encoding_for_model } from 'tiktoken';
-import { CHUNK_SIZE } from '../constants';
+import {
+  AI_GENERATION_BATCH_SIZE,
+  AI_GENERATION_DELAY,
+  CHUNK_SIZE,
+} from '../constants';
 import { getEnrichChunkPrompt } from '../prompts/enrich_chunk';
 import { getSummarizeDocumentPrompt } from '../prompts/summarize-document';
 import { getSummarizeChunkPrompt } from '../prompts/summarize_chunk';
-
-export { PDFDoc } from './pdf';
-export { WebPageDoc } from './web';
 
 interface Chunk {
   order: number;
@@ -44,18 +45,28 @@ export abstract class Doc {
 
   async init(): Promise<void> {
     this._content = await this.parse();
+    console.log('Content parsed');
     this.generateChunks();
+    console.log(`Chunks generated: ${this.chunks.length}`);
     await this.summarizeChunks();
+    console.log(`Chunks summarized: ${this.chunks.length}`);
     await this.generateDocumentSummary();
+    console.log(`Document summary generated: ${this.summary}`);
     await this.enrichChunks();
+    console.log(`Chunks enriched: ${this.chunks.length}`);
     await this.enrichDocumentSummary();
-
+    console.log('Document summary enriched');
     if (!this._chunks) {
       throw new Error('Chunks not generated. Call generateChunks() first.');
     }
 
     this._sourceId = await this.storeSource();
-
+    console.log('Source stored');
+    const embeddingsResult = await embedMany({
+      model: openai.embedding('text-embedding-3-large', { dimensions: 1536 }),
+      values: this.enrichedChunks.map((chunk) => chunk.enrichedContent),
+    });
+    console.log('Embeddings generated');
     await db.insert(schema.chunks).values(
       this.enrichedChunks.map(
         (chunk) =>
@@ -65,16 +76,18 @@ export abstract class Doc {
             rawContent: chunk.rawContent,
             summary: chunk.enrichedSummary,
             enrichedContent: chunk.enrichedContent,
+            embedding: embeddingsResult.embeddings[chunk.order],
           }) satisfies InsertChunk,
       ),
     );
-
+    console.log('Chunks inserted');
     await db
       .update(schema.sources)
       .set({
         summary: this.summary,
       })
       .where(eq(schema.sources.id, this.sourceId));
+    console.log('Source updated');
   }
 
   get sourceId(): string {
@@ -85,11 +98,11 @@ export abstract class Doc {
   }
 
   chunksSummarized(): boolean {
-    return this._chunks?.every((chunk) => chunk.summary) ?? false;
+    return this.chunks.every((chunk) => chunk.summary);
   }
 
   chunksEnriched(): boolean {
-    return this._chunks?.every((chunk) => chunk.enrichedContent) ?? false;
+    return this.chunks.every((chunk) => chunk.enrichedContent);
   }
   async upload(): Promise<void> {}
 
@@ -173,31 +186,50 @@ export abstract class Doc {
     return this._chunks;
   }
 
+  async _summarizeChunk(chunk: Chunk): Promise<Chunk> {
+    try {
+      const summary = await generateText({
+        model: openai('gpt-4o-mini'),
+        prompt: getSummarizeChunkPrompt({ chunk: chunk.rawContent }),
+      });
+      return { ...chunk, summary: summary.text };
+    } catch (error) {
+      console.error(`Error summarizing chunk ${chunk.order}:`, error);
+      return { ...chunk, summary: null };
+    }
+  }
+
   async summarizeChunks(): Promise<Chunk[]> {
-    const chunks = this._chunks;
-    if (!chunks) {
-      throw new Error('Chunks not generated. Call generateChunks() first.');
+    const results: Chunk[] = [];
+
+    for (let i = 0; i < this.chunks.length; i += AI_GENERATION_BATCH_SIZE) {
+      const batch = this.chunks.slice(i, i + AI_GENERATION_BATCH_SIZE);
+      const batchResults = await Promise.all(batch.map(this._summarizeChunk));
+      results.push(...batchResults);
+
+      // Add a small delay between batches to avoid rate limits
+      if (i + AI_GENERATION_BATCH_SIZE < this.chunks.length) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, AI_GENERATION_DELAY),
+        );
+      }
     }
 
-    const summaries = await Promise.all(
-      chunks.map(async (chunk) => {
-        const summary = await generateText({
-          model: openai('gpt-4o-mini'),
-          prompt: getSummarizeChunkPrompt({ chunk: chunk.rawContent }),
-        });
+    // retry the chunks that were not successfully summarized
+    const failedChunks = results.filter((chunk) => !chunk.summary);
+    if (failedChunks.length > 0) {
+      console.log(`Retrying ${failedChunks.length} chunks`);
+      const failedChunksResults = await Promise.all(
+        failedChunks.map(this._summarizeChunk),
+      );
+      results.push(...failedChunksResults);
+    }
 
-        return { ...chunk, summary: summary.text };
-      }),
-    );
-    this._chunks = summaries;
-    return summaries;
+    this._chunks = results;
+    return results;
   }
 
   async generateDocumentSummary(): Promise<string> {
-    const chunks = this._chunks;
-    if (!chunks) {
-      throw new Error('Chunks not generated. Call generateChunks() first.');
-    }
     if (!this.chunksSummarized()) {
       throw new Error('Chunks not summarized. Call summarizeChunks() first.');
     }
@@ -205,7 +237,7 @@ export abstract class Doc {
     const documentSummary = await generateText({
       model: openai('gpt-4o-mini'),
       prompt: getSummarizeDocumentPrompt({
-        document: chunks.map((chunk) => chunk.summary).join('\n'),
+        document: this.chunks.map((chunk) => chunk.summary).join('\n'),
       }),
     });
 
@@ -222,6 +254,13 @@ export abstract class Doc {
     return this._summary;
   }
 
+  get chunks() {
+    if (!this._chunks) {
+      throw new Error('Chunks not generated. Call generateChunks() first.');
+    }
+    return this._chunks;
+  }
+
   get enrichedChunks() {
     if (!this._chunks) {
       throw new Error('Chunks not generated. Call generateChunks() first.');
@@ -232,11 +271,43 @@ export abstract class Doc {
     return this._chunks as EnrichedChunk[];
   }
 
-  async enrichChunks(): Promise<Chunk[]> {
-    const chunks = this._chunks;
-    if (!chunks) {
-      throw new Error('Chunks not generated. Call generateChunks() first.');
+  async _enrichChunk(chunk: Chunk): Promise<Chunk> {
+    try {
+      const enrichedChunkContent = await generateText({
+        model: openai('gpt-4o-mini'),
+        prompt: getEnrichChunkPrompt({
+          chunk: chunk.rawContent,
+          documentSummary: this.summary,
+          precedingChunk:
+            chunk.order > 0 ? this.chunks[chunk.order - 1]?.rawContent : null,
+          succeedingChunk:
+            chunk.order < this.chunks.length - 1
+              ? this.chunks[chunk.order + 1]?.rawContent
+              : null,
+        }),
+      });
+
+      const enrichedChunkSummary = await generateText({
+        model: openai('gpt-4o-mini'),
+        prompt: getSummarizeChunkPrompt({
+          chunk: enrichedChunkContent.text,
+        }),
+      });
+
+      console.log('Enriched chunk!');
+
+      return {
+        ...chunk,
+        enrichedContent: enrichedChunkContent.text,
+        enrichedSummary: enrichedChunkSummary.text,
+      };
+    } catch (error) {
+      console.error(`Error enriching chunk ${chunk.order}:`, error);
+      return { ...chunk, enrichedContent: null, enrichedSummary: null };
     }
+  }
+
+  async enrichChunks(): Promise<Chunk[]> {
     if (!this.chunksSummarized()) {
       throw new Error('Chunks not summarized. Call summarizeChunks() first.');
     }
@@ -246,39 +317,37 @@ export abstract class Doc {
       );
     }
 
-    const enrichedChunks = await Promise.all(
-      chunks.map(async (chunk) => {
-        const enrichedChunkContent = await generateText({
-          model: openai('gpt-4o-mini'),
-          prompt: getEnrichChunkPrompt({
-            chunk: chunk.rawContent,
-            documentSummary: this.summary,
-            precedingChunk:
-              chunk.order > 0 ? chunks[chunk.order - 1]?.rawContent : null,
-            succeedingChunk:
-              chunk.order < chunks.length - 1
-                ? chunks[chunk.order + 1]?.rawContent
-                : null,
-          }),
-        });
+    const results: Chunk[] = [];
 
-        const enrichedChunkSummary = await generateText({
-          model: openai('gpt-4o-mini'),
-          prompt: getSummarizeChunkPrompt({
-            chunk: enrichedChunkContent.text,
-          }),
-        });
+    for (let i = 0; i < this.chunks.length; i += AI_GENERATION_BATCH_SIZE / 2) {
+      const batch = this.chunks.slice(i, i + AI_GENERATION_BATCH_SIZE / 2);
+      const batchResults = await Promise.all(
+        batch.map((chunk) => this._enrichChunk(chunk)),
+      );
+      results.push(...batchResults);
 
-        return {
-          ...chunk,
-          enrichedContent: enrichedChunkContent.text,
-          enrichedSummary: enrichedChunkSummary.text,
-        };
-      }),
+      // Add a small delay between batches to avoid rate limits
+      if (i + AI_GENERATION_BATCH_SIZE / 2 < this.chunks.length) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, AI_GENERATION_DELAY),
+        );
+      }
+    }
+
+    // retry the chunks that failed enrichment
+    const failedChunks = results.filter(
+      (chunk) => !chunk.enrichedContent || !chunk.enrichedSummary,
     );
+    if (failedChunks.length > 0) {
+      console.log(`Retrying ${failedChunks.length} chunks`);
+      const failedChunksResults = await Promise.all(
+        failedChunks.map((chunk) => this._enrichChunk(chunk)),
+      );
+      results.push(...failedChunksResults);
+    }
 
-    this._chunks = enrichedChunks;
-    return enrichedChunks;
+    this._chunks = results;
+    return results;
   }
 
   async enrichDocumentSummary(): Promise<string> {

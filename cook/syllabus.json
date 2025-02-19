@@ -1,0 +1,253 @@
+{
+  "title": "Mastering SQL: From Fundamentals to Advanced Data Management",
+  "units": [
+    {
+      "order": 1,
+      "title": "Foundations of SQL",
+      "description": "This unit introduces the foundational concepts of SQL, including its history, significance, and basic syntax. Students will learn about the relational model and the role of SQL in managing data within relational database management systems (RDBMS). By the end of this unit, students will understand the basic structure of SQL queries and the importance of data integrity. Estimated time investment: 1 week.",
+      "modules": [
+        {
+          "order": 1,
+          "title": "Introduction to SQL and Relational Databases",
+          "description": "This module covers the origins of SQL, its evolution, and its foundational principles based on the relational model. Students will explore the significance of SQL in modern data management and the basic components of relational databases.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "History and Evolution of SQL",
+              "description": "Students will learn about the development of SQL from its inception in the 1970s to the latest SQL:2023 standard, understanding key milestones and contributions from figures like Donald D. Chamberlin and Raymond F. Boyce."
+            },
+            {
+              "order": 2,
+              "title": "Understanding Relational Databases",
+              "description": "This topic will explain the concept of relational databases, including tables, rows, columns, and relationships. Students will grasp how data is organized and accessed in RDBMS."
+            },
+            {
+              "order": 3,
+              "title": "Basic SQL Syntax and Structure",
+              "description": "Students will be introduced to the basic syntax of SQL, including SELECT statements, clauses, and expressions. They will learn how to construct simple queries to retrieve data."
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Data Manipulation Language (DML)",
+          "description": "This module focuses on the Data Manipulation Language (DML) aspect of SQL, teaching students how to insert, update, and delete data within a database. Practical applications will be emphasized through hands-on exercises.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Inserting Data with SQL",
+              "description": "Students will learn how to use the INSERT statement to add new records to a database table, including best practices for data integrity."
+            },
+            {
+              "order": 2,
+              "title": "Updating Existing Records",
+              "description": "This topic covers the UPDATE statement, teaching students how to modify existing data while ensuring accuracy through the WHERE clause."
+            },
+            {
+              "order": 3,
+              "title": "Deleting Records Safely",
+              "description": "Students will explore the DELETE statement, understanding the importance of filtering records to avoid unintentional data loss."
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Data Query Language (DQL)",
+          "description": "In this module, students will delve into the Data Query Language (DQL) to learn how to retrieve and filter data effectively. They will practice writing complex queries to extract meaningful insights from databases.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Constructing SELECT Queries",
+              "description": "Students will learn how to construct SELECT queries to retrieve specific data from one or more tables, including the use of DISTINCT to eliminate duplicates."
+            },
+            {
+              "order": 2,
+              "title": "Filtering Data with WHERE Clauses",
+              "description": "This topic will teach students how to apply conditions using the WHERE clause to filter query results based on specific criteria."
+            },
+            {
+              "order": 3,
+              "title": "Sorting and Grouping Data",
+              "description": "Students will explore the ORDER BY and GROUP BY clauses, learning how to organize and summarize data effectively."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Core SQL Techniques",
+      "description": "This unit builds upon the foundational knowledge of SQL, introducing core techniques for data manipulation and querying. Students will learn about advanced querying techniques, including joins and subqueries, and how to apply them in real-world scenarios. Estimated time investment: 1 week.",
+      "modules": [
+        {
+          "order": 1,
+          "title": "Joins and Relationships",
+          "description": "This module focuses on the concept of joins in SQL, teaching students how to combine data from multiple tables based on relationships. Practical examples will illustrate the importance of joins in data retrieval.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Understanding Different Types of Joins",
+              "description": "Students will learn about INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN, understanding when to use each type to retrieve related data."
+            },
+            {
+              "order": 2,
+              "title": "Using Joins in Queries",
+              "description": "This topic will provide practical exercises on writing queries that utilize joins to combine data from multiple tables."
+            },
+            {
+              "order": 3,
+              "title": "Real-World Applications of Joins",
+              "description": "Students will explore case studies demonstrating how joins are used in real-world applications to derive insights from interconnected data."
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Subqueries and Nested Queries",
+          "description": "This module introduces subqueries and nested queries, teaching students how to write complex SQL statements that involve multiple layers of queries.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Introduction to Subqueries",
+              "description": "Students will learn what subqueries are and how to use them effectively within SELECT, INSERT, UPDATE, and DELETE statements."
+            },
+            {
+              "order": 2,
+              "title": "Correlated vs. Non-Correlated Subqueries",
+              "description": "This topic will differentiate between correlated and non-correlated subqueries, providing examples of each."
+            },
+            {
+              "order": 3,
+              "title": "Practical Applications of Subqueries",
+              "description": "Students will engage in exercises that require the use of subqueries to solve complex data retrieval problems."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Data Definition Language (DDL) and Data Control Language (DCL)",
+      "description": "This unit covers the Data Definition Language (DDL) and Data Control Language (DCL) aspects of SQL, focusing on database structure and access control. Students will learn how to create, modify, and manage database objects while ensuring data security. Estimated time investment: 1 week.",
+      "modules": [
+        {
+          "order": 1,
+          "title": "Creating and Modifying Database Structures",
+          "description": "This module teaches students how to use DDL statements to create and modify database objects such as tables, indexes, and views.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Creating Tables and Defining Data Types",
+              "description": "Students will learn how to create tables using the CREATE TABLE statement, including defining data types and constraints."
+            },
+            {
+              "order": 2,
+              "title": "Altering Existing Tables",
+              "description": "This topic covers the ALTER TABLE statement, teaching students how to modify existing table structures."
+            },
+            {
+              "order": 3,
+              "title": "Dropping Database Objects",
+              "description": "Students will explore the DROP statement, understanding how to safely remove database objects."
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Managing User Access and Permissions",
+          "description": "This module focuses on DCL, teaching students how to manage user access and permissions within a database environment.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Understanding User Roles and Privileges",
+              "description": "Students will learn about user roles and the importance of granting and revoking privileges to maintain data security."
+            },
+            {
+              "order": 2,
+              "title": "Implementing Security Best Practices",
+              "description": "This topic will cover best practices for managing user access and ensuring data integrity."
+            },
+            {
+              "order": 3,
+              "title": "Auditing and Monitoring Database Access",
+              "description": "Students will explore techniques for auditing user access and monitoring database activities to enhance security."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Advanced SQL Concepts and Applications",
+      "description": "This unit introduces advanced SQL concepts and applications, including performance optimization, transaction management, and integration with other programming languages. Students will learn how to apply these concepts in complex data management scenarios. Estimated time investment: 1 week.",
+      "modules": [
+        {
+          "order": 1,
+          "title": "Performance Optimization Techniques",
+          "description": "This module covers techniques for optimizing SQL queries and database performance, teaching students how to analyze and improve query efficiency.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Understanding Query Execution Plans",
+              "description": "Students will learn how to read and interpret query execution plans to identify performance bottlenecks."
+            },
+            {
+              "order": 2,
+              "title": "Indexing Strategies for Performance",
+              "description": "This topic will cover indexing strategies, teaching students how to create and manage indexes to enhance query performance."
+            },
+            {
+              "order": 3,
+              "title": "Best Practices for Query Optimization",
+              "description": "Students will explore best practices for writing efficient SQL queries and optimizing database performance."
+            }
+          ]
+        },
+        {
+          "order": 2,
+          "title": "Transaction Management and Concurrency Control",
+          "description": "This module focuses on transaction management and concurrency control, teaching students how to ensure data integrity in multi-user environments.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Understanding Transactions and ACID Properties",
+              "description": "Students will learn about transactions and the ACID properties that ensure data integrity."
+            },
+            {
+              "order": 2,
+              "title": "Implementing Concurrency Control Mechanisms",
+              "description": "This topic will cover various concurrency control mechanisms, including locking and isolation levels."
+            },
+            {
+              "order": 3,
+              "title": "Handling Transaction Failures",
+              "description": "Students will explore strategies for handling transaction failures and ensuring data consistency."
+            }
+          ]
+        },
+        {
+          "order": 3,
+          "title": "Integrating SQL with Other Programming Languages",
+          "description": "This module introduces students to integrating SQL with programming languages like Python and Java, enhancing their ability to build data-driven applications.",
+          "topics": [
+            {
+              "order": 1,
+              "title": "Using SQL with Python",
+              "description": "Students will learn how to connect to databases using Python and execute SQL queries within Python applications."
+            },
+            {
+              "order": 2,
+              "title": "Integrating SQL with Java Applications",
+              "description": "This topic will cover how to use SQL within Java applications, including JDBC for database connectivity."
+            },
+            {
+              "order": 3,
+              "title": "Building Data-Driven Applications",
+              "description": "Students will explore case studies of data-driven applications that utilize SQL in conjunction with other programming languages."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

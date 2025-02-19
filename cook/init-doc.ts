@@ -1,6 +1,6 @@
-import { WebPageDoc } from '@/lib/doc';
+import { WebPageDoc } from '@/lib/doc/web';
 
-const webPageDocument = new WebPageDoc('https://arxiv.org/html/1706.03762v7');
+const webPageDocument = new WebPageDoc('https://en.wikipedia.org/wiki/SQL');
 
 await webPageDocument.init();
 

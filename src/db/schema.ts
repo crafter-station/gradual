@@ -11,6 +11,7 @@ import {
   uniqueIndex,
   uuid,
   varchar,
+  vector,
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -46,7 +47,7 @@ export const sources = pgTable(
       .notNull()
       .references(() => users.id),
     courseId: uuid('course_id').references(() => courses.id),
-    summary: text('summary'),
+    summary: text('summary').notNull().default('Default summary'),
 
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
@@ -68,9 +69,12 @@ export const chunks = pgTable(
       .references(() => sources.id),
 
     order: integer('order').notNull(),
-    summary: text('summary').notNull(),
-    rawContent: text('raw_content').notNull(),
-    enrichedContent: text('enriched_content').notNull(),
+    summary: text('summary').notNull().default('Default summary'),
+    rawContent: text('raw_content').notNull().default('Default raw content'),
+    enrichedContent: text('enriched_content')
+      .notNull()
+      .default('Default enriched content'),
+    embedding: vector('embedding', { dimensions: 1536 }),
 
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
@@ -79,6 +83,10 @@ export const chunks = pgTable(
   (table) => [
     index('source_id_order_index').on(table.sourceId, table.order),
     index('source_id_index').on(table.sourceId),
+    index('embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
   ],
 );
 export type SelectChunk = typeof chunks.$inferSelect;
