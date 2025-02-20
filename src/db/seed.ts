@@ -233,9 +233,6 @@ async function seed() {
   );
 }
 
-clear().then(() => {
-  console.log('Cleared database');
-  seed().then(() => {
-    console.log('Seeded database');
-  });
+seed().then(() => {
+  console.log('Seeded database');
 });

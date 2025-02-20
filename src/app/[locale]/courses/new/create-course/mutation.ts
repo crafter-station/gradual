@@ -1,12 +1,12 @@
 'use server';
 
+import { getCurrentUser } from '@/db/utils';
 import type { Doc } from '@/lib/doc';
 import { PDFDoc, WebPageDoc } from '@/lib/doc';
 import { getGenerateCourseSyllabusPrompt } from '@/lib/prompts/generate_course_syllabus';
-import { type ActionState, getCurrentUser } from '@/lib/utils';
+import type { ActionState } from '@/lib/utils';
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
-
 import { z } from 'zod';
 
 export type ProcessDocumentActionState = ActionState<

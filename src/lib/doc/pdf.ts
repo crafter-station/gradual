@@ -1,8 +1,8 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
+import { getCurrentUser } from '@/db/utils';
 import pdfParse from 'pdf-parse';
 import { Doc } from '.';
-import { getCurrentUser } from '../utils';
 
 export class PDFDoc extends Doc {
   constructor(protected input: File) {

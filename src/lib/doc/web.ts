@@ -1,8 +1,8 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
+import { getCurrentUser } from '@/db/utils';
 import FireCrawlApp from '@mendable/firecrawl-js';
 import { Doc } from '.';
-import { getCurrentUser } from '../utils';
 
 export class WebPageDoc extends Doc {
   private readonly firecrawl: FireCrawlApp;
