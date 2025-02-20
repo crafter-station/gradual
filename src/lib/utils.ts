@@ -1,4 +1,3 @@
-import { db } from '@/db';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
@@ -21,10 +20,6 @@ export type ActionState<
       error: string;
     }
 );
-
-export async function getCurrentUser() {
-  return db.query.users.findFirst();
-}
 
 export const syllabusSchema = z.object({
   title: z.string(),
