@@ -7,10 +7,6 @@ import {
 } from '@/db/schema';
 import { and, asc, desc, eq } from 'drizzle-orm';
 
-export async function getCurrentUser() {
-  return db.query.users.findFirst();
-}
-
 export async function getTaskProgress(userId: string, taskId: string) {
   const progress = await db.query.taskProgress.findFirst({
     where: and(

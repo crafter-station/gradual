@@ -1,0 +1,260 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to SQL/PSM and Procedural Extensions",
+        "body": "SQL/PSM (Persistent Stored Modules) introduces procedural programming constructs into SQL, enabling control-of-flow statements such as conditionals and loops within SQL scripts. This extension bridges the gap between the declarative nature of traditional SQL and the needs for more complex logic in database operations.\n\nIn this lesson, we will explore the fundamentals of SQL/PSM along with other procedural extensions, their syntax, and practical applications in modern databases."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Basic Stored Procedure Example in SQL/PSM\n\n*Problem:* Create a simple stored procedure that prints a message if a condition is met.\n\n*Solution:*",
+        "answer": "```sql\nCREATE PROCEDURE CheckValue(IN val INT)\nBEGIN\n    IF val > 100 THEN\n        SELECT 'Value is greater than 100';\n    ELSE\n        SELECT 'Value is 100 or less';\n    END IF;\nEND;\n``` \nThis example demonstrates the use of an IF-ELSE construct within a stored procedure using SQL/PSM syntax."
+      },
+      {
+        "type": "QUESTION",
+        "question": "What distinguishes SQL/PSM from standard SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It adds procedural programming elements such as control-of-flow statements.",
+            "explanation": "Correct. SQL/PSM extends SQL by incorporating procedural elements like IF-ELSE, loops, etc."
+          },
+          {
+            "order": 2,
+            "content": "It replaces SELECT statements with procedural loops.",
+            "explanation": "Incorrect. SQL/PSM does not replace SELECT statements; it supplements SQL with control structures."
+          },
+          {
+            "order": 3,
+            "content": "It removes the need for SQL's declarative syntax.",
+            "explanation": "Incorrect. SQL/PSM complements rather than removes the declarative aspects of SQL."
+          },
+          {
+            "order": 4,
+            "content": "It provides a graphical interface for query building.",
+            "explanation": "Incorrect. SQL/PSM focuses on procedural programming capabilities within SQL, not on graphical interfaces."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which of the following is NOT typically a control-of-flow construct in SQL/PSM?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "IF ... THEN ... ELSE",
+            "explanation": "Incorrect. This is a standard control-of-flow structure in SQL/PSM."
+          },
+          {
+            "order": 2,
+            "content": "LOOP or WHILE loops",
+            "explanation": "Incorrect. Looping constructs are part of SQL/PSM."
+          },
+          {
+            "order": 3,
+            "content": "GOTO statements",
+            "explanation": "Correct. GOTO statements are generally not used in SQL/PSM."
+          },
+          {
+            "order": 4,
+            "content": "CASE expressions",
+            "explanation": "Incorrect. CASE expressions are used for conditional logic in SQL."
+          }
+        ],
+        "correctAlternativeOrder": 3
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Understanding Control-of-Flow Statements in SQL/PSM",
+        "body": "Control-of-flow statements allow you to implement decision making and looping within your SQL scripts. The most common constructs include:\n\n- **IF...THEN...ELSE:** Executes code based on a condition.\n- **CASE expressions:** Offers a way to select from multiple conditions.\n- **LOOP constructs (LOOP, WHILE, REPEAT):** Facilitate iterative processing. \n\nThese constructs enable more complex operations, such as conditional processing and repetitive task execution, directly within the database."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Demonstrating IF-ELSE in SQL/PSM\n\n*Problem:* Write a stored procedure that checks if an input number is even or odd.\n\n*Solution:*",
+        "answer": "```sql\nCREATE PROCEDURE CheckEvenOdd(IN number INT)\nBEGIN\n    IF MOD(number, 2) = 0 THEN\n        SELECT 'Even';\n    ELSE\n        SELECT 'Odd';\n    END IF;\nEND;\n``` \nThis stored procedure uses an IF-ELSE structure to determine whether a number is even or odd by checking the modulo of the number."
+      },
+      {
+        "type": "QUESTION",
+        "question": "What is the primary purpose of using IF-ELSE in SQL/PSM?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "To iterate over a set of records repeatedly.",
+            "explanation": "Incorrect. Iteration is handled by looping constructs, not IF-ELSE."
+          },
+          {
+            "order": 2,
+            "content": "To execute different blocks of code based on a Boolean condition.",
+            "explanation": "Correct. IF-ELSE allows execution of specific code paths based on conditions."
+          },
+          {
+            "order": 3,
+            "content": "To define new table structures.",
+            "explanation": "Incorrect. Table definitions are handled by DDL, not conditional statements."
+          },
+          {
+            "order": 4,
+            "content": "To enhance the performance of SELECT queries.",
+            "explanation": "Incorrect. While procedural logic can affect performance, the primary role of IF-ELSE is conditional execution."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which looping mechanism is most commonly used in SQL/PSM for repeated execution until a condition is met?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "GOTO loop",
+            "explanation": "Incorrect. GOTO is not a common construct in SQL/PSM."
+          },
+          {
+            "order": 2,
+            "content": "WHILE loop",
+            "explanation": "Correct. WHILE loops are commonly used for iterating until a condition becomes false."
+          },
+          {
+            "order": 3,
+            "content": "FOREACH loop",
+            "explanation": "Incorrect. FOREACH is not typically part of standard SQL/PSM syntax."
+          },
+          {
+            "order": 4,
+            "content": "REPEAT-UNTIL loop",
+            "explanation": "While REPEAT-UNTIL loops exist in some procedural languages, WHILE is more standard in SQL/PSM implementations."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Loop Structure Example in SQL/PSM\n\n*Problem:* Create a stored procedure that prints numbers from 1 to 5 using a loop.\n\n*Solution:*",
+        "answer": "```sql\nCREATE PROCEDURE PrintNumbers()\nBEGIN\n    DECLARE num INT DEFAULT 1;\n    WHILE num <= 5 DO\n        SELECT num;\n        SET num = num + 1;\n    END WHILE;\nEND;\n``` \nThis example demonstrates a WHILE loop that iterates from 1 to 5, outputting each number."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which construct in SQL/PSM is best suited for repeating an operation until a condition is met?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "IF-ELSE",
+            "explanation": "Incorrect. IF-ELSE is used for conditional branching, not for repetition."
+          },
+          {
+            "order": 2,
+            "content": "LOOP or WHILE",
+            "explanation": "Correct. Looping constructs like WHILE are designed for repeated execution until a condition is false."
+          },
+          {
+            "order": 3,
+            "content": "CASE expression",
+            "explanation": "Incorrect. CASE expressions are used for conditional logic, not for iteration."
+          },
+          {
+            "order": 4,
+            "content": "SELECT statement",
+            "explanation": "Incorrect. SELECT is used for data retrieval rather than controlling flow."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Integrating Vendor-Specific Procedural Extensions",
+        "body": "Beyond the standard SQL/PSM, many database vendors have introduced their own procedural extensions to meet specific needs.\n\nFor example, PostgreSQL uses PL/pgSQL, which is similar in spirit to SQL/PSM but allows the use of additional programming constructs and integration with PostgreSQL-specific features. Similarly, Microsoft SQL Server supports SQLCLR, which lets you write stored procedures in .NET languages.\n\nThese vendor-specific extensions allow developers to leverage procedural logic in ways best suited for their environments while maintaining core SQL functionalities."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which of the following best describes the role of SQL/PSM in modern databases?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It completely replaces the need for SQL's declarative queries.",
+            "explanation": "Incorrect. SQL/PSM extends SQL by adding procedural capabilities, not by replacing declarative queries."
+          },
+          {
+            "order": 2,
+            "content": "It provides a mechanism to incorporate complex control-of-flow and logic within SQL procedures.",
+            "explanation": "Correct. SQL/PSM adds procedural features like loops and conditionals to enhance the capabilities of SQL."
+          },
+          {
+            "order": 3,
+            "content": "It is primarily used for graphical data modeling.",
+            "explanation": "Incorrect. SQL/PSM focuses on procedural programming features, not on graphical modeling."
+          },
+          {
+            "order": 4,
+            "content": "It is solely responsible for database security.",
+            "explanation": "Incorrect. While procedural logic can enforce business rules, database security is managed by other mechanisms."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 3637,
+    "completionTokens": 3219,
+    "totalTokens": 6856
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 960,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 960,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6IK4vpYUI8TC0LqpQfAmvHjN36",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c951ff3cdcd-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:39:12 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "21427",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4998",
+      "x-ratelimit-remaining-tokens": "3966542",
+      "x-ratelimit-reset-requests": "14ms",
+      "x-ratelimit-reset-tokens": "501ms",
+      "x-request-id": "req_b8fac047ff38342b429f59f4eb47f6de",
+      "set-cookie": "_cfuvid=pxE84.Eb3GafRJPZO8xX3DcauPoxCr1mENNl4rtHp0o-1740112752011-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"3.1.3. SQL/PSM and Other Procedural Extensions\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n    </title>\\n    <description>\\n      Students explore SQL Persistent Stored Modules (SQL/PSM) and other extensions that bring procedural capabilities to SQL. The topic covers control-of-flow statements, loops, and conditional logic integrated within SQL scripts. Practical applications include automating complex business processes. Discussions address the trade-offs between declarative and procedural approaches in database management.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        3.1. Procedural Extensions and Control Flow\\n      </module-title>\\n      <unit-title>\\n        3. Advanced SQL Concepts and Extensions\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    <chunk>SQL, or Structured Query Language, is specifically designed for querying and managing data within relational databases. It is classified as a set-based, declarative programming language, distinguishing it from imperative programming languages such as C or BASIC. This declarative nature allows users to specify what data they want to retrieve or manipulate without detailing the procedural steps to achieve that outcome.\\n\\nTo enhance its functionality, SQL has undergone various extensions, notably the SQL/PSM (Persistent Stored Modules) extensions, which introduce procedural programming capabilities. These extensions enable the inclusion of control-of-flow constructs, allowing for more complex operations and logic within SQL scripts.\\n\\nIn addition to standard SQL features, many database management systems (DBMS) offer proprietary extensions that further support procedural and object-oriented programmability. This integration allows developers to write more sophisticated database applications by leveraging the capabilities of different programming paradigms directly within the SQL environment.\\n\\nFor instance, SQL/JRT (SQL Routines and Types for the Java Programming Language) is an extension that facilitates the execution of Java code within SQL databases. Similarly, Microsoft SQL Server 2005 introduced SQLCLR (SQL Server Common Language Runtime), enabling the hosting of managed .NET assemblies in the database, a significant advancement over earlier versions that primarily relied on unmanaged extended stored procedures written in C.\\n\\nPostgreSQL exemplifies flexibility in this area, allowing users to create functions in a diverse array of programming languages, including Perl, Python, Tcl, JavaScript (via PL/V8), and C. This versatility enhances the capabilities of SQL, making it a powerful tool for developers working with relational databases.</chunk>\\n<chunk>SQL, or Structured Query Language, is a specialized programming language designed for managing and querying data within relational databases. As a declarative programming language, SQL allows users to specify what data they want to retrieve or manipulate without detailing the procedural steps to achieve those results. This contrasts with imperative programming languages, such as C or BASIC, which require explicit instructions on how to perform tasks.\\n\\nTo enhance its functionality, SQL has undergone various extensions, including SQL/PSM (Persistent Stored Modules) and proprietary enhancements that introduce procedural programming capabilities. These extensions enable the incorporation of control-of-flow constructs, allowing for more complex operations within SQL scripts.\\n\\nIn addition to the standard SQL extensions, many database management systems (DBMS) offer integration with procedural and object-oriented programming languages. For instance, the SQL standard includes SQL/JRT (SQL Routines and Types for the Java Programming Language), which facilitates the execution of Java code within SQL databases. Microsoft SQL Server 2005 introduced SQLCLR (SQL Server Common Language Runtime), enabling the hosting of managed .NET assemblies directly in the database environment. Prior versions of SQL Server were limited to unmanaged extended stored procedures, primarily written in C.\\n\\nPostgreSQL stands out for its versatility, allowing users to write functions in a diverse array of programming languages, including Perl, Python, Tcl, JavaScript (via PL/V8), and C. This flexibility enhances PostgreSQL's capability to support various application requirements and developer preferences.\\n\\nOverall, SQL's design and its extensions reflect a commitment to providing robust data manipulation capabilities while accommodating the evolving needs of developers and applications in the realm of database management.</chunk>\\n<chunk>### Structured Query Language (SQL)\\n\\n**Overview**  \\nStructured Query Language (SQL) is a domain-specific programming language designed for managing and manipulating data within relational database management systems (RDBMS). Developed in the 1970s by Donald D. Chamberlin and Raymond F. Boyce, SQL has undergone significant evolution since its initial release in 1986, culminating in the latest version, SQL:2023. \\n\\n**Key Features**  \\n- **File Extension**: .sql  \\n- **Internet Media Type**: application/sql  \\n- **Standardization**: Governed by ISO/IEC 9075  \\n- **Type of Format**: Database  \\n\\n**Sublanguages**  \\nSQL is structured into several sublanguages, each serving a distinct purpose:\\n- **Data Query Language (DQL)**: Used for querying data.\\n- **Data Definition Language (DDL)**: Used for defining and modifying database structures.\\n- **Data Control Language (DCL)**: Used for controlling access to data.\\n- **Data Manipulation Language (DML)**: Used for managing data within the database.\\n\\n**Evolution of SQL**  \\nSQL has seen various iterations, each introducing new features and enhancements:\\n- SQL-86\\n- SQL-89\\n- SQL-92\\n- SQL:1999\\n- SQL:2003\\n- SQL:2006\\n- SQL:2008\\n- SQL:2011\\n- SQL:2016\\n- SQL:2023\\n\\n**Influence and Dialects**  \\nSQL has influenced numerous other query languages, including:\\n- Contextual Query Language (CQL)\\n- Language Integrated Query (LINQ)\\n- SPARQL\\n- Salesforce Object Query Language (SOQL)\\n- PowerShell\\n- Java Persistence Query Language (JPQL)\\n- jOOQ\\n- N1QL\\n- Graph Query Language (GQL)\\n\\nAdditionally, SQL has various dialects tailored to specific database systems, which may introduce unique syntax or features while adhering to the core principles of SQL.\\n\\n**Challenges and Criticisms**  \\nDespite its widespread adoption, SQL faces challenges related to compliance across different implementations, leading to variations in functionality. Critics have also pointed out SQL's deviations from the relational model, raising questions about its theoretical foundations.\\n\\n**Data Types and Procedural Features**  \\nSQL supports a range of data types and has integrated procedural programming features, allowing for more complex operations and control structures within SQL scripts.\\n\\n**Alternatives to SQL**  \\nWhile SQL remains the dominant language for relational databases, there are alternatives that cater to different data models, such as NoSQL databases, which utilize various query languages tailored to their specific architectures.\\n\\nFor further exploration of SQL, you can refer to resources such as [Wikibooks on Structured Query Language](https://en.wikibooks.org/wiki/Structured_Query_Language).</chunk>\\n<chunk>The SQL language is structured into several key elements, each serving a distinct purpose in the formulation of queries and statements:\\n\\n1. **Clauses**: These are the fundamental components of SQL statements and queries. While some clauses are mandatory, others may be optional, allowing for flexibility in query construction.\\n\\n2. **Expressions**: SQL expressions are capable of producing either scalar values or tables, which consist of columns and rows of data. They are essential for performing calculations and manipulating data within queries.\\n\\n3. **Predicates**: Predicates define conditions that can be evaluated using SQL's three-valued logic (3VL), which includes true, false, and unknown states. They are crucial for filtering results and controlling the flow of execution in SQL statements.\\n\\n4. **Queries**: A core element of SQL, queries are designed to retrieve data based on specified criteria. They enable users to extract meaningful information from relational databases.\\n\\n5. **Statements**: SQL statements can have lasting effects on database schemas and data. They may also control various aspects of database operations, including transactions, program flow, connections, sessions, and diagnostics. Notably, SQL statements typically conclude with a semicolon (\\\";\\\"), which serves as a statement terminator. While not universally required across all platforms, it is recognized as a standard component of SQL syntax.\\n\\n6. **Insignificant Whitespace**: In SQL, whitespace is generally disregarded, allowing for improved readability and formatting of code. This feature enables developers to structure their SQL statements in a way that enhances clarity without affecting functionality.\\n\\n### Procedural Extensions\\n\\nSQL also supports procedural extensions, which enhance its capabilities by introducing control-of-flow constructs and other programming features. These extensions allow for more complex operations and logic within SQL, bridging the gap between declarative and procedural programming paradigms. Various SQL platforms may offer proprietary extensions that further expand the language's functionality, integrating procedural and object-oriented programming elements.</chunk>\\n<chunk>Originally grounded in the principles of relational algebra and tuple relational calculus, SQL (Structured Query Language) encompasses a diverse array of statements that can be categorized into several sublanguages. These sublanguages include:\\n\\n- **Data Query Language (DQL)**: Used for querying and retrieving data from databases.\\n- **Data Definition Language (DDL)**: Focuses on the creation and modification of database schemas, including tables and relationships.\\n- **Data Control Language (DCL)**: Manages permissions and access controls for database users.\\n- **Data Manipulation Language (DML)**: Facilitates the manipulation of data within the database, allowing for operations such as insertion, updating, and deletion of records.\\n\\nThe comprehensive scope of SQL extends beyond mere data retrieval; it encompasses data manipulation, schema definition, and access control. While SQL is fundamentally a declarative language, often classified as a fourth-generation language (4GL), it also integrates procedural programming elements, enabling users to write complex scripts and functions that enhance its functionality. This combination of declarative and procedural capabilities allows for a robust and flexible approach to database management, catering to a wide range of application needs.</chunk>\\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

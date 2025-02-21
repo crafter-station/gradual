@@ -2,15 +2,11 @@
 
 import { db } from '@/db';
 import { stepProgress, taskProgress } from '@/db/schema';
+import { getCurrentUser } from '@/db/utils';
 import type { ActionState } from '@/lib/utils';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import {
-  getCurrentStep,
-  getCurrentUser,
-  getStepProgress,
-  getTaskProgress,
-} from './helpers';
+import { getCurrentStep, getStepProgress, getTaskProgress } from './helpers';
 
 export type CompleteTutorialForm = {
   taskId: string;

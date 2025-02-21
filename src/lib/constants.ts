@@ -54,3 +54,7 @@ export const LOADING_MESSAGES = [
   'Polishing learning materials...',
   'Almost there...',
 ];
+
+export const CHUNK_SIZE = 2048;
+export const AI_GENERATION_BATCH_SIZE = 40;
+export const AI_GENERATION_DELAY = 5000;

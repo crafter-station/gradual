@@ -1,17 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useI18n } from '@/locales/client';
 import {
   BookmarkIcon,
   PlusIcon,
   SearchIcon,
   SlidersHorizontalIcon,
 } from 'lucide-react';
-import { useI18n } from '@/locales/client';
+import { useState } from 'react';
 
 interface FilterOption {
   value: 'all' | 'bookmarked' | 'mastered' | 'learning' | string;
@@ -52,7 +52,7 @@ export function FlashcardsTab() {
           <h2 className="font-semibold text-xl">
             {t('course.flashcards.title')}
           </h2>
-          <p className='text-muted-foreground/80 text-sm'>
+          <p className="text-muted-foreground/80 text-sm">
             {t('course.flashcards.description')}
           </p>
         </div>
@@ -66,7 +66,7 @@ export function FlashcardsTab() {
       <div className="relative space-y-2">
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
-            <SearchIcon className='-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground' />
+            <SearchIcon className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={t('course.notes.search')}
               className="pl-9"
@@ -79,8 +79,8 @@ export function FlashcardsTab() {
             size="icon"
             onClick={() => setIsFiltering(!isFiltering)}
             className={`h-10 w-10 transition-colors duration-200 ${
-              isFiltering 
-                ? 'border-primary/50 bg-primary/10 text-primary' 
+              isFiltering
+                ? 'border-primary/50 bg-primary/10 text-primary'
                 : 'border-muted-foreground/20'
             }`}
           >
@@ -89,9 +89,11 @@ export function FlashcardsTab() {
         </div>
 
         {/* Filter Options with subtle slide animation */}
-        <div className={`overflow-hidden transition-all duration-200 ease-out ${
-          isFiltering ? 'h-10 opacity-100' : 'h-0 opacity-0'
-        }`}>
+        <div
+          className={`overflow-hidden transition-all duration-200 ease-out ${
+            isFiltering ? 'h-10 opacity-100' : 'h-0 opacity-0'
+          }`}
+        >
           <div className="flex gap-2">
             {filters.map((filter) => (
               <Button
@@ -145,10 +147,8 @@ function FlashCard({ card }: FlashcardProps) {
         }`}
       >
         {/* Front of card */}
-        <Card 
-          className='absolute inset-0 border bg-card [backface-visibility:hidden]'
-        >
-          <CardContent className='space-y-4 p-6'>
+        <Card className="absolute inset-0 border bg-card [backface-visibility:hidden]">
+          <CardContent className="space-y-4 p-6">
             <div className="flex items-center justify-between">
               <Badge variant="secondary" className="bg-muted/50">
                 {card.topic}
@@ -164,17 +164,19 @@ function FlashCard({ card }: FlashcardProps) {
               >
                 <BookmarkIcon
                   className={`h-4 w-4 transition-colors duration-300 ${
-                    isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground/50'
+                    isBookmarked
+                      ? 'fill-primary text-primary'
+                      : 'text-muted-foreground/50'
                   }`}
                 />
               </Button>
             </div>
-            <div className='flex min-h-[100px] items-center justify-center'>
+            <div className="flex min-h-[100px] items-center justify-center">
               <p className="text-center font-medium">{card.question}</p>
             </div>
             <Button
               variant="outline"
-              className='w-full hover:border-primary/30 hover:bg-primary/5 hover:text-primary'
+              className="w-full hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
               onClick={() => setIsFlipped(true)}
             >
               {t('course.flashcards.showAnswer')}
@@ -183,10 +185,8 @@ function FlashCard({ card }: FlashcardProps) {
         </Card>
 
         {/* Back of card */}
-        <Card 
-          className='absolute inset-0 border bg-muted/30 [backface-visibility:hidden] [transform:rotateY(180deg)]'
-        >
-          <CardContent className='space-y-4 p-6'>
+        <Card className="absolute inset-0 border bg-muted/30 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          <CardContent className="space-y-4 p-6">
             <div className="flex items-center justify-between">
               <Badge variant="secondary" className="bg-muted/50">
                 {card.topic}
@@ -202,12 +202,14 @@ function FlashCard({ card }: FlashcardProps) {
               >
                 <BookmarkIcon
                   className={`h-4 w-4 transition-colors duration-300 ${
-                    isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground/50'
+                    isBookmarked
+                      ? 'fill-primary text-primary'
+                      : 'text-muted-foreground/50'
                   }`}
                 />
               </Button>
             </div>
-            <div className='flex min-h-[100px] items-center justify-center'>
+            <div className="flex min-h-[100px] items-center justify-center">
               <p className="text-center text-muted-foreground">{card.answer}</p>
             </div>
             <Button

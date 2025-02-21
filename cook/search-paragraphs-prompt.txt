@@ -1,0 +1,144 @@
+<task>
+Generate 3-5 distinct search paragraphs that will help retrieve relevant context for creating an educational lesson. Each paragraph should focus on different aspects that could be relevant for teaching about "(1.1.1) Definition of quadratic equations".
+</task>
+
+<context>
+Document Overview: The document contains a comprehensive overview of quadratic equations, defined as polynomials of degree two in the form \( ax^2 + bx + c = 0 \). It details methods for finding solutions, including the quadratic formula \( x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \), and discusses the discriminant \( D = b^2 - 4ac \) to determine the nature of the roots: two distinct real roots if \( D > 0 \), one real root if \( D = 0 \), and complex roots if \( D < 0 \). The document also highlights historical developments in solving quadratic equations, their applications in various fields such as physics and engineering, and the significance of techniques like factoring and completing the square. Additionally, it references the contributions of ancient mathematicians and the evolution of algebraic methods over time.
+
+<syllabus>
+Course: Mastering Quadratic Equations: From Basics to Applications
+
+1. Introduction to Quadratic Equations
+   This unit introduces the fundamental concepts of quadratic equations, including their definitions, forms, and historical significance. Students will learn the basic properties and classifications of quadratic equations, setting the foundation for further exploration.
+
+   1.1. Understanding Quadratic Equations
+      Students will learn the definition and standard form of quadratic equations, including the significance of coefficients and the degree of polynomials.
+
+      1.1.1. Definition of quadratic equations
+      1.1.2. Standard form: ax² + bx + c = 0
+      1.1.3. Classification of coefficients
+      1.1.4. Degree of polynomials
+
+   1.2. Historical Context and Development
+      This module explores the historical evolution of quadratic equations, highlighting key mathematicians and their contributions to the field.
+
+      1.2.1. Ancient methods of solving quadratics
+      1.2.2. Contributions of Babylonian mathematicians
+      1.2.3. Development of algebraic techniques
+      1.2.4. Influence of Islamic scholars
+
+2. Solving Quadratic Equations
+   In this unit, students will explore various methods for solving quadratic equations, including factoring, completing the square, and using the quadratic formula. Emphasis will be placed on understanding the discriminant and its implications for the nature of roots.
+
+   2.1. Factoring and Roots
+      Students will learn how to factor quadratic equations and find their roots using Vieta's formulas and other techniques.
+
+      2.1.1. Factoring by inspection
+      2.1.2. Vieta's formulas
+      2.1.3. Finding roots through factoring
+      2.1.4. Examples of factoring quadratic equations
+
+   2.2. Completing the Square
+      This module covers the method of completing the square to solve quadratic equations, providing a deeper understanding of the relationship between coefficients and roots.
+
+      2.2.1. Steps to complete the square
+      2.2.2. Graphical interpretation of completing the square
+      2.2.3. Applications of completing the square
+      2.2.4. Examples and practice problems
+
+   2.3. The Quadratic Formula and Discriminant
+      Students will learn the quadratic formula and how to use the discriminant to determine the nature of the roots of quadratic equations.
+
+      2.3.1. Derivation of the quadratic formula
+      2.3.2. Understanding the discriminant
+      2.3.3. Types of roots based on the discriminant
+      2.3.4. Examples of using the quadratic formula
+
+3. Graphing Quadratic Functions
+   This unit focuses on the graphical representation of quadratic functions, including the properties of parabolas and their vertices. Students will learn how to analyze and sketch graphs of quadratic functions.
+
+   3.1. Properties of Parabolas
+      Students will explore the characteristics of parabolas, including their direction, vertex, and axis of symmetry.
+
+      3.1.1. Understanding parabolas
+      3.1.2. Vertex form of quadratic functions
+      3.1.3. Axis of symmetry
+      3.1.4. Graphical transformations of parabolas
+
+   3.2. Graphing Techniques
+      This module teaches students how to graph quadratic functions accurately and interpret their features.
+
+      3.2.1. Plotting points for quadratic functions
+      3.2.2. Identifying key features of the graph
+      3.2.3. Using technology for graphing
+      3.2.4. Practice with graphing quadratic functions
+
+4. Applications of Quadratic Equations
+   In this unit, students will explore real-world applications of quadratic equations in various fields such as physics, engineering, and economics. They will learn how to model and solve practical problems using quadratic equations.
+
+   4.1. Quadratic Equations in Physics
+      Students will learn how quadratic equations are used to model projectile motion and other physical phenomena.
+
+      4.1.1. Modeling projectile motion
+      4.1.2. Understanding the role of gravity
+      4.1.3. Applications in engineering
+      4.1.4. Case studies of quadratic applications in physics
+
+   4.2. Quadratics in Economics and Business
+      This module covers the use of quadratic equations in economic models, such as profit maximization and cost analysis.
+
+      4.2.1. Modeling profit and cost functions
+      4.2.2. Analyzing market trends with quadratics
+      4.2.3. Applications in business decision-making
+      4.2.4. Examples of quadratic models in economics
+
+5. Advanced Topics in Quadratic Equations
+   This unit delves into more complex aspects of quadratic equations, including their connections to other mathematical concepts and advanced solving techniques.
+
+   5.1. Complex Roots and Quadratic Residues
+      Students will explore the concept of complex roots and their significance in quadratic equations, as well as the notion of quadratic residues in number theory.
+
+      5.1.1. Understanding complex roots
+      5.1.2. Quadratic residues in finite fields
+      5.1.3. Applications of complex roots
+      5.1.4. Examples and problem-solving
+
+   5.2. Geometric Interpretations and Lill's Method
+      This module introduces geometric methods for solving quadratic equations, including Lill's method and the Carlyle circle.
+
+      5.2.1. Geometric solutions to quadratics
+      5.2.2. Lill's method explained
+      5.2.3. Carlyle circle and its applications
+      5.2.4. Visualizing quadratic solutions
+
+
+</syllabus>
+
+Current Educational Context:
+- Unit: Introduction to Quadratic Equations - This unit introduces the fundamental concepts of quadratic equations, including their definitions, forms, and historical significance. Students will learn the basic properties and classifications of quadratic equations, setting the foundation for further exploration.
+- Module: Understanding Quadratic Equations - Students will learn the definition and standard form of quadratic equations, including the significance of coefficients and the degree of polynomials.
+- Topic: (1.1.1) Definition of quadratic equations
+</context>
+
+<instructions>
+1. Generate paragraphs that would match content useful for teaching this topic: (1.1.1) Definition of quadratic equations
+2. Each paragraph should focus on a different aspect or approach to the topic: (1.1.1) Definition of quadratic equations
+3. Include relevant educational terminology and key concepts
+4. Keep paragraphs concise (50-75 words each)
+5. Make paragraphs specific enough to match relevant content but general enough to capture varied perspectives
+6. Consider both factual content and pedagogical approaches
+7. Focus on the topic: (1.1.1) Definition of quadratic equations
+</instructions>
+
+<format>
+Return only the paragraphs, one per line, without numbering or additional text.
+</format>
+
+<reminder>
+Only return paragraphs that are relevant to the current topic:
+<topic>
+(1.1.1) Definition of quadratic equations
+</topic>
+</reminder>
+
+<response>

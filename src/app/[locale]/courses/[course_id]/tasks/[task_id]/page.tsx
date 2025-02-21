@@ -18,8 +18,8 @@ import {
   getOrCreateTaskProgress,
 } from './helpers';
 import { QuestionStep } from './question-step';
-import { TutorialStep } from './tutorial-step';
 import StatsCard from './stats';
+import { TutorialStep } from './tutorial-step';
 
 type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface GradualLogoProps {
   width?: number;
@@ -6,7 +6,11 @@ interface GradualLogoProps {
   className?: string;
 }
 
-export function GradualLogo({ width = 690, height = 690, className }: GradualLogoProps) {
+export function GradualLogo({
+  width = 690,
+  height = 690,
+  className,
+}: GradualLogoProps) {
   return (
     <svg
       width={width}
@@ -14,13 +18,14 @@ export function GradualLogo({ width = 690, height = 690, className }: GradualLog
       viewBox="0 0 690 690"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn("", className)}
+      className={cn('', className)}
     >
-      <circle 
-        cx="345" 
-        cy="345" 
-        r="344.5" 
-        fill="url(#paint0_radial_1_39)" 
+      <title>Gradual Logo</title>
+      <circle
+        cx="345"
+        cy="345"
+        r="344.5"
+        fill="url(#paint0_radial_1_39)"
         stroke="black"
       />
       <path
@@ -54,4 +59,4 @@ export function GradualLogo({ width = 690, height = 690, className }: GradualLog
       </defs>
     </svg>
   );
-} 
+}

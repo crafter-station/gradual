@@ -1,0 +1,253 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to SQL Evolution Timeline",
+        "body": "In this lesson, we will explore the evolution timeline of SQL and understand the technological impacts that have shaped its development. We will walk through key versions from SQL:2011 to SQL:2023, highlighting major enhancements and how technological trends influenced these changes.\n\n**Key Concepts:**\n- Overview of SQL standard evolution\n- Major milestones and new feature introductions\n- The interplay between technological needs and SQL development"
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Below is a simplified timeline table that lists major SQL versions along with their key features:\n\n```markdown\n| Year | Standard Reference      | Version    | Key Features                                           |\n|------|-------------------------|------------|--------------------------------------------------------|\n| 2011 | ISO/IEC 9075:2011       | SQL:2011   | Introduced temporal data support (PERIOD FOR) and enhanced window functions with the FETCH clause. |\n| 2016 | ISO/IEC 9075:2016       | SQL:2016   | Added row pattern matching and improved JSON handling (operations on character strings). |\n| 2019 | ISO/IEC 9075-15:2019    | SQL:2019   | Introduced multidimensional arrays and associated operators. |\n| 2023 | ISO/IEC 9075:2023       | SQL:2023   | Introduced a native JSON data type and Property Graph Queries (SQL/PGQ). |\n```\n\nThis timeline illustrates how new technological demands and data management challenges led to continuous improvements in SQL standards.",
+        "answer": "Understanding this timeline helps you appreciate how each version of SQL was influenced by evolving technology and data needs."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which of the following features was a key highlight of SQL:2011?\n\nA. Introduction of Property Graph Queries\nB. Support for temporal data (PERIOD FOR) and enhanced window functions\nC. Implementation of a native JSON data type\nD. Introduction of multidimensional arrays",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Introduction of Property Graph Queries",
+            "explanation": "Property Graph Queries were introduced later in SQL:2023, not in SQL:2011."
+          },
+          {
+            "order": 2,
+            "content": "Support for temporal data (PERIOD FOR) and enhanced window functions",
+            "explanation": "Correct. SQL:2011 was known for introducing temporal data support and enhancements to window functions."
+          },
+          {
+            "order": 3,
+            "content": "Implementation of a native JSON data type",
+            "explanation": "The native JSON data type was introduced in SQL:2023, not in SQL:2011."
+          },
+          {
+            "order": 4,
+            "content": "Introduction of multidimensional arrays",
+            "explanation": "Multidimensional arrays were introduced in SQL:2019."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which SQL version is associated with the introduction of Property Graph Queries, highlighting a shift towards handling graph-based data structures?\n\nA. SQL:2011\nB. SQL:2016\nC. SQL:2019\nD. SQL:2023",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "SQL:2011",
+            "explanation": "SQL:2011 focused mainly on temporal data support, not graph-based queries."
+          },
+          {
+            "order": 2,
+            "content": "SQL:2016",
+            "explanation": "SQL:2016 introduced improvements like row pattern matching, but not graph queries."
+          },
+          {
+            "order": 3,
+            "content": "SQL:2019",
+            "explanation": "SQL:2019 introduced multidimensional arrays, but not graph queries."
+          },
+          {
+            "order": 4,
+            "content": "SQL:2023",
+            "explanation": "Correct. SQL:2023 introduced Property Graph Queries (SQL/PGQ), reflecting the growing need to handle graph-based data."
+          }
+        ],
+        "correctAlternativeOrder": 4
+      }
+    ],
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Technological Shifts and Their Impact on SQL Development",
+        "body": "Technological advancements have consistently influenced SQL evolution. For instance, as the need to manage time-based data grew, SQL:2011 integrated temporal data features. Similarly, the rise of semi-structured data led to enhanced JSON handling in later versions. This step-by-step evolution shows SQL’s responsiveness to changes in data management requirements.\n\n**Discussion Points:**\n- How emerging technologies, such as big data and NoSQL, pushed for more dynamic SQL features.\n- The importance of adjusting language standards to support modern data types and operations."
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Below is an example of how the introduction of a native JSON data type in SQL:2023 can simplify data storage for semi-structured information:\n\n```sql\nCREATE TABLE products (\n    id INT PRIMARY KEY,\n    name VARCHAR(100),\n    attributes JSON\n);\n```\n\n**Explanation:**\nThis code snippet demonstrates a modern SQL table where the 'attributes' column is defined with the JSON data type. Previously, JSON data might have been stored as a string, requiring additional parsing. The native support allows for more efficient queries and data integrity.",
+        "answer": "This example reflects how SQL has evolved to include features that support modern data types like JSON."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "How did the increased use of semi-structured data influence SQL standards in recent years?\n\nA. It led to the removal of support for temporal data.\nB. It prompted the introduction of enhanced JSON support and a native JSON data type.\nC. It resulted in the elimination of window functions.\nD. It had no impact on SQL evolution.",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It led to the removal of support for temporal data.",
+            "explanation": "Temporal data support remains a key feature; it was not removed."
+          },
+          {
+            "order": 2,
+            "content": "It prompted the introduction of enhanced JSON support and a native JSON data type.",
+            "explanation": "Correct. The need to handle semi-structured data was a key driver in enhancing JSON support in later SQL versions."
+          },
+          {
+            "order": 3,
+            "content": "It resulted in the elimination of window functions.",
+            "explanation": "Window functions continue to be an important feature and were not eliminated."
+          },
+          {
+            "order": 4,
+            "content": "It had no impact on SQL evolution.",
+            "explanation": "The evolution of SQL clearly demonstrates adaptations to support modern data types."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which statement best describes the impact of introducing multidimensional arrays in SQL:2019?\n\nA. It simplified the management of temporal data.\nB. It allowed SQL to support complex and multi-dimensional data structures.\nC. It replaced the need for JSON data types.\nD. It focused solely on text-based data manipulation.",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It simplified the management of temporal data.",
+            "explanation": "Temporal data management was primarily enhanced in SQL:2011, not with multidimensional arrays."
+          },
+          {
+            "order": 2,
+            "content": "It allowed SQL to support complex and multi-dimensional data structures.",
+            "explanation": "Correct. The introduction of multidimensional arrays in SQL:2019 allowed for handling more complex data structures."
+          },
+          {
+            "order": 3,
+            "content": "It replaced the need for JSON data types.",
+            "explanation": "JSON and multidimensional arrays serve different purposes and one did not replace the other."
+          },
+          {
+            "order": 4,
+            "content": "It focused solely on text-based data manipulation.",
+            "explanation": "This option is incorrect because multidimensional arrays are used for complex data, not just text."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      }
+    ],
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Standardization and Complementary Standards",
+        "body": "SQL standardization plays a crucial role in its evolution. The official standards (like ISO/IEC 9075) define the language's features and ensure consistency across implementations. Complementary standards, such as ISO/IEC 13249 for multimedia data, further extend SQL's capabilities. Understanding these standards helps in appreciating how incremental improvements are formalized to meet industry needs.\n\n**Key Points:**\n- Official standards provide a baseline for SQL features.\n- Complementary standards address specialized requirements such as multimedia and array data types.\n- Continuous updates to these standards drive the adoption of innovative features."
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Consider a real-world scenario where a financial services company had to manage both historical transaction data and real-time market feeds. Earlier SQL versions were sufficient for historical data, but as real-time data grew, the need for features like JSON support and temporal data management became evident.\n\n**Case Study Summary:**\n- **Challenge:** Integrating legacy data with modern real-time feeds.\n- **Solution:** Adoption of SQL:2023 features, including a native JSON data type for semi-structured data and enhanced temporal support to track changes over time.\n- **Outcome:** Improved performance and more efficient data processing.\n\nThis case study illustrates how evolving SQL standards can directly impact and improve business operations.",
+        "answer": "The case study demonstrates that as data needs evolve, SQL standards also adapt to provide necessary tools and features."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Considering the evolution of SQL standards, which version best addressed the challenges of managing semi-structured data?\n\nA. SQL:2011\nB. SQL:2016\nC. SQL:2019\nD. SQL:2023",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "SQL:2011",
+            "explanation": "SQL:2011 primarily focused on temporal data and window functions, not on semi-structured data."
+          },
+          {
+            "order": 2,
+            "content": "SQL:2016",
+            "explanation": "SQL:2016 improved JSON handling by operating on character strings, but it did not introduce a native JSON data type."
+          },
+          {
+            "order": 3,
+            "content": "SQL:2019",
+            "explanation": "SQL:2019 introduced multidimensional arrays, which address complex data structures, but not specifically semi-structured data."
+          },
+          {
+            "order": 4,
+            "content": "SQL:2023",
+            "explanation": "Correct. SQL:2023 incorporated a native JSON data type, directly addressing the demands of managing semi-structured data."
+          }
+        ],
+        "correctAlternativeOrder": 4
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 3881,
+    "completionTokens": 3859,
+    "totalTokens": 7740
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1344,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 3712
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1344,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 3712
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6I6iVRimNbcNwQjWOA6VuPYZ8Q",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c918b7f5001-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:39:19 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "29257",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4998",
+      "x-ratelimit-remaining-tokens": "3988754",
+      "x-ratelimit-reset-requests": "22ms",
+      "x-ratelimit-reset-tokens": "168ms",
+      "x-request-id": "req_68363e4e6314ca1c4f07ce13946cb27f",
+      "set-cookie": "_cfuvid=loWd6GYh3kEY6nXdR4vMAu1jIARf02Np34qBDmdp2nA-1740112759519-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"1.1.3. Evolution Timeline and Technological Impact\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      1.1.3. Evolution Timeline and Technological Impact\\n    </title>\\n    <description>\\n      Learners will study a detailed timeline of SQL's evolution from early versions through to SQL:2023, noting significant changes and new feature introductions. This topic explains how technological shifts influenced language enhancements and adoption rates over time. Real-world examples and case studies will be used to highlight the interplay between database needs and SQL development.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        1.1. The Origins and Evolution of SQL\\n      </module-title>\\n      <unit-title>\\n        1. Foundations and Historical Context of SQL\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    <chunk>### Timeline of SQL Language Standards\\n\\nThe SQL language has undergone significant evolution since its inception, with various standards established over the years. The current standard is typically referenced using the format: **ISO/IEC 9075-n:yyyy Part n: title**. For convenience, it is often abbreviated as **ISO/IEC 9075**. Interested parties can acquire the official standards documents from organizations such as ISO, IEC, or ANSI, while some earlier drafts may be available for free.\\n\\n**Complementary Standards**  \\nIn addition to the main SQL standard, **ISO/IEC 9075** is supported by **ISO/IEC 13249**, which focuses on SQL Multimedia and Application Packages, along with several technical reports that provide further guidance and specifications.\\n\\n### Current SQL Standards Overview\\n\\n| Year | Standard Reference | Title | Key Features |\\n|------|--------------------|-------|--------------|\\n| 2011 | ISO/IEC 9075:2011  | [SQL:2011](https://en.wikipedia.org/wiki/SQL:2011 \\\"SQL:2011\\\") | Introduced temporal data (PERIOD FOR), enhancements for window functions, and the FETCH clause. |\\n| 2016 | ISO/IEC 9075:2016  | [SQL:2016](https://en.wikipedia.org/wiki/SQL:2016 \\\"SQL:2016\\\") | Added row pattern matching, polymorphic table functions, and operations for JSON data stored in character string fields. |\\n| 2019 | ISO/IEC 9075-15:2019 | [SQL:2019](https://en.wikipedia.org/w/index.php?title=SQL:2019&action=edit&redlink=1 \\\"SQL:2019 (page does not exist)\\\") | Introduced Part 15, which includes multidimensional arrays (MDarray type and operators). |\\n| 2023 | ISO/IEC 9075:2023  | [SQL:2023](https://en.wikipedia.org/wiki/SQL:2023 \\\"SQL:2023\\\") | Added JSON data type (SQL/Foundation) and introduced Part 16, which covers Property Graph Queries (SQL/PGQ). |\\n\\n### SQL Syntax Overview\\n\\nFor a comprehensive understanding of SQL syntax, refer to the main article on [SQL syntax](https://en.wikipedia.org/wiki/SQL_syntax \\\"SQL syntax\\\"). SQL syntax encompasses the rules and structure for writing SQL statements, which are essential for interacting with relational databases effectively. \\n\\nThis timeline and overview provide a clear understanding of the evolution and current state of SQL standards, highlighting the key features introduced in each version while maintaining the integrity of the information for independent comprehension.</chunk>\\n<chunk>| Year | Standard Reference | Version | Description |\\n|------|--------------------|---------|-------------|\\n| 2011 | ISO/IEC 9075:2011 | [SQL:2011](https://en.wikipedia.org/wiki/SQL:2011 \\\"SQL:2011\\\") | Introduces support for temporal data through the `PERIOD FOR` syntax, enhancing the capabilities of temporal databases. Additionally, it includes improvements to window functions and the `FETCH` clause, allowing for more sophisticated data manipulation and retrieval. |\\n| 2016 | ISO/IEC 9075:2016 | [SQL:2016](https://en.wikipedia.org/wiki/SQL:2016 \\\"SQL:2016\\\") | This version adds features for row pattern matching, enabling more complex queries involving sequences of rows. It also introduces polymorphic table functions and enhances operations on JSON data stored in character string fields, reflecting the growing importance of semi-structured data. |\\n| 2019 | ISO/IEC 9075-15:2019 | [SQL:2019](https://en.wikipedia.org/w/index.php?title=SQL:2019&action=edit&redlink=1 \\\"SQL:2019 (page does not exist)\\\") | Adds Part 15, which introduces multidimensional arrays (MDarray type) and associated operators, expanding SQL's capabilities for handling complex data structures. |\\n| 2023 | ISO/IEC 9075:2023 | [SQL:2023](https://en.wikipedia.org/wiki/SQL:2023 \\\"SQL:2023\\\") | This latest version incorporates a new data type for JSON (SQL/Foundation) and introduces Part 16, which focuses on Property Graph Queries (SQL/PGQ), further enhancing SQL's versatility in managing and querying graph-based data structures. |\\n\\nThis timeline encapsulates the evolution of SQL standards from 2011 to 2023, highlighting significant enhancements that reflect the language's adaptation to modern data management needs. Each version builds upon its predecessors, introducing new functionalities that cater to the increasing complexity of data types and structures in contemporary applications.</chunk>\\n<chunk>| Year | Official Standard | Informal Name | Comments |\\n| --- | --- | --- | --- |\\n| 1999 | ISO/IEC 9075:1999 | SQL:1999, SQL3 | This version introduced significant enhancements, including regular expression matching, recursive queries (such as transitive closure), and triggers. It also added support for procedural and control-of-flow statements, introduced nonscalar types like arrays, and incorporated object-oriented features such as structured types. Furthermore, SQL:1999 enabled the embedding of SQL within Java applications (SQL/OLB) and allowed Java to embed SQL (SQL/JRT). |\\n| 2003 | ISO/IEC 9075:2003 | SQL:2003 | SQL:2003 brought forth XML-related features (SQL/XML), introduced window functions, standardized sequences, and allowed for columns with autogenerated values, including identity columns. These enhancements aimed to improve the language's versatility and integration with emerging technologies. |\\n\\nThis refined overview of SQL's evolution during the late 1990s and early 2000s highlights the key advancements made in the language, emphasizing its growing capabilities and adaptability to modern programming needs. Each version not only built upon its predecessors but also addressed the increasing complexity of data management and integration with other technologies.</chunk>\\n<chunk>- **Oral History Interview with Donald D. Chamberlin**: This interview, hosted by the [Charles Babbage Institute](https://en.wikipedia.org/wiki/Charles_Babbage_Institute), features Donald D. Chamberlin discussing his formative years, educational background at [Harvey Mudd College](https://en.wikipedia.org/wiki/Harvey_Mudd_College) and [Stanford University](https://en.wikipedia.org/wiki/Stanford_University), as well as his pivotal role in the development of relational database technology. As a key member of the System R research team, Chamberlin, alongside [Raymond F. Boyce](https://en.wikipedia.org/wiki/Raymond_F._Boyce), was instrumental in creating the SQL database language. The interview also touches on his recent research endeavors related to XML query languages.\\n\\n- **SQL Versions**: The evolution of SQL is marked by several significant versions, each introducing new features and enhancements. The timeline of SQL versions includes:\\n  - [SEQUEL](https://en.wikipedia.org/wiki/SEQUEL): The original name for SQL.\\n  - [SQL-86](https://en.wikipedia.org/w/index.php?title=SQL-86&action=edit&redlink=1): The first standardized version of SQL.\\n  - [SQL-89](https://en.wikipedia.org/w/index.php?title=SQL-89&action=edit&redlink=1): An update to SQL-86 with minor enhancements.\\n  - [SQL-92](https://en.wikipedia.org/wiki/SQL-92): A major revision that introduced significant features.\\n  - [SQL:1999](https://en.wikipedia.org/wiki/SQL:1999): Added support for object-oriented features and triggers.\\n  - [SQL:2003](https://en.wikipedia.org/wiki/SQL:2003): Introduced XML-related features and window functions.\\n  - [SQL:2006](https://en.wikipedia.org/wiki/SQL:2006): Focused on XML enhancements.\\n  - [SQL:2008](https://en.wikipedia.org/wiki/SQL:2008): Included additional features for improved performance and usability.\\n  - [SQL:2011](https://en.wikipedia.org/wiki/SQL:2011): Introduced temporal data support.\\n  - [SQL:2016](https://en.wikipedia.org/wiki/SQL:2016): Enhanced JSON support and other features.\\n  - [SQL:2023](https://en.wikipedia.org/wiki/SQL:2023): The latest version, continuing the evolution of SQL.\\n\\nThis structured overview provides a comprehensive understanding of SQL's historical context and its ongoing development, highlighting the contributions of key figures and the significance of each version in the language's evolution.</chunk>\\n<chunk>The document provides a comprehensive overview of SQL (Structured Query Language), a pivotal programming language for relational databases that was developed in the 1970s by Donald D. Chamberlin and Raymond F. Boyce. It traces SQL's evolution from its initial release in 1986 to the most recent version, SQL:2023, emphasizing the various dialects that have emerged and its significant influence on other query languages.\\n\\nKey aspects of SQL's structure are discussed, including its sublanguages: Data Query Language (DQL), Data Definition Language (DDL), Data Control Language (DCL), and Data Manipulation Language (DML). The document highlights SQL's foundation in relational algebra, which underpins its functionality and design.\\n\\nThe standardization of SQL by the American National Standards Institute (ANSI) and the International Organization for Standardization (ISO) is also covered, along with the challenges of ensuring compliance across different implementations. Criticisms regarding SQL's divergence from the relational model are addressed, providing a balanced view of its strengths and limitations.\\n\\nAdditionally, the document delves into SQL's data types and key components, as well as the integration of procedural programming features that enhance its capabilities. It also mentions alternatives to SQL, offering insights into various related topics within the realm of database management systems.\\n\\nIn summary, this document serves as a detailed resource for understanding SQL's historical context, structural components, standardization efforts, and its role in the broader landscape of database technologies.</chunk>\\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      1.1.3. Evolution Timeline and Technological Impact\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

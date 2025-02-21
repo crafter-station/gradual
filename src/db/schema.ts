@@ -11,7 +11,9 @@ import {
   uniqueIndex,
   uuid,
   varchar,
+  vector,
 } from 'drizzle-orm/pg-core';
+import { z } from 'zod';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -20,52 +22,162 @@ export const users = pgTable('users', {
   avatarUrl: text('avatar_url').notNull(),
 });
 
-export const courses = pgTable('courses', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  title: varchar('title').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  creatorId: uuid('creator_id')
-    .notNull()
-    .references(() => users.id),
-  isPublic: boolean('is_public').notNull(),
-});
+export const courses = pgTable(
+  'courses',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
 
+    title: varchar('title').notNull(),
+    description: text('description').notNull(),
+    embedding: vector('embedding', { dimensions: 1536 }),
+
+    isPublic: boolean('is_public').notNull().default(true),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+
+    creatorId: uuid('creator_id')
+      .notNull()
+      .references(() => users.id),
+  },
+  (table) => [
+    index('courses_embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
+  ],
+);
 export const sourceTypeEnum = pgEnum('source_type', ['FILE', 'URL']);
 
-export const sources = pgTable('sources', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  type: sourceTypeEnum('type').notNull(),
-  filePath: text('file_path').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  creatorId: uuid('creator_id')
-    .notNull()
-    .references(() => users.id),
-  courseId: uuid('course_id')
-    .notNull()
-    .references(() => courses.id),
-});
+export const sources = pgTable(
+  'sources',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
 
-export const units = pgTable('units', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  title: varchar('title').notNull(),
-  order: integer('order').notNull(),
-  courseId: uuid('course_id')
-    .notNull()
-    .references(() => courses.id),
-});
+    type: sourceTypeEnum('type').notNull(),
+    filePath: text('file_path').notNull(),
 
-export const modules = pgTable('modules', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  title: varchar('title').notNull(),
-  order: integer('order').notNull(),
-  unitId: uuid('unit_id')
-    .notNull()
-    .references(() => units.id),
-});
+    creatorId: uuid('creator_id')
+      .notNull()
+      .references(() => users.id),
+    courseId: uuid('course_id').references(() => courses.id),
+    summary: text('summary').notNull().default('Default summary'),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('source_type_index').on(table.type),
+    index('source_course_id_index').on(table.courseId),
+  ],
+);
+
+export const chunks = pgTable(
+  'chunks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    sourceId: uuid('source_id')
+      .notNull()
+      .references(() => sources.id),
+
+    order: integer('order').notNull(),
+    summary: text('summary').notNull().default('Default summary'),
+    rawContent: text('raw_content').notNull().default('Default raw content'),
+    enrichedContent: text('enriched_content')
+      .notNull()
+      .default('Default enriched content'),
+    embedding: vector('embedding', { dimensions: 1536 }),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('chunks_source_id_order_index').on(table.sourceId, table.order),
+    index('chunks_source_id_index').on(table.sourceId),
+    index('chunks_embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
+  ],
+);
+export type SelectChunk = typeof chunks.$inferSelect;
+export type InsertChunk = typeof chunks.$inferInsert;
+
+export const chunksRelations = relations(chunks, ({ one }) => ({
+  source: one(sources, {
+    fields: [chunks.sourceId],
+    references: [sources.id],
+  }),
+}));
+
+export const units = pgTable(
+  'units',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    order: integer('order').notNull(),
+    title: varchar('title').notNull(),
+    description: text('description').notNull(),
+    embedding: vector('embedding', { dimensions: 1536 }),
+
+    courseId: uuid('course_id')
+      .notNull()
+      .references(() => courses.id),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('units_course_id_order_index').on(table.courseId, table.order),
+    index('units_course_id_index').on(table.courseId),
+    index('units_embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
+  ],
+);
+
+export const modules = pgTable(
+  'modules',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    order: integer('order').notNull(),
+    title: varchar('title').notNull(),
+    description: text('description').notNull(),
+    embedding: vector('embedding', { dimensions: 1536 }),
+
+    unitId: uuid('unit_id')
+      .notNull()
+      .references(() => units.id),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('modules_unit_id_order_index').on(table.unitId, table.order),
+    index('modules_unit_id_index').on(table.unitId),
+    index('modules_embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
+  ],
+);
 
 export const taskTypeEnum = pgEnum('task_type', [
   'LESSON',
@@ -75,15 +187,27 @@ export const taskTypeEnum = pgEnum('task_type', [
 
 export const tasks = pgTable('tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
+
+  order: integer('order').notNull(),
   title: varchar('title').notNull(),
   description: text('description').notNull(),
-  order: integer('order').notNull(),
+  embedding: vector('embedding', { dimensions: 1536 }),
+
   type: taskTypeEnum('type').notNull(),
+
+  experiencePoints: integer('experience_points').notNull().default(10),
+  stepsCount: integer('steps_count').notNull(),
+
   moduleId: uuid('module_id')
     .notNull()
     .references(() => modules.id),
-  experiencePoints: integer('experience_points').notNull().default(10),
-  stepsCount: integer('steps_count').notNull(),
+
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 export type SelectTask = typeof tasks.$inferSelect;
 
@@ -93,49 +217,57 @@ export const stepTypeEnum = pgEnum('step_type', [
   'QUESTION',
 ]);
 
-export type TutorialStepContent = {
-  title: string;
-  body: string;
-};
+export const TutorialStepContentSchema = z.object({
+  type: z.literal('TUTORIAL'),
+  title: z.string(),
+  body: z.string(),
+});
 
-export type ExampleStepContent = {
-  body: string;
-  answer: string;
-};
+export const ExampleStepContentSchema = z.object({
+  type: z.literal('EXAMPLE'),
+  body: z.string(),
+  answer: z.string(),
+});
 
-export type QuestionStepContent = {
-  question: string;
-  alternatives: {
-    order: number;
-    content: string;
-    explanation: string;
-  }[];
-  correctAlternativeOrder: number;
-};
+export const QuestionStepContentSchema = z.object({
+  type: z.literal('QUESTION'),
+  question: z.string(),
+  alternatives: z.array(
+    z.object({
+      order: z.number(),
+      content: z.string(),
+      explanation: z.string(),
+    }),
+  ),
+  correctAlternativeOrder: z.number(),
+});
 
-export type StepContent =
-  | TutorialStepContent
-  | ExampleStepContent
-  | QuestionStepContent;
+export const StepContentSchema = z.union([
+  TutorialStepContentSchema,
+  ExampleStepContentSchema,
+  QuestionStepContentSchema,
+]);
+
+export type StepContent = z.infer<typeof StepContentSchema>;
 
 export const steps = pgTable(
   'steps',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    type: stepTypeEnum('type').notNull(),
+
     order: integer('order').notNull(),
     content: jsonb('content').$type<StepContent>().notNull(),
+
+    type: stepTypeEnum('type').notNull(),
+
     taskId: uuid('task_id')
       .notNull()
       .references(() => tasks.id),
   },
-  (table) => ({
-    orderTaskIdUnique: uniqueIndex('steps_order_task_id_unique').on(
-      table.order,
-      table.taskId,
-    ),
-    stepsForTask: index('steps_for_task').on(table.taskId),
-  }),
+  (table) => [
+    uniqueIndex('steps_order_task_id_unique').on(table.order, table.taskId),
+    index('steps_for_task').on(table.taskId),
+  ],
 );
 
 export type SelectStep = Omit<
@@ -145,15 +277,15 @@ export type SelectStep = Omit<
   (
     | {
         type: 'TUTORIAL';
-        content: TutorialStepContent;
+        content: z.infer<typeof TutorialStepContentSchema>;
       }
     | {
         type: 'EXAMPLE';
-        content: ExampleStepContent;
+        content: z.infer<typeof ExampleStepContentSchema>;
       }
     | {
         type: 'QUESTION';
-        content: QuestionStepContent;
+        content: z.infer<typeof QuestionStepContentSchema>;
       }
   );
 
@@ -275,11 +407,12 @@ export const coursesRelations = relations(courses, ({ many, one }) => ({
   }),
 }));
 
-export const sourcesRelations = relations(sources, ({ one }) => ({
+export const sourcesRelations = relations(sources, ({ one, many }) => ({
   course: one(courses, {
     fields: [sources.courseId],
     references: [courses.id],
   }),
+  chunks: many(chunks),
 }));
 
 export const unitsRelations = relations(units, ({ many, one }) => ({
