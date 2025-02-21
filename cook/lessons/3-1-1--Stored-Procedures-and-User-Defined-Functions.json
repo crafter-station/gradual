@@ -1,0 +1,282 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to Stored Procedures and UDFs",
+        "body": "Stored procedures and user-defined functions (UDFs) are fundamental components in SQL that allow you to encapsulate repetitive or complex SQL operations. \n\n- **Stored Procedures:** These are routines that can perform a sequence of operations including data manipulation and control-of-flow statements. They are executed using a CALL or EXEC command.\n- **User-Defined Functions (UDFs):** These functions are similar to stored procedures but are designed to return a value and are typically used in SQL expressions.\n\nIn this lesson, we will explore the syntax, benefits, and best practices for using both stored procedures and UDFs."
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Below is a basic example of a stored procedure that retrieves employee details:\n\n```sql\nCREATE PROCEDURE GetEmployeeDetails (@EmployeeID INT)\nAS\nBEGIN\n    SELECT * FROM Employees WHERE EmployeeID = @EmployeeID;\nEND;\n```\n\nThis procedure accepts an employee ID as a parameter and returns the corresponding employee record.",
+        "answer": "This example demonstrates the creation of a stored procedure using parameters and a simple SELECT statement. The procedure encapsulates the query logic to be easily reused."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "What is the primary purpose of a stored procedure in SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "To encapsulate and reuse SQL logic as a single callable routine.",
+            "explanation": "Correct. Stored procedures encapsulate complex logic to be reused, reducing code duplication."
+          },
+          {
+            "order": 2,
+            "content": "To directly modify the database schema.",
+            "explanation": "Incorrect. Modifying the schema is typically done using DDL commands, not stored procedures."
+          },
+          {
+            "order": 3,
+            "content": "To create a backup of the database.",
+            "explanation": "Incorrect. Database backups are managed by backup utilities, not stored procedures."
+          },
+          {
+            "order": 4,
+            "content": "To generate reports automatically without any SQL queries.",
+            "explanation": "Incorrect. While stored procedures can be used in report generation, they rely on executing SQL queries to retrieve data."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which of the following is a key benefit of using stored procedures?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "They reduce network traffic by running on the server side.",
+            "explanation": "Correct. Stored procedures execute on the server, which can reduce the data transferred between the server and client."
+          },
+          {
+            "order": 2,
+            "content": "They automatically index tables.",
+            "explanation": "Incorrect. Indexing is a separate function and is not automatically handled by stored procedures."
+          },
+          {
+            "order": 3,
+            "content": "They eliminate the need for client-side applications.",
+            "explanation": "Incorrect. Stored procedures complement client applications rather than replacing them."
+          },
+          {
+            "order": 4,
+            "content": "They serve as a replacement for all SQL scripts.",
+            "explanation": "Incorrect. Stored procedures are powerful, but they do not replace the need for individual SQL scripts in all scenarios."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Differences Between Stored Procedures and UDFs",
+        "body": "While both stored procedures and UDFs are used to encapsulate reusable logic, they have significant differences:\n\n- **Stored Procedures:**\n  - May perform actions that modify the state of the database (e.g., INSERT, UPDATE, DELETE).\n  - Cannot be used directly in SQL expressions.\n  - Can have output parameters and multiple result sets.\n\n- **User-Defined Functions (UDFs):**\n  - Must return a single value or table.\n  - Cannot perform actions that modify the database state.\n  - Are used as part of queries, much like built-in functions.\n\nUnderstanding these differences will guide you in choosing the right tool for a given task."
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Here’s an example of a scalar user-defined function that calculates a discount price:\n\n```sql\nCREATE FUNCTION dbo.CalculateDiscount (\n    @OriginalPrice DECIMAL(10,2), \n    @DiscountRate DECIMAL(5,2)\n)\nRETURNS DECIMAL(10,2)\nAS\nBEGIN\n    RETURN @OriginalPrice - (@OriginalPrice * @DiscountRate / 100);\nEND;\n```\n\nThis function takes the original price and a discount rate as inputs, and returns the calculated discount price. It can be used directly in SELECT queries.",
+        "answer": "The UDF encapsulates the discount calculation logic. Since it returns a single value, it can be embedded in other SQL statements, making it a versatile tool for computations."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "When should you use a user-defined function (UDF) instead of a stored procedure?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "When you need to return a single value or table that will be used within a query expression.",
+            "explanation": "Correct. UDFs are designed to be used within queries for calculations or data transformations that return a single value or table."
+          },
+          {
+            "order": 2,
+            "content": "When you need to perform complex operations that modify the database.",
+            "explanation": "Incorrect. UDFs cannot modify the database state; stored procedures are more suitable for that."
+          },
+          {
+            "order": 3,
+            "content": "When you need to generate reports directly without embedding into other queries.",
+            "explanation": "Incorrect. UDFs are typically not used for report generation as a standalone process."
+          },
+          {
+            "order": 4,
+            "content": "When you require execution on the client-side for better performance.",
+            "explanation": "Incorrect. Both UDFs and stored procedures execute on the server side."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which of the following operations is NOT allowed in a user-defined function (UDF)?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Performing SELECT statements that reference tables.",
+            "explanation": "Incorrect. UDFs can contain SELECT statements if they do not modify the database state."
+          },
+          {
+            "order": 2,
+            "content": "Modifying table data using INSERT, UPDATE, or DELETE operations.",
+            "explanation": "Correct. UDFs are restricted from modifying the database state; such operations are reserved for stored procedures."
+          },
+          {
+            "order": 3,
+            "content": "Returning computed values or tables.",
+            "explanation": "Incorrect. Returning a computed value or table is a primary purpose of UDFs."
+          },
+          {
+            "order": 4,
+            "content": "Using conditional logic to return different results.",
+            "explanation": "Incorrect. UDFs can include conditional logic as long as it adheres to the restrictions on side effects."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Consider an advanced stored procedure example that handles parameterized input and error checking:\n\n```sql\nCREATE PROCEDURE UpdateEmployeeSalary\n    @EmployeeID INT,\n    @NewSalary DECIMAL(10,2)\nAS\nBEGIN\n    BEGIN TRY\n        UPDATE Employees\n        SET Salary = @NewSalary\n        WHERE EmployeeID = @EmployeeID;\n\n        IF @@ROWCOUNT = 0\n        BEGIN\n            RAISERROR('No employee found with the given ID.', 16, 1);\n        END\n    END TRY\n    BEGIN CATCH\n        -- Error handling logic\n        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();\n        RAISERROR(@ErrorMessage, 16, 1);\n    END CATCH\nEND;\n```\n\nThis stored procedure updates an employee's salary while incorporating error handling to manage exceptions during the update.",
+        "answer": "The procedure utilizes TRY-CATCH blocks to handle errors gracefully, ensuring that if the update fails or if no record is affected, an appropriate error message is raised. This is an example of robust procedure design."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "In the advanced stored procedure example, what is the main purpose of the TRY-CATCH block?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "To capture and handle errors during the execution of SQL statements.",
+            "explanation": "Correct. TRY-CATCH is used to catch errors and manage exceptions, ensuring that errors are handled gracefully."
+          },
+          {
+            "order": 2,
+            "content": "To loop through multiple rows in the table.",
+            "explanation": "Incorrect. Looping through rows would use constructs like CURSOR or WHILE loops, not TRY-CATCH."
+          },
+          {
+            "order": 3,
+            "content": "To permanently delete records from the table.",
+            "explanation": "Incorrect. Deletion of records is performed by DELETE statements, not by the TRY-CATCH block itself."
+          },
+          {
+            "order": 4,
+            "content": "To automatically commit transactions without errors.",
+            "explanation": "Incorrect. TRY-CATCH helps in error handling and may work with transactions, but it does not auto-commit transactions."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Best Practices for Stored Procedures and UDFs",
+        "body": "When designing stored procedures and functions, consider the following best practices:\n\n- **Modularity:** Keep your procedures and functions focused on a single task to make them easier to maintain.\n- **Error Handling:** Use TRY-CATCH blocks in stored procedures to handle exceptions.\n- **Performance:** Avoid excessive logic in UDFs; inline functions can improve performance in certain scenarios.\n- **Security:** Ensure that only authorized users can execute these routines.\n- **Documentation:** Comment your code thoroughly to explain the purpose and parameters of your procedures and functions.\n\nBy following these best practices, you can ensure that your SQL routines are efficient, secure, and maintainable."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which practice is NOT recommended when designing stored procedures and UDFs?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Keeping procedures modular and focused on a single task.",
+            "explanation": "Incorrect. Modularity is highly recommended for maintainability."
+          },
+          {
+            "order": 2,
+            "content": "Using extensive error handling such as TRY-CATCH blocks in stored procedures.",
+            "explanation": "Incorrect. Error handling is essential for robust procedure design."
+          },
+          {
+            "order": 3,
+            "content": "Embedding large amounts of business logic within UDFs that could degrade performance.",
+            "explanation": "Correct. UDFs should remain efficient and not be overloaded with complex logic, which can negatively impact performance."
+          },
+          {
+            "order": 4,
+            "content": "Documenting your routines appropriately to ensure future maintainability.",
+            "explanation": "Incorrect. Proper documentation is a best practice and is highly encouraged."
+          }
+        ],
+        "correctAlternativeOrder": 3
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 1777,
+    "completionTokens": 3666,
+    "totalTokens": 5443
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1024,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1024,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6IJVqdGG1yyfcHjZxdChaI1WuF",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c93ef66cdca-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:40:27 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "97141",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4999",
+      "x-ratelimit-remaining-tokens": "3977215",
+      "x-ratelimit-reset-requests": "12ms",
+      "x-ratelimit-reset-tokens": "341ms",
+      "x-request-id": "req_3452bb57829228ab06a9d310c1e36472",
+      "set-cookie": "_cfuvid=lMSvQmXscfwjvmu0rN1T9WkN1ID0Z6pbbqahmUZaRQU-1740112827532-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"3.1.1. Stored Procedures and User-Defined Functions\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      3.1.1. Stored Procedures and User-Defined Functions\\n    </title>\\n    <description>\\n      Students will learn to write and deploy stored procedures and functions to encapsulate repetitive or complex operations. This topic explains the syntax, benefits, and best practices for maintaining reusable code within a database. Real-world examples emphasize efficiency and reliability. Exercises include writing sample procedures to perform common data manipulations.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        3.1. Procedural Extensions and Control Flow\\n      </module-title>\\n      <unit-title>\\n        3. Advanced SQL Concepts and Extensions\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    \\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      3.1.1. Stored Procedures and User-Defined Functions\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

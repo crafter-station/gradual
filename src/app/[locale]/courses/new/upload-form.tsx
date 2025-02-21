@@ -5,9 +5,11 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
+import { useI18n } from '@/locales/client';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { toast } from 'sonner';
+import { processDocument } from './create-course.action';
 
 interface FileDetails {
   name: string;
@@ -75,17 +77,20 @@ interface UploadFormProps {
   };
 }
 
-export default function UploadForm({ messages }: UploadFormProps) {
+export function UploadForm() {
+  const t = useI18n();
   const router = useRouter();
   const [state, formAction, isPending] = React.useActionState(
     processDocument,
     undefined,
   );
 
-  const [file, setFile] = useState<File | null>(null);
-  const [fileDetails, setFileDetails] = useState<FileDetails | null>(null);
+  const [file, setFile] = React.useState<File | null>(null);
+  const [fileDetails, setFileDetails] = React.useState<FileDetails | null>(
+    null,
+  );
 
-  const [activeTab, setActiveTab] = useState<'file' | 'url'>('file');
+  const [activeTab, setActiveTab] = React.useState<'file' | 'url'>('file');
 
   const formatBytes = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -99,12 +104,12 @@ export default function UploadForm({ messages }: UploadFormProps) {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.type !== 'application/pdf') {
-        toast.error(messages.form.source.file.error.type);
+        toast.error(t('upload.form.source.file.error.type'));
         return;
       }
 
       if (selectedFile.size > 10 * 1024 * 1024) {
-        toast.error(messages.form.source.file.error.size);
+        toast.error(t('upload.form.source.file.error.size'));
         return;
       }
 
@@ -128,7 +133,7 @@ export default function UploadForm({ messages }: UploadFormProps) {
     const toastId = toast.loading(
       <div className="w-full">
         <div className="mb-2 flex items-center justify-between">
-          <p className="font-medium">{messages.loading.messages[0]}</p>
+          <p className="font-medium">{t('upload.loading.message')}</p>
           <span className="text-muted-foreground text-xs">0%</span>
         </div>
         <Progress value={0} className="h-1" />
@@ -138,8 +143,8 @@ export default function UploadForm({ messages }: UploadFormProps) {
 
     const messageInterval = setInterval(() => {
       currentMessageIndex =
-        (currentMessageIndex + 1) % messages.loading.messages.length;
-      const newMessage = messages.loading.messages[currentMessageIndex];
+        (currentMessageIndex + 1) % t('upload.loading.messages').length;
+      const newMessage = t('upload.loading.messages')[currentMessageIndex];
 
       toast.loading(
         <div className="w-full">
@@ -164,7 +169,7 @@ export default function UploadForm({ messages }: UploadFormProps) {
           <div className="w-full">
             <div className="mb-2 flex items-center justify-between">
               <p className="font-medium">
-                {messages.loading.messages[currentMessageIndex]}
+                {t('upload.loading.messages')[currentMessageIndex]}
               </p>
               <span className="text-muted-foreground text-xs">
                 {Math.round(currentProgress)}%

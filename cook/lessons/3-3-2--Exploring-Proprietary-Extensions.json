@@ -1,0 +1,238 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to Proprietary Extensions",
+        "body": "In this lesson, we'll explore **proprietary extensions** provided by leading SQL vendors such as Oracle, Microsoft, and PostgreSQL. These extensions offer additional functionality beyond the SQL standard but can affect code portability. \n\nKey points include:\n- Enhancements that simplify specific tasks\n- Trade-offs between advanced features and cross-platform compatibility\n- Examples of features like Oracle's `CONNECT BY` or Microsoft's SQLCLR\n\nLet's begin by understanding what these extensions are and why they are used."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Example: Using Oracle's proprietary `CONNECT BY` Clause for Hierarchical Queries\n\nConsider a scenario where you need to traverse an organizational hierarchy. Oracle extends SQL with the `CONNECT BY` clause that simplifies this query.",
+        "answer": "Oracle's SQL extension for hierarchical data allows you to write queries like:\n\n```sql\nSELECT employee_id, manager_id, first_name, last_name\nFROM employees\nSTART WITH manager_id IS NULL\nCONNECT BY PRIOR employee_id = manager_id;\n```\n\nThis example demonstrates how proprietary SQL enhancements can reduce query complexity for specific tasks."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which of the following best describes proprietary extensions in SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "They are mandatory features defined by the SQL standard.",
+            "explanation": "Incorrect. Proprietary extensions are vendor-specific additions and are not part of the SQL standard."
+          },
+          {
+            "order": 2,
+            "content": "They are optional, vendor-specific features designed to extend standard SQL capabilities.",
+            "explanation": "Correct. They enhance functionality but may reduce portability."
+          },
+          {
+            "order": 3,
+            "content": "They are deprecated features that all vendors are eliminating.",
+            "explanation": "Incorrect. While some may be phased out, proprietary extensions are still actively used for advanced functionality."
+          },
+          {
+            "order": 4,
+            "content": "They are core parts of SQL used by every DBMS without modifications.",
+            "explanation": "Incorrect. Core parts of SQL are standard; proprietary extensions differ among vendors."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "QUESTION",
+        "question": "Why might extensive use of proprietary SQL extensions lead to portability issues?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "They strictly follow the SQL standard, ensuring uniform behavior across systems.",
+            "explanation": "Incorrect. Extensions often deviate from the standard."
+          },
+          {
+            "order": 2,
+            "content": "They are vendor-specific, meaning code that uses them may not work on another DBMS.",
+            "explanation": "Correct. Vendor-specific features can lead to compatibility issues if moved to another system."
+          },
+          {
+            "order": 3,
+            "content": "They are typically more secure, which automatically increases portability.",
+            "explanation": "Incorrect. Security enhancements do not ensure that proprietary features work across all systems."
+          },
+          {
+            "order": 4,
+            "content": "They often lack optimization, leading to performance overhead.",
+            "explanation": "Incorrect. While performance can be an issue, the main concern regarding portability is the vendor-specific nature of the extensions."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Vendor-Specific Features: In-Depth Exploration",
+        "body": "Many SQL vendors have developed extensions that provide powerful functionality. For instance:\n\n- **Microsoft SQL Server** enhances T-SQL with the **SQLCLR** integration, allowing you to write functions and procedures in .NET languages.\n- **PostgreSQL** supports many languages (e.g., PL/Python, PL/Perl) to write user-defined functions.\n\nThese features demonstrate how proprietary extensions can implement procedural logic and advanced processing directly inside the database. Understanding the syntax and behavior of these extensions is critical when working with them."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Example: Creating a PostgreSQL Function with PL/Python\n\nImagine you want to implement a custom function in PostgreSQL using Python for text processing.",
+        "answer": "You can create the function as follows:\n\n```sql\nCREATE OR REPLACE FUNCTION reverse_text(text) RETURNS text AS $$\n    return args[0][::-1]\n$$ LANGUAGE plpythonu;\n\n-- Usage:\nSELECT reverse_text('hello');\n```\n\nThis example shows how PostgreSQL's flexibility with programming languages allows for advanced customization beyond standard SQL capabilities."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which vendor provides the SQLCLR feature that allows integration with the .NET framework?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Oracle",
+            "explanation": "Incorrect. Oracle has its own proprietary extensions but not SQLCLR."
+          },
+          {
+            "order": 2,
+            "content": "Microsoft SQL Server",
+            "explanation": "Correct. Microsoft SQL Server utilizes SQLCLR to host .NET assemblies within the database."
+          },
+          {
+            "order": 3,
+            "content": "PostgreSQL",
+            "explanation": "Incorrect. PostgreSQL does not offer SQLCLR; it uses other methods such as PL/Python and PL/Perl."
+          },
+          {
+            "order": 4,
+            "content": "MySQL",
+            "explanation": "Incorrect. MySQL does not support SQLCLR."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "QUESTION",
+        "question": "What is a primary challenge when using proprietary extensions in SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Enhanced security and compliance with international standards.",
+            "explanation": "Incorrect. While security might be improved, it is not the challenge of using proprietary features."
+          },
+          {
+            "order": 2,
+            "content": "Improved performance on all platforms.",
+            "explanation": "Incorrect. Proprietary extensions may optimize for specific platforms but not universally."
+          },
+          {
+            "order": 3,
+            "content": "Potential for vendor lock-in and reduced portability across different database systems.",
+            "explanation": "Correct. Using proprietary features can make it difficult to migrate code to another DBMS."
+          },
+          {
+            "order": 4,
+            "content": "Simplified syntax that is universally understood.",
+            "explanation": "Incorrect. Simplification is a benefit, but it doesn't address the main challenge which is portability."
+          }
+        ],
+        "correctAlternativeOrder": 3
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Best Practices for Leveraging Proprietary Extensions",
+        "body": "When incorporating proprietary extensions, it's vital to follow best practices:\n\n- **Documentation:** Clearly document any vendor-specific code.\n- **Conditional Logic:** Whenever possible, use conditional code that can revert to standard SQL if needed.\n- **Modular Design:** Isolate proprietary code in specific modules to ease future migrations.\n- **Testing:** Rigorously test across different environments if portability is a concern.\n\nThese practices help ensure that the benefits of advanced features do not come at the cost of maintainability and portability."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Example: Case Study on Balancing Enhanced Functionality with Portability\n\nA company uses Microsoft SQL Server's SQLCLR to implement complex business logic. Over time, they decide to migrate to a cloud-based platform with a different DBMS. Because they isolated their SQLCLR code in stored procedures and maintained a parallel set of standard SQL queries, the migration was smoother.\n",
+        "answer": "By following best practices such as modularization and thorough documentation, the company was able to identify which parts of their codebase were tied to proprietary features and needed refactoring. This approach reduced downtime and simplified the migration process."
+      },
+      {
+        "type": "QUESTION",
+        "question": "When is it most appropriate to use proprietary SQL extensions?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "When portability between database systems is the highest priority.",
+            "explanation": "Incorrect. If portability is crucial, relying on proprietary extensions may not be ideal."
+          },
+          {
+            "order": 2,
+            "content": "When advanced functionality is required and the target platform is fixed or well-defined.",
+            "explanation": "Correct. Proprietary extensions should be used when you benefit from added functionality and migration is unlikely."
+          },
+          {
+            "order": 3,
+            "content": "When you want to adhere strictly to the SQL standard.",
+            "explanation": "Incorrect. Proprietary extensions, by definition, extend beyond the SQL standard."
+          },
+          {
+            "order": 4,
+            "content": "When the performance gains are negligible.",
+            "explanation": "Incorrect. This does not justify the potential portability issues."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Summary and Next Steps",
+        "body": "In this lesson, we explored the landscape of **proprietary SQL extensions**. We discussed their advantages for advanced functionality and the challenges they pose for cross-platform portability. \n\n**Key Takeaways:**\n- Proprietary extensions provide vendor-specific enhancements.\n- They can simplify complex tasks but may lead to vendor lock-in.\n- Follow best practices to isolate and document these enhancements.\n\nFor further learning, review vendor documentation and experiment with sample implementations in your environment to understand both the benefits and limitations of these extensions."
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 3791,
+    "completionTokens": 3378,
+    "totalTokens": 7169
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1216,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1216,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6IFWtOL6H50UUy1ivTOrgi5UGq",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c96ccdccdc9-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:39:17 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "27014",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4998",
+      "x-ratelimit-remaining-tokens": "3966692",
+      "x-ratelimit-reset-requests": "19ms",
+      "x-ratelimit-reset-tokens": "499ms",
+      "x-request-id": "req_434d108f1f038f95914f65484a4f2059",
+      "set-cookie": "_cfuvid=CfApqobkNyOsZ.MGZbz2GAecJviqq_d4TDNjoCeT1eM-1740112757901-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"3.3.2. Exploring Proprietary Extensions\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      3.3.2. Exploring Proprietary Extensions\\n    </title>\\n    <description>\\n      Students will study various proprietary SQL extensions provided by leading vendors such as Oracle, Microsoft, and PostgreSQL. The topic details how these extensions enhance functionality but may compromise portability. Case studies illustrate both the benefits and challenges associated with relying on non-standard features. Learners evaluate when and how to incorporate these extensions responsibly.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      </module-title>\\n      <unit-title>\\n        3. Advanced SQL Concepts and Extensions\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    <chunk>SQL implementations exhibit significant incompatibilities across different vendors, often failing to adhere fully to established standards. Key areas of divergence include the syntax for date and time, string concatenation methods, handling of `NULL` values, and the case sensitivity of comparisons. For instance, while both PostgreSQL and Mimer SQL aim for compliance with SQL standards, PostgreSQL does not consistently follow the standard in all aspects. A notable example is its treatment of unquoted identifiers; PostgreSQL converts them to lower case, contrary to the SQL standard, which dictates that unquoted names should be converted to upper case. Therefore, according to the standard, the identifiers `Foo` and `FOO` should be treated as equivalent, while PostgreSQL interprets `Foo` as distinct from `FOO` and `foo`.\\n\\nThis lack of uniformity in SQL implementations can lead to challenges in code portability between different database systems. As a result, developers often need to modify SQL code to accommodate the specific syntax and behavior of the target database management system (DBMS). The complexity and breadth of the SQL standard contribute to this issue, as many implementers choose not to support the entire standard. Additionally, the SQL standard does not provide explicit guidelines for certain critical areas, such as indexing and file storage, leaving it to individual implementations to determine their behavior. This further exacerbates the inconsistencies observed across various SQL platforms.</chunk>\\n<chunk>The SQL standard allows for certain implementation-specific decisions, such as the naming of result columns that are not explicitly defined. While the standard meticulously outlines the syntax that a compliant database system must adhere to, it is less rigorous in specifying the semantics of various language constructs, which can lead to ambiguities in interpretation. \\n\\nSeveral factors contribute to the challenges of SQL portability across different database systems:\\n\\n- **Implementation Variability**: The complexity and breadth of the SQL standard often result in implementers choosing not to support its entirety. This selective adherence can lead to significant differences in functionality.\\n- **Ambiguous Semantics**: The SQL standard's less precise definition of semantics means that different vendors may interpret the same SQL constructs in varying ways, further complicating compatibility.\\n- **Backward Compatibility Concerns**: Many database vendors have established customer bases that rely on the existing behavior of their systems. When newer versions of the SQL standard conflict with prior implementations, vendors may prioritize maintaining backward compatibility over adopting the latest standards.\\n- **Vendor Lock-In**: There is minimal commercial incentive for vendors to facilitate easier transitions between database systems, as this could undermine their customer retention strategies.\\n- **User Priorities**: When evaluating database software, users often prioritize performance and other factors over strict adherence to standards, which can lead to a lack of emphasis on compliance.\\n\\n### Standardization History\\n\\nSQL was officially adopted as a standard by the American National Standards Institute (ANSI) in 1986, designated as SQL-86, and subsequently by the International Organization for Standardization (ISO) in 1987. The standard is maintained by the ISO/IEC JTC 1, Subcommittee SC 32, which focuses on data management and interchange.\\n\\nFrom its inception until 1996, the National Institute of Standards and Technology (NIST) oversaw the certification of SQL database management systems (DBMS) for compliance with the SQL standard. However, the responsibility for compliance certification has since shifted to vendors, who now self-certify their products.\\n\\n### Summary of SQL Standard Revisions\\n\\n| Year | Official Standard | Informal Name | Comments |\\n| --- | --- | --- | --- |\\n| 1986, 1987 | ANSI X3.135:1986, ISO/IEC 9075:1987 | SQL-86, SQL-87 | First formalization by ANSI |\\n| 1989 | ANSI X3.135-1989, ISO/IEC 9075:1989, FIPS 127-1 | SQL-89 | Minor revision adding integrity constraints, adopted as FIPS 127-1 |\\n| 1992 | ANSI X3.135-1992, ISO/IEC 9075:1992, FIPS 127-2 | SQL-92, SQL2 | Major revision (ISO 9075), introduced _Entry Level_ SQL-92, adopted as FIPS 127-2 |\\n\\nThis structured overview highlights the evolution of SQL standards and the complexities surrounding their implementation, providing a clear context for understanding the challenges of SQL portability and compliance.</chunk>\\n<chunk>SQL, or Structured Query Language, is specifically designed for querying and managing data within relational databases. It is classified as a set-based, declarative programming language, distinguishing it from imperative programming languages such as C or BASIC. This declarative nature allows users to specify what data they want to retrieve or manipulate without detailing the procedural steps to achieve that outcome.\\n\\nTo enhance its functionality, SQL has undergone various extensions, notably the SQL/PSM (Persistent Stored Modules) extensions, which introduce procedural programming capabilities. These extensions enable the inclusion of control-of-flow constructs, allowing for more complex operations and logic within SQL scripts.\\n\\nIn addition to standard SQL features, many database management systems (DBMS) offer proprietary extensions that further support procedural and object-oriented programmability. This integration allows developers to write more sophisticated database applications by leveraging the capabilities of different programming paradigms directly within the SQL environment.\\n\\nFor instance, SQL/JRT (SQL Routines and Types for the Java Programming Language) is an extension that facilitates the execution of Java code within SQL databases. Similarly, Microsoft SQL Server 2005 introduced SQLCLR (SQL Server Common Language Runtime), enabling the hosting of managed .NET assemblies in the database, a significant advancement over earlier versions that primarily relied on unmanaged extended stored procedures written in C.\\n\\nPostgreSQL exemplifies flexibility in this area, allowing users to create functions in a diverse array of programming languages, including Perl, Python, Tcl, JavaScript (via PL/V8), and C. This versatility enhances the capabilities of SQL, making it a powerful tool for developers working with relational databases.</chunk>\\n<chunk>In the late 1970s, Relational Software, Inc., which later became known as Oracle Corporation, recognized the transformative potential of the relational database concepts articulated by pioneers such as Edgar F. Codd, Donald D. Chamberlin, and Raymond F. Boyce. The company aimed to develop a SQL-based Relational Database Management System (RDBMS) with the intention of marketing it to prominent U.S. government entities, including the U.S. Navy and the Central Intelligence Agency. In June 1979, Relational Software launched one of the earliest commercially available SQL implementations, Oracle V2 (Version 2), specifically designed for VAX computers.\\n\\nBy 1986, the standardization of SQL gained significant momentum when the American National Standards Institute (ANSI) and the International Organization for Standardization (ISO) officially adopted the \\\"Database Language SQL\\\" definition. This marked the beginning of a series of updates to the standard, with new versions released in 1989, 1992, 1996, 1999, 2003, 2006, 2008, 2011, 2016, and the most recent iteration in 2023. \\n\\n### Interoperability and Standardization\\n\\nDespite the establishment of these standards, SQL implementations across different vendors often exhibit incompatibilities, leading to variations in syntax and functionality. Key areas of divergence include date and time formatting, string concatenation, handling of `NULL` values, and case sensitivity in comparisons. Notably, while PostgreSQL and Mimer SQL strive for compliance with SQL standards, PostgreSQL does not consistently adhere to all specifications. For instance, PostgreSQL's treatment of unquoted identifiers—converting them to lower case—contrasts with the SQL standard, which dictates that such identifiers should be converted to upper case. Consequently, according to the standard, the identifiers `Foo` and `FOO` should be treated as equivalent, rather than `foo`. \\n\\nThis ongoing challenge of interoperability underscores the complexities faced by developers and database administrators in navigating the diverse landscape of SQL implementations, highlighting the need for continued efforts toward standardization and compatibility in relational database systems.</chunk>\\n<chunk>17. **ISO/IEC JTC 1/SC 32 - Data Management and Interchange**: The International Organization for Standardization (ISO) oversees the development and maintenance of standards related to data management and interchange. This committee focuses on ensuring that data management practices are consistent and interoperable across various systems. For more information, visit the official ISO website [here](https://www.iso.org/committee/45342/x/catalogue/p/1/u/0/w/0/d/0).\\n\\n18. **PostgreSQL**: PostgreSQL is an advanced open-source relational database management system known for its strong adherence to standards. The PostgreSQL Global Development Group emphasizes compliance with the ANSI-SQL:2008 standard, ensuring that its SQL implementation aligns closely with established norms. For further details, refer to the official PostgreSQL website [here](http://www.postgresql.org/about/).\\n\\n19. **Mimer SQL**: Mimer SQL is a relational database management system that prides itself on being built on standards. It aims to provide a robust SQL implementation that adheres to industry standards, ensuring reliability and compatibility. More information can be found on the Mimer Information Technology official website [here](http://developer.mimer.com/features/feature_6.htm).\\n\\n20. **Lexical Structure in PostgreSQL**: The lexical structure of SQL in PostgreSQL defines the rules for identifiers, keywords, and other syntactical elements. This structure is crucial for writing valid SQL queries and understanding how the database interprets commands. For a comprehensive overview, consult the PostgreSQL documentation [here](https://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS).</chunk>\\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      3.3.2. Exploring Proprietary Extensions\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

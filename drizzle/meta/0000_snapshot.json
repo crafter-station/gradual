@@ -1,5 +1,5 @@
 {
-  "id": "6f320bca-fe8a-4b41-b7d6-b3f328c8da97",
+  "id": "d31e2b60-aac0-447c-a918-1c924eb6734f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -63,8 +63,8 @@
         }
       },
       "indexes": {
-        "source_id_order_index": {
-          "name": "source_id_order_index",
+        "chunks_source_id_order_index": {
+          "name": "chunks_source_id_order_index",
           "columns": [
             {
               "expression": "source_id",
@@ -84,8 +84,8 @@
           "method": "btree",
           "with": {}
         },
-        "source_id_index": {
-          "name": "source_id_index",
+        "chunks_source_id_index": {
+          "name": "chunks_source_id_index",
           "columns": [
             {
               "expression": "source_id",
@@ -99,8 +99,8 @@
           "method": "btree",
           "with": {}
         },
-        "embedding_index": {
-          "name": "embedding_index",
+        "chunks_embedding_index": {
+          "name": "chunks_embedding_index",
           "columns": [
             {
               "expression": "embedding",
@@ -121,8 +121,12 @@
           "name": "chunks_source_id_sources_id_fk",
           "tableFrom": "chunks",
           "tableTo": "sources",
-          "columnsFrom": ["source_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "source_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -150,8 +154,34 @@
           "primaryKey": false,
           "notNull": true
         },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_public": {
+          "name": "is_public",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
         "created_at": {
           "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
@@ -162,22 +192,37 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
-        },
-        "is_public": {
-          "name": "is_public",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "courses_embedding_index": {
+          "name": "courses_embedding_index",
+          "columns": [
+            {
+              "expression": "embedding",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "courses_creator_id_users_id_fk": {
           "name": "courses_creator_id_users_id_fk",
           "tableFrom": "courses",
           "tableTo": "users",
-          "columnsFrom": ["creator_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "creator_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -230,8 +275,12 @@
           "name": "enrollments_user_id_users_id_fk",
           "tableFrom": "enrollments",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -239,8 +288,12 @@
           "name": "enrollments_course_id_courses_id_fk",
           "tableFrom": "enrollments",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -262,33 +315,116 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "title": {
-          "name": "title",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "order": {
           "name": "order",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "unit_id": {
           "name": "unit_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "modules_unit_id_order_index": {
+          "name": "modules_unit_id_order_index",
+          "columns": [
+            {
+              "expression": "unit_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "modules_unit_id_index": {
+          "name": "modules_unit_id_index",
+          "columns": [
+            {
+              "expression": "unit_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "modules_embedding_index": {
+          "name": "modules_embedding_index",
+          "columns": [
+            {
+              "expression": "embedding",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "modules_unit_id_units_id_fk": {
           "name": "modules_unit_id_units_id_fk",
           "tableFrom": "modules",
           "tableTo": "units",
-          "columnsFrom": ["unit_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "unit_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -387,8 +523,12 @@
           "name": "sources_creator_id_users_id_fk",
           "tableFrom": "sources",
           "tableTo": "users",
-          "columnsFrom": ["creator_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "creator_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -396,8 +536,12 @@
           "name": "sources_course_id_courses_id_fk",
           "tableFrom": "sources",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -474,8 +618,12 @@
           "name": "step_progress_user_id_users_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -483,8 +631,12 @@
           "name": "step_progress_step_id_steps_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "steps",
-          "columnsFrom": ["step_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "step_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -492,8 +644,12 @@
           "name": "step_progress_task_id_tasks_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -501,8 +657,12 @@
           "name": "step_progress_task_progress_id_task_progress_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "task_progress",
-          "columnsFrom": ["task_progress_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "task_progress_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -524,13 +684,6 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "type": {
-          "name": "type",
-          "type": "step_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
         "order": {
           "name": "order",
           "type": "integer",
@@ -540,6 +693,13 @@
         "content": {
           "name": "content",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "step_type",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
@@ -593,8 +753,12 @@
           "name": "steps_task_id_tasks_id_fk",
           "tableFrom": "steps",
           "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -666,8 +830,12 @@
           "name": "task_progress_task_id_tasks_id_fk",
           "tableFrom": "task_progress",
           "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -675,8 +843,12 @@
           "name": "task_progress_user_id_users_id_fk",
           "tableFrom": "task_progress",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -684,8 +856,12 @@
           "name": "task_progress_last_completed_step_id_steps_id_fk",
           "tableFrom": "task_progress",
           "tableTo": "steps",
-          "columnsFrom": ["last_completed_step_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "last_completed_step_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -707,6 +883,12 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "title": {
           "name": "title",
           "type": "varchar",
@@ -719,22 +901,16 @@
           "primaryKey": false,
           "notNull": true
         },
-        "order": {
-          "name": "order",
-          "type": "integer",
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "type": {
           "name": "type",
           "type": "task_type",
           "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "module_id": {
-          "name": "module_id",
-          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -750,6 +926,26 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "module_id": {
+          "name": "module_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -758,8 +954,12 @@
           "name": "tasks_module_id_modules_id_fk",
           "tableFrom": "tasks",
           "tableTo": "modules",
-          "columnsFrom": ["module_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "module_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -781,33 +981,116 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "title": {
-          "name": "title",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "order": {
           "name": "order",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "course_id": {
           "name": "course_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "units_course_id_order_index": {
+          "name": "units_course_id_order_index",
+          "columns": [
+            {
+              "expression": "course_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "units_course_id_index": {
+          "name": "units_course_id_index",
+          "columns": [
+            {
+              "expression": "course_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "units_embedding_index": {
+          "name": "units_embedding_index",
+          "columns": [
+            {
+              "expression": "embedding",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "units_course_id_courses_id_fk": {
           "name": "units_course_id_courses_id_fk",
           "tableFrom": "units",
           "tableTo": "courses",
-          "columnsFrom": ["course_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -861,17 +1144,28 @@
     "public.source_type": {
       "name": "source_type",
       "schema": "public",
-      "values": ["FILE", "URL"]
+      "values": [
+        "FILE",
+        "URL"
+      ]
     },
     "public.step_type": {
       "name": "step_type",
       "schema": "public",
-      "values": ["TUTORIAL", "EXAMPLE", "QUESTION"]
+      "values": [
+        "TUTORIAL",
+        "EXAMPLE",
+        "QUESTION"
+      ]
     },
     "public.task_type": {
       "name": "task_type",
       "schema": "public",
-      "values": ["LESSON", "QUIZ", "MULTISTEP"]
+      "values": [
+        "LESSON",
+        "QUIZ",
+        "MULTISTEP"
+      ]
     }
   },
   "schemas": {},

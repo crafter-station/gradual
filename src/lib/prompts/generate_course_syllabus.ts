@@ -37,6 +37,14 @@ export function getGenerateCourseSyllabusPrompt({
     - Create an engaging, specific title that clearly communicates the course's value
     - Include both the main subject and its practical relevance
     
+    Course Description Requirements:
+    - Write a compelling 2-3 paragraph overview of the course
+    - Include:
+      * The course's main objectives and value proposition
+      * Target audience and prerequisites (if any)
+      * Key outcomes and skills learners will gain
+      * Overview of the learning approach and time commitment
+    
     Unit Requirements:
     - Must create 3-5 distinct units total
     - Units should follow this general progression:
@@ -87,7 +95,8 @@ export function getGenerateCourseSyllabusPrompt({
 
   <output_format>
     Follow the provided JSON schema strictly:
-    - Include "order" fields but don't reference them in titles
+    - Include "order" fields starting with 1 (never 0-based)
+    - Don't reference order numbers in titles
     - Ensure all descriptions are detailed and comprehensive
     - Maintain consistent formatting throughout
   </output_format>
@@ -96,6 +105,7 @@ export function getGenerateCourseSyllabusPrompt({
     Here's an example of the expected structure (using a different subject to avoid copying):
     {
       "title": "Data Structures and Algorithms: From Theory to Practice",
+      "description": "[2-3 paragraphs describing the course, its objectives, target audience, and outcomes...]",
       "units": [
         {
           "order": 1,
@@ -155,6 +165,8 @@ export function getGenerateCourseSyllabusPrompt({
     5. Each topic must have:
        - A clear title
        - A detailed 3-5 sentence description
+       - Multiple tutorial steps when needed for complex concepts
+       - Examples and questions that build on the tutorial steps
   </structure_requirements>
 
   <planning_process>

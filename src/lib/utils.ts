@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { z } from 'zod';
+import type { Syllabus } from './schemas';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -20,32 +20,6 @@ export type ActionState<
       error: string;
     }
 );
-
-export const syllabusSchema = z.object({
-  title: z.string(),
-  units: z.array(
-    z.object({
-      order: z.number(),
-      title: z.string(),
-      description: z.string(),
-      modules: z.array(
-        z.object({
-          order: z.number(),
-          title: z.string(),
-          description: z.string(),
-          topics: z.array(
-            z.object({
-              order: z.number(),
-              title: z.string(),
-              description: z.string(),
-            }),
-          ),
-        }),
-      ),
-    }),
-  ),
-});
-export type Syllabus = typeof syllabusSchema._type;
 
 export function formatSyllabus(syllabus: Syllabus): string {
   let output = `Course: ${syllabus.title}\n\n`;

@@ -1,0 +1,206 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to DML Operations: INSERT, UPDATE, DELETE",
+        "body": "In this lesson, we will explore the three primary Data Manipulation Language (DML) commands used to modify data in a SQL database: **INSERT**, **UPDATE**, and **DELETE**. \n\n- **INSERT** is used to add new rows to a table.\n- **UPDATE** modifies existing records.\n- **DELETE** removes records.\n\nUnderstanding these commands is essential for managing the data lifecycle in your database. Let's break down each command and see how they work in practice."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Imagine you have a table called `employees` with columns `id`, `name`, and `position`. To add a new employee, you might use the following SQL statement:\n\n```sql\nINSERT INTO employees (id, name, position)\nVALUES (101, 'Alice Smith', 'Developer');\n```",
+        "answer": "The above statement inserts a new record into the `employees` table. Each value corresponds to the respective column, ensuring the new entry is correctly added to the table."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which of the following SQL statements correctly performs an INSERT operation for the `employees` table?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "INSERT employees (id, name, position) VALUES (102, 'Bob Brown', 'Designer');",
+            "explanation": "This alternative is missing the keyword 'INTO'."
+          },
+          {
+            "order": 2,
+            "content": "INSERT INTO employees (id, name, position) VALUES (102, 'Bob Brown', 'Designer');",
+            "explanation": "This is the correct syntax for inserting a record into the table."
+          },
+          {
+            "order": 3,
+            "content": "INSERT DATA employees (id, name, position) VALUES (102, 'Bob Brown', 'Designer');",
+            "explanation": "The keyword 'DATA' is incorrect. The proper keyword is 'INTO'."
+          },
+          {
+            "order": 4,
+            "content": "INSERT employees VALUES (102, 'Bob Brown', 'Designer');",
+            "explanation": "This statement is missing 'INTO' and the column names, which may cause issues if the table structure is not known."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Understanding UPDATE Operations",
+        "body": "The **UPDATE** command is designed to modify existing records in a table. \n\nKey points to consider:\n\n- Always use the `WHERE` clause to specify which rows should be updated. Without it, all records in the table are modified.\n- SET clause defines the column(s) to be changed and their new values.\n\nA typical UPDATE statement looks like this:\n\n```sql\nUPDATE table_name\nSET column1 = value1, column2 = value2\nWHERE condition;\n```\n\nLet's dive deeper by looking at an example."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Consider the `employees` table again. If you want to update the position of an employee with `id = 101` to 'Senior Developer', you would use:\n\n```sql\nUPDATE employees\nSET position = 'Senior Developer'\nWHERE id = 101;\n```",
+        "answer": "This statement changes the `position` column for the employee with ID 101 to 'Senior Developer'. The `WHERE` clause ensures that only the intended record is updated."
+      },
+      {
+        "type": "QUESTION",
+        "question": "How does the `WHERE` clause in an UPDATE statement function?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It defines which rows should be updated.",
+            "explanation": "Correct. The WHERE clause restricts the rows affected by the UPDATE statement."
+          },
+          {
+            "order": 2,
+            "content": "It specifies the columns that will be updated.",
+            "explanation": "Incorrect. The columns to update are specified in the SET clause."
+          },
+          {
+            "order": 3,
+            "content": "It locks the rows for concurrent transactions.",
+            "explanation": "Incorrect. While some systems may lock rows during updates, the WHERE clause is used to filter rows, not for locking."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Understanding DELETE Operations",
+        "body": "The **DELETE** command is used to remove records from a table. \n\nPoints to note:\n\n- Like UPDATE, DELETE should almost always include a `WHERE` clause to ensure only the intended records are removed.\n- Without a `WHERE` clause, all rows in the table will be deleted.\n\nExample syntax:\n\n```sql\nDELETE FROM table_name\nWHERE condition;\n```\n\nNext, we will see a practical DELETE example."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Suppose you want to remove the employee with `id = 101` from the `employees` table. The SQL statement would be:\n\n```sql\nDELETE FROM employees\nWHERE id = 101;\n```",
+        "answer": "This command deletes only the row where the `id` is 101. Using the WHERE clause minimizes the risk of accidentally deleting more rows than intended."
+      },
+      {
+        "type": "QUESTION",
+        "question": "What happens if a DELETE statement is executed without a WHERE clause?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Only the first row in the table is deleted.",
+            "explanation": "Incorrect. Without a WHERE clause, all rows are targeted."
+          },
+          {
+            "order": 2,
+            "content": "An error is thrown by the SQL engine.",
+            "explanation": "Incorrect. Most SQL engines allow this, but it results in all rows being deleted."
+          },
+          {
+            "order": 3,
+            "content": "All rows in the table are deleted.",
+            "explanation": "Correct. Omitting the WHERE clause in a DELETE statement will remove every row in the table."
+          }
+        ],
+        "correctAlternativeOrder": 3
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Transaction Control and Error Handling with DML Operations",
+        "body": "When performing DML operations like INSERT, UPDATE, or DELETE, it is important to maintain data integrity. Using transaction control commands such as **BEGIN**, **COMMIT**, and **ROLLBACK** allows you to group multiple operations into atomic units.\n\nFor instance:\n\n- **BEGIN** starts a new transaction.\n- **COMMIT** saves all changes made in the transaction.\n- **ROLLBACK** undoes changes if an error occurs.\n\nUsing these commands helps in enforcing error handling and ensuring that your database remains in a consistent state even when errors occur."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Imagine you need to perform an INSERT and an UPDATE operation, but want to ensure that either both succeed or neither is applied. You can use a transaction as follows:\n\n```sql\nBEGIN TRANSACTION;\n\nINSERT INTO employees (id, name, position) VALUES (103, 'Charlie Davis', 'Analyst');\nUPDATE employees SET position = 'Team Lead' WHERE id = 102;\n\n-- If all operations are successful\nCOMMIT;\n\n-- If any operation fails\n-- ROLLBACK;\n```",
+        "answer": "This example demonstrates initiating a transaction, performing multiple DML operations, and then committing the changes. If any error occurs during the transactions, a rollback can be invoked to revert all changes, ensuring data integrity."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Why is it advisable to use transaction control (BEGIN, COMMIT, ROLLBACK) with DML operations?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "To improve query performance by reducing execution time.",
+            "explanation": "Incorrect. While transactions may impact performance, their primary purpose is data integrity, not performance."
+          },
+          {
+            "order": 2,
+            "content": "To ensure that grouped DML operations are executed atomically, maintaining data integrity.",
+            "explanation": "Correct. Transaction control ensures that either all operations succeed or none are applied, preventing partial updates."
+          },
+          {
+            "order": 3,
+            "content": "To automatically optimize the database schema.",
+            "explanation": "Incorrect. Transaction control does not influence schema optimization."
+          },
+          {
+            "order": 4,
+            "content": "To allow multiple users to update the database simultaneously without conflicts.",
+            "explanation": "Incorrect. While transactions can manage concurrent data integrity, they do not automatically resolve all conflicts."
+          }
+        ],
+        "correctAlternativeOrder": 2
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 1783,
+    "completionTokens": 2963,
+    "totalTokens": 4746
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 960,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 960,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6I0t9gLJjX0bti3HQeclB3QpIN",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c9388715000-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:39:14 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "23824",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4997",
+      "x-ratelimit-remaining-tokens": "3969250",
+      "x-ratelimit-reset-requests": "24ms",
+      "x-ratelimit-reset-tokens": "461ms",
+      "x-request-id": "req_f1a5a5ea92263ba085dba6647963b467",
+      "set-cookie": "_cfuvid=OnvpUYvYKDm8EewNBqQdLh70XN5bwVxC_Y7pxaatl8w-1740112754419-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"2.3.1. INSERT, UPDATE, and DELETE Operations\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n    </title>\\n    <description>\\n      This topic delves into the commands used for adding, modifying, and removing data in a database. Detailed examples illustrate statement syntax and real-world scenarios for each operation. Students will learn the importance of transaction control and error handling in data modification. Hands-on labs reinforce best practices for data manipulation.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        2.3. Data Manipulation and Control (DML & DCL)\\n      </module-title>\\n      <unit-title>\\n        2. SQL Sublanguages and Core Operations\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    \\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

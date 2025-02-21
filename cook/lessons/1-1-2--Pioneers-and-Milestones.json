@@ -1,0 +1,218 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to Pioneers and Milestones",
+        "body": "In this lesson, we will explore the pioneers behind SQL: Donald D. Chamberlin and Raymond F. Boyce. Their innovative work in the 1970s laid the foundation for what has become a central language in the world of relational databases. We will discuss their contributions, the evolution from SEQUEL to SQL, and key milestones such as the development of System R at IBM."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Consider a timeline that highlights the major milestones:\n\n- **Early 1970s**: Chamberlin and Boyce begin working on a new query language at IBM.\n- **1973**: Initial project known as SEQUEL, intended to query relational data in System R.\n- **Late 1970s**: Renaming of SEQUEL to SQL due to trademark issues.\n- **1979-1983**: Commercial products such as System/38, SQL/DS, and IBM Db2 launch, marking SQL's entry into the market.\n\nThis timeline helps visualize how a concept developed into a revolutionary tool for database management.",
+        "answer": "The timeline illustrates the evolution of SQL from its early experimental phase to a commercial success, driven by the pioneering efforts of Chamberlin and Boyce."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Who are the two pioneers primarily credited with developing SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Donald D. Chamberlin and Raymond F. Boyce",
+            "explanation": "Correct! These two are recognized as the pioneers behind SQL."
+          },
+          {
+            "order": 2,
+            "content": "Edgar F. Codd and Alan Turing",
+            "explanation": "Incorrect. While Codd provided the relational model, he is not credited with developing SQL."
+          },
+          {
+            "order": 3,
+            "content": "Tim Berners-Lee and Vint Cerf",
+            "explanation": "Incorrect. These individuals are known for contributions in other technological areas such as the World Wide Web and Internet protocols."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      },
+      {
+        "type": "QUESTION",
+        "question": "Why was the original name 'SEQUEL' later changed to 'SQL'?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "The name was changed due to trademark issues.",
+            "explanation": "Correct! The original name 'SEQUEL' had trademark conflicts, leading to the adoption of 'SQL'."
+          },
+          {
+            "order": 2,
+            "content": "The change reflected a complete overhaul of the language.",
+            "explanation": "Incorrect. The change was not due to a major language change but rather a trademark conflict."
+          },
+          {
+            "order": 3,
+            "content": "It was renamed to attract more commercial interest.",
+            "explanation": "Not entirely true. Although commercial appeal is important, the primary reason was trademark related."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Key Contributions and the Importance of System R",
+        "body": "After establishing the foundation with SEQUEL, Chamberlin and Boyce designed the language to interact with IBM's System R, a pioneering relational database management system. This early system served as a test bed for SQL, helping to refine its syntax and functionality. The success of System R was critical in demonstrating the practical benefits of relational databases and paved the way for commercial applications."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Imagine you are looking at a diagram of System R's development timeline. It includes milestones such as:\n\n- Research and prototyping of System R\n- Initial trials of SEQUEL in a working environment\n- Iterative improvements leading to the first stable version of SQL\n\nSuch a diagram emphasizes how early testing and real-world feedback were crucial in evolving SQL into a robust language.",
+        "answer": "This example illustrates that the evolution from a research concept to a commercial success involves testing, revision, and adaptation based on practical use."
+      },
+      {
+        "type": "QUESTION",
+        "question": "What role did System R play in the development of SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It served as a real-world test environment for SQL.",
+            "explanation": "Correct! System R was used to test and refine SQL, ensuring it met practical requirements."
+          },
+          {
+            "order": 2,
+            "content": "It was a competing database system that led to the creation of SQL.",
+            "explanation": "Incorrect. System R was the platform that helped develop and test SQL, not a competitor."
+          },
+          {
+            "order": 3,
+            "content": "It was only used for theoretical research without any practical implementation.",
+            "explanation": "Incorrect. System R was actively used in real-world trials."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      },
+      {
+        "type": "QUESTION",
+        "question": "Why was real-world testing important in the evolution of SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "It allowed the developers to refine syntax and functionality based on user feedback.",
+            "explanation": "Correct! Real-world testing provided practical insights that were used to improve SQL."
+          },
+          {
+            "order": 2,
+            "content": "It helped in proving the theoretical concepts without any need for modifications.",
+            "explanation": "Incorrect. Testing did lead to necessary modifications and improvements."
+          },
+          {
+            "order": 3,
+            "content": "It delayed the commercialization of SQL significantly.",
+            "explanation": "Incorrect. Real-world testing actually contributed to a smoother transition to commercial use."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Commercial Adoption and Milestones",
+        "body": "After the initial development and testing phases, SQL transitioned into the commercial sphere. IBM leveraged its success with System R to launch key products such as System/38, SQL/DS, and IBM Db2. These products that came to market in the late 1970s and early 1980s were instrumental in establishing SQL as the industry standard for database management."
+      },
+      {
+        "type": "EXAMPLE",
+        "body": "Consider the following commercial timeline:\n\n- **1979**: Launch of System/38, showcasing SQL in an enterprise environment.\n- **1981**: Introduction of SQL/DS, expanding SQL's reach in the market.\n- **1983**: Release of IBM Db2, further cementing SQL's role in modern database management.\n\nThis timeline demonstrates how early innovations by Chamberlin and Boyce eventually led to robust commercial offerings that helped standardize SQL.",
+        "answer": "This example highlights that successful commercial adoption is built on iterative improvements and real-world applications which were influenced by pioneering research."
+      },
+      {
+        "type": "QUESTION",
+        "question": "Which of the following products was NOT part of SQL's early commercial adoption?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "System/38",
+            "explanation": "Incorrect. System/38 was indeed one of the early commercial products based on SQL."
+          },
+          {
+            "order": 2,
+            "content": "SQL/DS",
+            "explanation": "Incorrect. SQL/DS was another key product in the early commercial phase."
+          },
+          {
+            "order": 3,
+            "content": "IBM Db2",
+            "explanation": "Incorrect. IBM Db2 was a significant system launched in the early 1980s."
+          },
+          {
+            "order": 4,
+            "content": "Oracle Database",
+            "explanation": "Correct! Oracle Database, while important in its own right, is not one of the original IBM products that emerged directly from System R."
+          }
+        ],
+        "correctAlternativeOrder": 4
+      },
+      {
+        "type": "TUTORIAL",
+        "title": "Legacy and Ongoing Influence of the Pioneers",
+        "body": "The contributions of Chamberlin and Boyce extend far beyond the development of a single language. Their work has influenced modern database management practices, standardization efforts, and the evolution of SQL over the decades. Today, SQL remains a vital tool in data management and continues to evolve through ongoing innovations and standards updates."
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 3379,
+    "completionTokens": 2541,
+    "totalTokens": 5920
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 640,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 640,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6IXqLCSg5qnA1d41Z0iJoZNI4E",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c91ed46cdcd-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:39:03 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "13353",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4997",
+      "x-ratelimit-remaining-tokens": "3984362",
+      "x-ratelimit-reset-requests": "24ms",
+      "x-ratelimit-reset-tokens": "234ms",
+      "x-request-id": "req_b432273ccf313d4af2985739f8f5f672",
+      "set-cookie": "_cfuvid=d0yE3dHkbPDyRYaLtWKXV66tuMdEPkVn0foMJ9Hd.KU-1740112743660-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"1.1.2. Pioneers and Milestones\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      1.1.2. Pioneers and Milestones\\n    </title>\\n    <description>\\n      This topic delves into the contributions of Donald D. Chamberlin and Raymond F. Boyce, highlighting their roles in developing a language that would become the backbone of modern databases. Learners will review major milestones, including the transition from SEQUEL to SQL and the introduction of commercial products. Practical examples and milestone timelines are used to illustrate evolution.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        1.1. The Origins and Evolution of SQL\\n      </module-title>\\n      <unit-title>\\n        1. Foundations and Historical Context of SQL\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    <chunk>SQL, or Structured Query Language, was initially developed at IBM by Donald D. Chamberlin and Raymond F. Boyce in the early 1970s. Their work was heavily influenced by the relational model proposed by Edgar F. Codd. The first iteration of this language was originally named SEQUEL, which stood for Structured English Query Language. It was specifically designed to facilitate the manipulation and retrieval of data within IBM's pioneering quasirelational database management system known as System R. This system was developed by a dedicated team at the IBM San Jose Research Laboratory during the 1970s.\\n\\nThe evolution of SQL from SEQUEL to its current form reflects significant advancements in database technology and the growing need for efficient data management solutions. The language was tailored to meet the requirements of users seeking a more intuitive way to interact with databases, ultimately leading to its widespread adoption across various platforms and systems.</chunk>\\n<chunk>Chamberlin and Boyce's initial foray into creating a relational database language was marked by the development of SQUARE (Specifying Queries in A Relational Environment). However, this early attempt faced usability challenges due to its reliance on subscript and superscript notation, which complicated the user experience. In 1973, after relocating to the San Jose Research Laboratory, they embarked on a new project intended as a successor to SQUARE. The original name, SEQUEL, was playfully derived as a pun on QUEL, the query language used by Ingres. However, the name was later modified to SQL (Structured Query Language) after it was discovered that \\\"SEQUEL\\\" was a trademark owned by the UK-based Hawker Siddeley Dynamics Engineering Limited company.\\n\\nFollowing the development of SQL, IBM conducted extensive testing at customer sites to evaluate the language's practicality and effectiveness. This led to the creation of commercial products based on their System R prototype, which included notable systems such as System/38, SQL/DS, and IBM Db2. These products were released to the market in 1979, 1981, and 1983, respectively, marking significant milestones in the commercial adoption of SQL and relational database technology.</chunk>\\n<chunk>The document provides a comprehensive overview of SQL (Structured Query Language), a pivotal programming language for relational databases that was developed in the 1970s by Donald D. Chamberlin and Raymond F. Boyce. It traces SQL's evolution from its initial release in 1986 to the most recent version, SQL:2023, emphasizing the various dialects that have emerged and its significant influence on other query languages.\\n\\nKey aspects of SQL's structure are discussed, including its sublanguages: Data Query Language (DQL), Data Definition Language (DDL), Data Control Language (DCL), and Data Manipulation Language (DML). The document highlights SQL's foundation in relational algebra, which underpins its functionality and design.\\n\\nThe standardization of SQL by the American National Standards Institute (ANSI) and the International Organization for Standardization (ISO) is also covered, along with the challenges of ensuring compliance across different implementations. Criticisms regarding SQL's divergence from the relational model are addressed, providing a balanced view of its strengths and limitations.\\n\\nAdditionally, the document delves into SQL's data types and key components, as well as the integration of procedural programming features that enhance its capabilities. It also mentions alternatives to SQL, offering insights into various related topics within the realm of database management systems.\\n\\nIn summary, this document serves as a detailed resource for understanding SQL's historical context, structural components, standardization efforts, and its role in the broader landscape of database technologies.</chunk>\\n<chunk>- **Oral History Interview with Donald D. Chamberlin**: This interview, hosted by the [Charles Babbage Institute](https://en.wikipedia.org/wiki/Charles_Babbage_Institute), features Donald D. Chamberlin discussing his formative years, educational background at [Harvey Mudd College](https://en.wikipedia.org/wiki/Harvey_Mudd_College) and [Stanford University](https://en.wikipedia.org/wiki/Stanford_University), as well as his pivotal role in the development of relational database technology. As a key member of the System R research team, Chamberlin, alongside [Raymond F. Boyce](https://en.wikipedia.org/wiki/Raymond_F._Boyce), was instrumental in creating the SQL database language. The interview also touches on his recent research endeavors related to XML query languages.\\n\\n- **SQL Versions**: The evolution of SQL is marked by several significant versions, each introducing new features and enhancements. The timeline of SQL versions includes:\\n  - [SEQUEL](https://en.wikipedia.org/wiki/SEQUEL): The original name for SQL.\\n  - [SQL-86](https://en.wikipedia.org/w/index.php?title=SQL-86&action=edit&redlink=1): The first standardized version of SQL.\\n  - [SQL-89](https://en.wikipedia.org/w/index.php?title=SQL-89&action=edit&redlink=1): An update to SQL-86 with minor enhancements.\\n  - [SQL-92](https://en.wikipedia.org/wiki/SQL-92): A major revision that introduced significant features.\\n  - [SQL:1999](https://en.wikipedia.org/wiki/SQL:1999): Added support for object-oriented features and triggers.\\n  - [SQL:2003](https://en.wikipedia.org/wiki/SQL:2003): Introduced XML-related features and window functions.\\n  - [SQL:2006](https://en.wikipedia.org/wiki/SQL:2006): Focused on XML enhancements.\\n  - [SQL:2008](https://en.wikipedia.org/wiki/SQL:2008): Included additional features for improved performance and usability.\\n  - [SQL:2011](https://en.wikipedia.org/wiki/SQL:2011): Introduced temporal data support.\\n  - [SQL:2016](https://en.wikipedia.org/wiki/SQL:2016): Enhanced JSON support and other features.\\n  - [SQL:2023](https://en.wikipedia.org/wiki/SQL:2023): The latest version, continuing the evolution of SQL.\\n\\nThis structured overview provides a comprehensive understanding of SQL's historical context and its ongoing development, highlighting the contributions of key figures and the significance of each version in the language's evolution.</chunk>\\n<chunk>The document provides a comprehensive overview of SQL (Structured Query Language), a pivotal programming language for relational databases that was developed in the 1970s by Donald D. Chamberlin and Raymond F. Boyce. It traces SQL's evolution from its initial release in 1986 to the most recent version, SQL:2023, emphasizing the various dialects that have emerged and its significant influence on other query languages.\\n\\nKey aspects of SQL's structure are detailed, including its four primary sublanguages: Data Query Language (DQL), Data Definition Language (DDL), Data Control Language (DCL), and Data Manipulation Language (DML). The document highlights SQL's foundation in relational algebra, which underpins its functionality and design.\\n\\nThe standardization of SQL by ANSI (American National Standards Institute) and ISO (International Organization for Standardization) is discussed, along with the challenges of ensuring compliance across different database implementations. The document also addresses criticisms regarding SQL's divergence from the original relational model, which has sparked ongoing debates within the database community.\\n\\nAdditionally, the document outlines SQL's data types and key components, as well as the integration of procedural programming features that enhance its capabilities. It also mentions alternatives to SQL, providing a broader context within the landscape of database management systems.\\n\\nIn summary, this document serves as a detailed resource for understanding SQL's historical development, structural components, standardization efforts, and its role in the evolution of database technologies.</chunk>\\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      1.1.2. Pioneers and Milestones\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

@@ -47,13 +47,13 @@ export abstract class Doc {
     this._content = await this.parse();
     console.log('Content parsed');
     this.generateChunks();
-    console.log(`Chunks generated: ${this.chunks.length}`);
+    console.log('Chunks generated: ', this.chunks.length);
     await this.summarizeChunks();
-    console.log(`Chunks summarized: ${this.chunks.length}`);
+    console.log('Chunks summarized');
     await this.generateDocumentSummary();
-    console.log(`Document summary generated: ${this.summary}`);
+    console.log('Document summary generated');
     await this.enrichChunks();
-    console.log(`Chunks enriched: ${this.chunks.length}`);
+    console.log('Chunks enriched');
     await this.enrichDocumentSummary();
     console.log('Document summary enriched');
     if (!this._chunks) {
@@ -294,8 +294,6 @@ export abstract class Doc {
         }),
       });
 
-      console.log('Enriched chunk!');
-
       return {
         ...chunk,
         enrichedContent: enrichedChunkContent.text,
@@ -318,19 +316,19 @@ export abstract class Doc {
     }
 
     const results: Chunk[] = [];
+    const BATCH_SIZE = Math.floor(AI_GENERATION_BATCH_SIZE / 3);
+    const DELAY = AI_GENERATION_DELAY * 2;
 
-    for (let i = 0; i < this.chunks.length; i += AI_GENERATION_BATCH_SIZE / 2) {
-      const batch = this.chunks.slice(i, i + AI_GENERATION_BATCH_SIZE / 2);
+    for (let i = 0; i < this.chunks.length; i += BATCH_SIZE) {
+      const batch = this.chunks.slice(i, i + BATCH_SIZE);
       const batchResults = await Promise.all(
         batch.map((chunk) => this._enrichChunk(chunk)),
       );
       results.push(...batchResults);
 
       // Add a small delay between batches to avoid rate limits
-      if (i + AI_GENERATION_BATCH_SIZE / 2 < this.chunks.length) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, AI_GENERATION_DELAY),
-        );
+      if (i + BATCH_SIZE < this.chunks.length) {
+        await new Promise((resolve) => setTimeout(resolve, DELAY));
       }
     }
 

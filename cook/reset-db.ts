@@ -16,4 +16,6 @@ export async function resetDb() {
   `);
 }
 
-resetDb();
+resetDb().then(() => {
+  console.log('Database reset');
+});

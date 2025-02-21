@@ -6,7 +6,7 @@ import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { eq } from 'drizzle-orm';
 
-const sourceId = 'c55e8f1c-d1a8-4751-b282-51fccea96fea';
+const sourceId = 'b8e626d1-74d5-4e76-871e-a207aa0fb241';
 const source = await db.query.sources.findFirst({
   where: eq(schema.sources.id, sourceId),
 });
@@ -27,7 +27,7 @@ if (!chunks) {
 }
 
 const result = await generateObject({
-  model: openai('gpt-4o-mini'),
+  model: openai('o3-mini'),
   prompt: getGenerateCourseSyllabusPrompt({
     documentSummary: source.summary,
     documentChunksSummariesJoined: chunks

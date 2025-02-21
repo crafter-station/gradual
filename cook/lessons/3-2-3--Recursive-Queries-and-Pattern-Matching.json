@@ -1,0 +1,243 @@
+{
+  "object": [
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Introduction to Recursive Queries",
+        "body": "In this step, we'll introduce **recursive queries** using Common Table Expressions (CTEs). Recursive queries are powerful tools for querying hierarchical data structures. A recursive CTE typically consists of two parts:\n\n- **Anchor member**: The base case that retrieves the initial dataset.\n- **Recursive member**: The part that references the CTE itself to build upon the anchor data.\n\nHere's the basic structure:\n\n```sql\nWITH RECURSIVE cte_name AS (\n    -- Anchor member\n    SELECT ...\n    FROM table\n    WHERE condition\n\n    UNION ALL\n\n    -- Recursive member\n    SELECT ...\n    FROM table\n    JOIN cte_name ON join_condition\n)\nSELECT * FROM cte_name;\n```"
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Imagine an employee hierarchy where you want to retrieve all levels of management. The following recursive CTE starts by selecting the top-level managers and then recursively finds their subordinates.\n\n```sql\nWITH RECURSIVE EmployeeHierarchy AS (\n    -- Anchor member: Top-level managers\n    SELECT EmployeeID, ManagerID, Name\n    FROM Employees\n    WHERE ManagerID IS NULL\n\n    UNION ALL\n\n    -- Recursive member: Subordinates\n    SELECT e.EmployeeID, e.ManagerID, e.Name\n    FROM Employees e\n    JOIN EmployeeHierarchy eh ON e.ManagerID = eh.EmployeeID\n)\nSELECT * FROM EmployeeHierarchy;\n```",
+        "answer": "This example illustrates a recursive CTE that builds an employee hierarchy. The anchor part selects managers with no superior and the recursive part iteratively finds employees reporting to those managers."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "What are the key components of a recursive CTE in SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Anchor member and recursive member",
+            "explanation": "Correct; these two components are essential for executing a recursive query."
+          },
+          {
+            "order": 2,
+            "content": "Only SELECT and FROM clauses",
+            "explanation": "Incorrect; while SELECT and FROM are part of any SQL query, they do not specifically define recursion."
+          },
+          {
+            "order": 3,
+            "content": "WHERE and GROUP BY clauses",
+            "explanation": "Incorrect; these clauses handle filtering and grouping and are not unique to recursive operations."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "In a recursive query, what should the anchor member primarily do?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Select the base level data",
+            "explanation": "Correct; the anchor member retrieves the initial dataset from which recursion starts."
+          },
+          {
+            "order": 2,
+            "content": "Contain the UNION ALL clause",
+            "explanation": "Incorrect; the UNION ALL clause is used to combine the anchor and recursive members, not to define the anchor itself."
+          },
+          {
+            "order": 3,
+            "content": "Filter data using pattern matching",
+            "explanation": "Incorrect; filtering may be applied later, but the main role of the anchor is to provide the starting set of records."
+          },
+          {
+            "order": 4,
+            "content": "Perform data aggregation",
+            "explanation": "Incorrect; aggregation is not the primary responsibility of the anchor member in recursion."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Understanding Pattern Matching in SQL",
+        "body": "Pattern matching in SQL helps you search for specific patterns within text data. The simplest form of pattern matching is performed using the **LIKE** operator. For more advanced scenarios, many SQL dialects also provide support for regular expressions (using operators such as `REGEXP` or `SIMILAR TO`).\n\nExamples:\n- **LIKE '%pattern%'**: Finds any sequence that contains *pattern*.\n- **LIKE 'pattern%'**: Finds values that start with *pattern*.\n\nRegular expressions allow for more flexibility, such as defining character classes or quantifiers. However, be aware that complex patterns can have a performance impact on query execution."
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "A practical use of pattern matching is to retrieve emails from a specific domain. For example, to find all users with Gmail accounts:\n\n```sql\nSELECT email\nFROM Users\nWHERE email LIKE '%@gmail.com';\n```",
+        "answer": "This query retrieves email addresses ending with '@gmail.com' by using the LIKE operator to match the pattern."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "Which operator is typically used for simple pattern matching in SQL?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "LIKE",
+            "explanation": "Correct; LIKE is widely used for simple pattern matching in SQL."
+          },
+          {
+            "order": 2,
+            "content": "REGEXP",
+            "explanation": "Partially correct; REGEXP is used in some SQL dialects for more complex matching, but LIKE is the standard operator for simple patterns."
+          },
+          {
+            "order": 3,
+            "content": "IN",
+            "explanation": "Incorrect; IN is used to match values against a list, not for pattern matching."
+          },
+          {
+            "order": 4,
+            "content": "BETWEEN",
+            "explanation": "Incorrect; BETWEEN is used for range comparisons, not pattern matching."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "What is a potential drawback when combining recursive queries with advanced pattern matching?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "Increased complexity leading to reduced performance",
+            "explanation": "Correct; combining recursion with pattern matching can result in complex queries that may impact performance."
+          },
+          {
+            "order": 2,
+            "content": "Simpler query structures",
+            "explanation": "Incorrect; such combinations usually increase the complexity rather than simplify it."
+          },
+          {
+            "order": 3,
+            "content": "Automatic indexing of matched patterns",
+            "explanation": "Incorrect; while indexing can improve performance, recursive and pattern matching queries are typically more resource-intensive."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ],
+    [
+      {
+        "type": "TUTORIAL",
+        "title": "Combining Recursive Queries with Pattern Matching",
+        "body": "Now that we understand both recursive queries and pattern matching separately, let's see how they can be combined. Sometimes you need to extract hierarchical data and then apply filters based on textual patterns. After constructing a hierarchical query with a recursive CTE, you can add a **WHERE** clause that uses pattern matching (via LIKE or regular expressions) to filter the results.\n\nThis technique is valuable in scenarios such as filtering departments, job titles, or names that adhere to a particular format within an organizational hierarchy."
+      }
+    ],
+    [
+      {
+        "type": "EXAMPLE",
+        "body": "Consider an organization where you need to extract the full hierarchy and then filter for employee names that start with 'Dr.' (e.g., for a specialized team):\n\n```sql\nWITH RECURSIVE OrgChart AS (\n    -- Anchor member: Find top-level executives\n    SELECT EmployeeID, ManagerID, Name\n    FROM Employees\n    WHERE ManagerID IS NULL\n\n    UNION ALL\n\n    -- Recursive member: Find subordinates\n    SELECT e.EmployeeID, e.ManagerID, e.Name\n    FROM Employees e\n    JOIN OrgChart o ON e.ManagerID = o.EmployeeID\n)\nSELECT * FROM OrgChart\nWHERE Name LIKE 'Dr.%';\n```",
+        "answer": "This query first builds the entire organizational hierarchy and then filters the results to include only those records where the employee name starts with 'Dr.'. This exemplifies how recursive querying and pattern matching can be combined to satisfy complex query requirements."
+      }
+    ],
+    [
+      {
+        "type": "QUESTION",
+        "question": "In the advanced query combining recursive queries with pattern matching, what is the primary role of the WHERE clause after the recursive CTE?",
+        "alternatives": [
+          {
+            "order": 1,
+            "content": "To filter the recursively generated rows based on a specific text pattern",
+            "explanation": "Correct; the WHERE clause is applied after the CTE to limit the final output based on the specified pattern."
+          },
+          {
+            "order": 2,
+            "content": "To redefine the anchor member of the recursive CTE",
+            "explanation": "Incorrect; the anchor member is defined within the CTE, not in the WHERE clause."
+          },
+          {
+            "order": 3,
+            "content": "To join additional tables not included in the CTE",
+            "explanation": "Incorrect; the purpose of the WHERE clause here is solely to filter the results, not to join tables."
+          },
+          {
+            "order": 4,
+            "content": "To execute pattern matching within the recursive logic",
+            "explanation": "Incorrect; while pattern matching is applied, it is done as a post-recursion filter in the final SELECT statement."
+          }
+        ],
+        "correctAlternativeOrder": 1
+      }
+    ]
+  ],
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 1770,
+    "completionTokens": 4043,
+    "totalTokens": 5813
+  },
+  "warnings": [
+    {
+      "type": "unsupported-setting",
+      "setting": "temperature",
+      "details": "temperature is not supported for reasoning models"
+    }
+  ],
+  "providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1920,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "experimental_providerMetadata": {
+    "openai": {
+      "reasoningTokens": 1920,
+      "acceptedPredictionTokens": 0,
+      "rejectedPredictionTokens": 0,
+      "cachedPromptTokens": 0
+    }
+  },
+  "response": {
+    "id": "chatcmpl-B3F6Iz6RozWLs8ubx7IIQdKiH2CrI",
+    "timestamp": "2025-02-21T04:38:50.000Z",
+    "modelId": "o3-mini-2025-01-31",
+    "headers": {
+      "access-control-expose-headers": "X-Request-ID",
+      "alt-svc": "h3=\":443\"; ma=86400",
+      "cf-cache-status": "DYNAMIC",
+      "cf-ray": "91540c958edc4ffa-LIM",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "application/json",
+      "date": "Fri, 21 Feb 2025 04:39:18 GMT",
+      "openai-organization": "rh-18",
+      "openai-processing-ms": "28252",
+      "openai-version": "2020-10-01",
+      "server": "cloudflare",
+      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-ratelimit-limit-requests": "5000",
+      "x-ratelimit-limit-tokens": "4000000",
+      "x-ratelimit-remaining-requests": "4999",
+      "x-ratelimit-remaining-tokens": "3967391",
+      "x-ratelimit-reset-requests": "12ms",
+      "x-ratelimit-reset-tokens": "489ms",
+      "x-request-id": "req_842f4dd9e7b8f722489133bdfad3074d",
+      "set-cookie": "_cfuvid=lTwvfHZhqM9bIfIszgzCnY3uIFkQ882eUV1_kN_88WI-1740112758904-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None"
+    }
+  },
+  "request": {
+    "body": "{\"model\":\"o3-mini\",\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"type\":\"object\",\"properties\":{\"elements\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"TUTORIAL\"},\"title\":{\"type\":\"string\"},\"body\":{\"type\":\"string\"}},\"required\":[\"type\",\"title\",\"body\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"EXAMPLE\"},\"body\":{\"type\":\"string\"},\"answer\":{\"type\":\"string\"}},\"required\":[\"type\",\"body\",\"answer\"],\"additionalProperties\":false},{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"string\",\"const\":\"QUESTION\"},\"question\":{\"type\":\"string\"},\"alternatives\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"order\":{\"type\":\"number\"},\"content\":{\"type\":\"string\"},\"explanation\":{\"type\":\"string\"}},\"required\":[\"order\",\"content\",\"explanation\"],\"additionalProperties\":false}},\"correctAlternativeOrder\":{\"type\":\"number\"}},\"required\":[\"type\",\"question\",\"alternatives\",\"correctAlternativeOrder\"],\"additionalProperties\":false}]}}}},\"required\":[\"elements\"],\"additionalProperties\":false},\"strict\":true,\"name\":\"response\"}},\"messages\":[{\"role\":\"user\",\"content\":\"You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about \\\"3.2.3. Recursive Queries and Pattern Matching\\\".\\n\\n<context>\\n  <syllabus>\\n    Course: Mastering SQL: From Fundamentals to Modern Database Innovations\\n\\n1. Foundations and Historical Context of SQL\\n   1.1. The Origins and Evolution of SQL\\n      1.1.1. Historical Overview of SQL\\n      1.1.2. Pioneers and Milestones\\n      1.1.3. Evolution Timeline and Technological Impact\\n   1.2. Core Principles of Relational Databases\\n      1.2.1. Understanding the Relational Model\\n      1.2.2. Relational Algebra and Tuple Calculus\\n      1.2.3. Ensuring Data Integrity and Consistency\\n   1.3. SQL Standardization and Compliance\\n      1.3.1. Overview of ANSI and ISO Standards\\n      1.3.2. Compliance Challenges and Vendor Variability\\n      1.3.3. Standard vs. Implementation: Critical Comparisons\\n2. SQL Sublanguages and Core Operations\\n   2.1. Data Definition Language (DDL) Essentials\\n      2.1.1. Creating and Modifying Schemas\\n      2.1.2. Defining Data Types and Constraints\\n      2.1.3. Managing Indexes and Views\\n   2.2. Data Query Language (DQL) Fundamentals\\n      2.2.1. Mastering SELECT Statements and Clauses\\n      2.2.2. Filtering, Sorting, and Joining Data\\n      2.2.3. Practical Query Examples and Case Studies\\n   2.3. Data Manipulation and Control (DML & DCL)\\n      2.3.1. INSERT, UPDATE, and DELETE Operations\\n      2.3.2. Transaction Control and Rollback Mechanisms\\n      2.3.3. User Permissions and Access Controls (DCL)\\n3. Advanced SQL Concepts and Extensions\\n   3.1. Procedural Extensions and Control Flow\\n      3.1.1. Stored Procedures and User-Defined Functions\\n      3.1.2. Triggers and Automated Event Handling\\n      3.1.3. SQL/PSM and Other Procedural Extensions\\n   3.2. Advanced Query Techniques\\n      3.2.1. Subqueries and Nested Queries\\n      3.2.2. Window Functions and Aggregate Operations\\n      3.2.3. Recursive Queries and Pattern Matching\\n   3.3. Vendor-Specific Extensions and Cross-Platform Considerations\\n      3.3.1. SQL Portability and Vendor Variability\\n      3.3.2. Exploring Proprietary Extensions\\n      3.3.3. Alternatives to SQL and the Rise of NoSQL\\n4. Modern SQL Applications and Performance Best Practices\\n   4.1. SQL in the Modern Data Ecosystem\\n      4.1.1. Integrating JSON and Non-Relational Data Types\\n      4.1.2. Property Graph Queries and Advanced Data Models\\n      4.1.3. SQL in Cloud and Big Data Environments\\n   4.2. Database Design and Optimization\\n      4.2.1. Schema Design for Performance and Scalability\\n      4.2.2. Query Optimization and Indexing Strategies\\n      4.2.3. Performance Tuning and Troubleshooting\\n   4.3. Real-World Projects and Best Practices\\n      4.3.1. Case Studies of Successful SQL Deployments\\n      4.3.2. Integrating SQL with Modern Programming Frameworks\\n      4.3.3. Establishing Best Practices and Avoiding Common Pitfalls\\n\\n  </syllabus>\\n  <current-topic>\\n    <title>\\n      3.2.3. Recursive Queries and Pattern Matching\\n    </title>\\n    <description>\\n      This topic introduces recursive query techniques and regular expression matching within SQL. Students will learn how recursion can solve hierarchical data problems and support complex searches. Detailed case studies illustrate the implementation of recursive common table expressions (CTEs). The session also outlines the limitations and performance impacts of recursive and pattern-matching queries.\\n    </description>\\n    <metadata>\\n      <module-title>\\n        3.2. Advanced Query Techniques\\n      </module-title>\\n      <unit-title>\\n        3. Advanced SQL Concepts and Extensions\\n      </unit-title>\\n    </metadata>\\n  </current-topic>\\n  <chunks>\\n    \\n  </chunks>\\n</context>\\n\\nImportant: Focus only on the current topic. Do not cover material from other modules in the syllabus:\\n\\nThe lesson should follow this progression:\\n1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)\\n2. Include examples that demonstrate the concepts\\n3. Reinforce with questions throughout the lesson\\n4. Continue alternating between tutorials, examples, and questions\\n\\nRequired step count: 10-15 steps total\\n\\nExample pattern of steps:\\nTUTORIAL (introduce foundational concept)\\nEXAMPLE (demonstrate foundational concept)\\nQUESTION (test foundational concept)\\nQUESTION (reinforce foundational concept)\\nTUTORIAL (introduce intermediate concept)\\nEXAMPLE (demonstrate intermediate concept)\\nQUESTION (test intermediate concept)\\nQUESTION (reinforce intermediate concept)\\nEXAMPLE (demonstrate advanced application)\\nQUESTION (test advanced application)\\nTUTORIAL (deeper concept)\\nQUESTION (comprehensive application)\\n... continues\\n\\nGuidelines:\\n- Use markdown formatting in the content\\n- Make the progression logical and build upon previous knowledge\\n- Include code examples when relevant\\n- For questions, provide meaningful explanations for each alternative\\n- Stay focused on the specific topic scope\\n- Avoid covering material from other modules\\n\\nEach step must follow one of these formats:\\n\\nTUTORIAL steps should:\\n- Start with foundational concepts\\n- Use clear explanations with markdown formatting\\n- Include relevant code snippets or diagrams when needed\\n- Break down complex topics into digestible parts\\n- Format content as:\\n  {\\n    type: \\\"TUTORIAL\\\",\\n    title: \\\"Clear, concise title\\\",\\n    body: \\\"Detailed explanation in markdown\\\"\\n  }\\n\\nEXAMPLE steps should:\\n- Demonstrate practical applications\\n- Show real-world scenarios\\n- Include both the problem and its solution\\n- Explain the reasoning behind the solution\\n- Format content as:\\n  {\\n    type: \\\"EXAMPLE\\\",\\n    body: \\\"Problem description\\\",\\n    answer: \\\"Detailed solution\\\"\\n  }\\n\\nQUESTION steps should:\\n- Test understanding of previously covered concepts\\n- Have 3-4 carefully crafted alternatives\\n- Include detailed explanations for each alternative\\n- Ensure the correct alternative is clearly superior\\n- Format content as:\\n  {\\n    type: \\\"QUESTION\\\",\\n    question: \\\"Clear question text\\\",\\n    alternatives: [\\n      {\\n        order: 1,\\n        content: \\\"Alternative text\\\",\\n        explanation: \\\"Why this is/isn't correct\\\"\\n      },\\n      // ... more alternatives\\n    ],\\n    correctAlternativeOrder: number\\n  }\\n\\n<reminder>\\n  <topic-scope>\\n    Focus only on the current topic. Do not cover material from other modules.\\n    <topic-title>\\n      3.2.3. Recursive Queries and Pattern Matching\\n    </topic-title>\\n  </topic-scope>\\n  <step-count>\\n    Required step count: 10-15 steps total\\n  </step-count>\\n</reminder>\\n\\nGenerate an array of steps that follows this structure and ensures optimal learning progression while staying strictly within the scope of the current topic.\"}]}"
+  }
+}

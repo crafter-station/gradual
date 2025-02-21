@@ -1,4 +1,5 @@
-CREATE EXTENSION vector;
+CREATE EXTENSION IF NOT EXISTS vector;
+
 CREATE TYPE "public"."source_type" AS ENUM('FILE', 'URL');--> statement-breakpoint
 CREATE TYPE "public"."step_type" AS ENUM('TUTORIAL', 'EXAMPLE', 'QUESTION');--> statement-breakpoint
 CREATE TYPE "public"."task_type" AS ENUM('LESSON', 'QUIZ', 'MULTISTEP');--> statement-breakpoint
@@ -16,9 +17,12 @@ CREATE TABLE "chunks" (
 CREATE TABLE "courses" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" varchar NOT NULL,
+	"description" text NOT NULL,
+	"embedding" vector(1536),
+	"is_public" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"creator_id" uuid NOT NULL,
-	"is_public" boolean NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"creator_id" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "enrollments" (
@@ -31,9 +35,13 @@ CREATE TABLE "enrollments" (
 --> statement-breakpoint
 CREATE TABLE "modules" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"title" varchar NOT NULL,
 	"order" integer NOT NULL,
-	"unit_id" uuid NOT NULL
+	"title" varchar NOT NULL,
+	"description" text NOT NULL,
+	"embedding" vector(1536),
+	"unit_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "sources" (
@@ -60,9 +68,9 @@ CREATE TABLE "step_progress" (
 --> statement-breakpoint
 CREATE TABLE "steps" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"type" "step_type" NOT NULL,
 	"order" integer NOT NULL,
 	"content" jsonb NOT NULL,
+	"type" "step_type" NOT NULL,
 	"task_id" uuid NOT NULL
 );
 --> statement-breakpoint
@@ -79,20 +87,27 @@ CREATE TABLE "task_progress" (
 --> statement-breakpoint
 CREATE TABLE "tasks" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"order" integer NOT NULL,
 	"title" varchar NOT NULL,
 	"description" text NOT NULL,
-	"order" integer NOT NULL,
+	"embedding" vector(1536),
 	"type" "task_type" NOT NULL,
-	"module_id" uuid NOT NULL,
 	"experience_points" integer DEFAULT 10 NOT NULL,
-	"steps_count" integer NOT NULL
+	"steps_count" integer NOT NULL,
+	"module_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "units" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"title" varchar NOT NULL,
 	"order" integer NOT NULL,
-	"course_id" uuid NOT NULL
+	"title" varchar NOT NULL,
+	"description" text NOT NULL,
+	"embedding" vector(1536),
+	"course_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -119,10 +134,17 @@ ALTER TABLE "task_progress" ADD CONSTRAINT "task_progress_user_id_users_id_fk" F
 ALTER TABLE "task_progress" ADD CONSTRAINT "task_progress_last_completed_step_id_steps_id_fk" FOREIGN KEY ("last_completed_step_id") REFERENCES "public"."steps"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "tasks_module_id_modules_id_fk" FOREIGN KEY ("module_id") REFERENCES "public"."modules"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "units" ADD CONSTRAINT "units_course_id_courses_id_fk" FOREIGN KEY ("course_id") REFERENCES "public"."courses"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "source_id_order_index" ON "chunks" USING btree ("source_id","order");--> statement-breakpoint
-CREATE INDEX "source_id_index" ON "chunks" USING btree ("source_id");--> statement-breakpoint
-CREATE INDEX "embedding_index" ON "chunks" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
+CREATE INDEX "chunks_source_id_order_index" ON "chunks" USING btree ("source_id","order");--> statement-breakpoint
+CREATE INDEX "chunks_source_id_index" ON "chunks" USING btree ("source_id");--> statement-breakpoint
+CREATE INDEX "chunks_embedding_index" ON "chunks" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
+CREATE INDEX "courses_embedding_index" ON "courses" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
+CREATE INDEX "modules_unit_id_order_index" ON "modules" USING btree ("unit_id","order");--> statement-breakpoint
+CREATE INDEX "modules_unit_id_index" ON "modules" USING btree ("unit_id");--> statement-breakpoint
+CREATE INDEX "modules_embedding_index" ON "modules" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
 CREATE INDEX "source_type_index" ON "sources" USING btree ("type");--> statement-breakpoint
 CREATE INDEX "source_course_id_index" ON "sources" USING btree ("course_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "steps_order_task_id_unique" ON "steps" USING btree ("order","task_id");--> statement-breakpoint
-CREATE INDEX "steps_for_task" ON "steps" USING btree ("task_id");
+CREATE INDEX "steps_for_task" ON "steps" USING btree ("task_id");--> statement-breakpoint
+CREATE INDEX "units_course_id_order_index" ON "units" USING btree ("course_id","order");--> statement-breakpoint
+CREATE INDEX "units_course_id_index" ON "units" USING btree ("course_id");--> statement-breakpoint
+CREATE INDEX "units_embedding_index" ON "units" USING hnsw ("embedding" vector_cosine_ops);

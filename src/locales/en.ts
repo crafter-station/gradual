@@ -191,4 +191,8 @@ export default {
       text: 'Learn about our methodology',
     },
   },
+  upload: {
+    title: 'Upload New Course',
+    subtitle: 'Upload a new course to Gradual',
+  },
 } as const;
