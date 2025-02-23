@@ -84,7 +84,7 @@ export default async function CoursesPage() {
               asChild
               className="animate-fade-in transition-transform duration-300 hover:scale-105"
             >
-              <Link href="/upload" className="flex items-center gap-2">
+              <Link href="/courses/new" className="flex items-center gap-2">
                 <FileTextIcon className="h-4 w-4" />
                 {t('courses.uploadPdf')}
               </Link>

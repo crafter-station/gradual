@@ -49,7 +49,7 @@ const navData = [
   },
   {
     title: 'Upload',
-    url: '/upload',
+    url: '/courses/new',
     icon: UploadIcon,
   },
   {
@@ -59,7 +59,7 @@ const navData = [
   },
 ];
 
-function NavMain({ items }: { items: typeof navData }) {
+function NavMain({ items }: Readonly<{ items: typeof navData }>) {
   const t = useI18n();
   const pathname = usePathname();
 
@@ -101,8 +101,6 @@ function NavMain({ items }: { items: typeof navData }) {
 }
 
 function UserNav() {
-  const t = useI18n();
-
   const handleSignOut = () => {
     console.log('sign out');
   };
