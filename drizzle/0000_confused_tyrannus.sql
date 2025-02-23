@@ -1,5 +1,4 @@
 CREATE EXTENSION IF NOT EXISTS vector;
-
 CREATE TYPE "public"."source_type" AS ENUM('FILE', 'URL');--> statement-breakpoint
 CREATE TYPE "public"."step_type" AS ENUM('TUTORIAL', 'EXAMPLE', 'QUESTION');--> statement-breakpoint
 CREATE TYPE "public"."task_type" AS ENUM('LESSON', 'QUIZ', 'MULTISTEP');--> statement-breakpoint
@@ -18,7 +17,7 @@ CREATE TABLE "courses" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" varchar NOT NULL,
 	"description" text NOT NULL,
-	"embedding" vector(1536),
+	"embedding" vector(1536) NOT NULL,
 	"is_public" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -38,7 +37,7 @@ CREATE TABLE "modules" (
 	"order" integer NOT NULL,
 	"title" varchar NOT NULL,
 	"description" text NOT NULL,
-	"embedding" vector(1536),
+	"embedding" vector(1536) NOT NULL,
 	"unit_id" uuid NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -50,7 +49,9 @@ CREATE TABLE "sources" (
 	"file_path" text NOT NULL,
 	"creator_id" uuid NOT NULL,
 	"course_id" uuid,
-	"summary" text DEFAULT 'Default summary' NOT NULL,
+	"summary" text NOT NULL,
+	"chunks_count" integer DEFAULT 0 NOT NULL,
+	"embedding" vector(1536) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
@@ -90,7 +91,7 @@ CREATE TABLE "tasks" (
 	"order" integer NOT NULL,
 	"title" varchar NOT NULL,
 	"description" text NOT NULL,
-	"embedding" vector(1536),
+	"embedding" vector(1536) NOT NULL,
 	"type" "task_type" NOT NULL,
 	"experience_points" integer DEFAULT 10 NOT NULL,
 	"steps_count" integer NOT NULL,
@@ -104,7 +105,7 @@ CREATE TABLE "units" (
 	"order" integer NOT NULL,
 	"title" varchar NOT NULL,
 	"description" text NOT NULL,
-	"embedding" vector(1536),
+	"embedding" vector(1536) NOT NULL,
 	"course_id" uuid NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
@@ -143,6 +144,8 @@ CREATE INDEX "modules_unit_id_index" ON "modules" USING btree ("unit_id");--> st
 CREATE INDEX "modules_embedding_index" ON "modules" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
 CREATE INDEX "source_type_index" ON "sources" USING btree ("type");--> statement-breakpoint
 CREATE INDEX "source_course_id_index" ON "sources" USING btree ("course_id");--> statement-breakpoint
+CREATE INDEX "source_chunks_count_index" ON "sources" USING btree ("chunks_count");--> statement-breakpoint
+CREATE INDEX "source_embedding_index" ON "sources" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
 CREATE UNIQUE INDEX "steps_order_task_id_unique" ON "steps" USING btree ("order","task_id");--> statement-breakpoint
 CREATE INDEX "steps_for_task" ON "steps" USING btree ("task_id");--> statement-breakpoint
 CREATE INDEX "units_course_id_order_index" ON "units" USING btree ("course_id","order");--> statement-breakpoint

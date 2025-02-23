@@ -13,6 +13,7 @@ import {
   varchar,
   vector,
 } from 'drizzle-orm/pg-core';
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
 export const users = pgTable('users', {
@@ -22,35 +23,6 @@ export const users = pgTable('users', {
   avatarUrl: text('avatar_url').notNull(),
 });
 
-export const courses = pgTable(
-  'courses',
-  {
-    id: uuid('id').primaryKey().defaultRandom(),
-
-    title: varchar('title').notNull(),
-    description: text('description').notNull(),
-    embedding: vector('embedding', { dimensions: 1536 }),
-
-    isPublic: boolean('is_public').notNull().default(true),
-
-    createdAt: timestamp('created_at', { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true })
-      .notNull()
-      .defaultNow(),
-
-    creatorId: uuid('creator_id')
-      .notNull()
-      .references(() => users.id),
-  },
-  (table) => [
-    index('courses_embedding_index').using(
-      'hnsw',
-      table.embedding.op('vector_cosine_ops'),
-    ),
-  ],
-);
 export const sourceTypeEnum = pgEnum('source_type', ['FILE', 'URL']);
 
 export const sources = pgTable(
@@ -65,7 +37,9 @@ export const sources = pgTable(
       .notNull()
       .references(() => users.id),
     courseId: uuid('course_id').references(() => courses.id),
-    summary: text('summary').notNull().default('Default summary'),
+    summary: text('summary').notNull(),
+    chunksCount: integer('chunks_count').notNull().default(0),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
 
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
@@ -74,6 +48,11 @@ export const sources = pgTable(
   (table) => [
     index('source_type_index').on(table.type),
     index('source_course_id_index').on(table.courseId),
+    index('source_chunks_count_index').on(table.chunksCount),
+    index('source_embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
   ],
 );
 
@@ -117,6 +96,42 @@ export const chunksRelations = relations(chunks, ({ one }) => ({
   }),
 }));
 
+export const courses = pgTable(
+  'courses',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+
+    title: varchar('title').notNull(),
+    description: text('description').notNull(),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+
+    isPublic: boolean('is_public').notNull().default(true),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+
+    creatorId: uuid('creator_id')
+      .notNull()
+      .references(() => users.id),
+  },
+  (table) => [
+    index('courses_embedding_index').using(
+      'hnsw',
+      table.embedding.op('vector_cosine_ops'),
+    ),
+  ],
+);
+
+export const InsertCourseSchema = createInsertSchema(courses);
+export const SelectCourseSchema = createSelectSchema(courses);
+
+export type SelectCourse = typeof courses.$inferSelect;
+export type InsertCourse = typeof courses.$inferInsert;
+
 export const units = pgTable(
   'units',
   {
@@ -125,7 +140,7 @@ export const units = pgTable(
     order: integer('order').notNull(),
     title: varchar('title').notNull(),
     description: text('description').notNull(),
-    embedding: vector('embedding', { dimensions: 1536 }),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
 
     courseId: uuid('course_id')
       .notNull()
@@ -147,6 +162,11 @@ export const units = pgTable(
     ),
   ],
 );
+export const InsertUnitSchema = createInsertSchema(units);
+export const SelectUnitSchema = createSelectSchema(units);
+
+export type SelectUnit = typeof units.$inferSelect;
+export type InsertUnit = typeof units.$inferInsert;
 
 export const modules = pgTable(
   'modules',
@@ -156,7 +176,7 @@ export const modules = pgTable(
     order: integer('order').notNull(),
     title: varchar('title').notNull(),
     description: text('description').notNull(),
-    embedding: vector('embedding', { dimensions: 1536 }),
+    embedding: vector('embedding', { dimensions: 1536 }).notNull(),
 
     unitId: uuid('unit_id')
       .notNull()
@@ -178,6 +198,11 @@ export const modules = pgTable(
     ),
   ],
 );
+export const InsertModuleSchema = createInsertSchema(modules);
+export const SelectModuleSchema = createSelectSchema(modules);
+
+export type SelectModule = typeof modules.$inferSelect;
+export type InsertModule = typeof modules.$inferInsert;
 
 export const taskTypeEnum = pgEnum('task_type', [
   'LESSON',
@@ -191,7 +216,7 @@ export const tasks = pgTable('tasks', {
   order: integer('order').notNull(),
   title: varchar('title').notNull(),
   description: text('description').notNull(),
-  embedding: vector('embedding', { dimensions: 1536 }),
+  embedding: vector('embedding', { dimensions: 1536 }).notNull(),
 
   type: taskTypeEnum('type').notNull(),
 
@@ -209,6 +234,10 @@ export const tasks = pgTable('tasks', {
     .notNull()
     .defaultNow(),
 });
+export const InsertTaskSchema = createInsertSchema(tasks);
+export const SelectTaskSchema = createSelectSchema(tasks);
+
+export type InsertTask = typeof tasks.$inferInsert;
 export type SelectTask = typeof tasks.$inferSelect;
 
 export const stepTypeEnum = pgEnum('step_type', [

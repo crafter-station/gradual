@@ -1,17 +1,17 @@
 interface SummarizeDocumentInput {
-  document: string;
+  content: string;
 }
 
 export function getSummarizeDocumentPrompt({
-  document,
+  content,
 }: SummarizeDocumentInput): string {
   return `<task>
 Generate a descriptive summary of the document that follows. Return a summary that is roughly 10% of the input document size while retaining as many key points as possible. Your response should begin with "The document contains".
 </task>
 
-<document>
-${document}
-</document>
+<content>
+${content}
+</content>
 
 <instructions>
 Your response must:

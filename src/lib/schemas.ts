@@ -13,7 +13,7 @@ export const SyllabusSchema = z.object({
           order: z.number(),
           title: z.string(),
           description: z.string(),
-          topics: z.array(
+          lessons: z.array(
             z.object({
               order: z.number(),
               title: z.string(),

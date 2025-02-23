@@ -1,5 +1,5 @@
 {
-  "id": "d31e2b60-aac0-447c-a918-1c924eb6734f",
+  "id": "410d4f17-f89d-4bd5-8f97-26dab461afd7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -121,12 +121,8 @@
           "name": "chunks_source_id_sources_id_fk",
           "tableFrom": "chunks",
           "tableTo": "sources",
-          "columnsFrom": [
-            "source_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["source_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -164,7 +160,7 @@
           "name": "embedding",
           "type": "vector(1536)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "is_public": {
           "name": "is_public",
@@ -217,12 +213,8 @@
           "name": "courses_creator_id_users_id_fk",
           "tableFrom": "courses",
           "tableTo": "users",
-          "columnsFrom": [
-            "creator_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["creator_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -275,12 +267,8 @@
           "name": "enrollments_user_id_users_id_fk",
           "tableFrom": "enrollments",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -288,12 +276,8 @@
           "name": "enrollments_course_id_courses_id_fk",
           "tableFrom": "enrollments",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["course_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -337,7 +321,7 @@
           "name": "embedding",
           "type": "vector(1536)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "unit_id": {
           "name": "unit_id",
@@ -419,12 +403,8 @@
           "name": "modules_unit_id_units_id_fk",
           "tableFrom": "modules",
           "tableTo": "units",
-          "columnsFrom": [
-            "unit_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["unit_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -475,8 +455,20 @@
           "name": "summary",
           "type": "text",
           "primaryKey": false,
+          "notNull": true
+        },
+        "chunks_count": {
+          "name": "chunks_count",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true,
-          "default": "'Default summary'"
+          "default": 0
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -516,6 +508,37 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "source_chunks_count_index": {
+          "name": "source_chunks_count_index",
+          "columns": [
+            {
+              "expression": "chunks_count",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "source_embedding_index": {
+          "name": "source_embedding_index",
+          "columns": [
+            {
+              "expression": "embedding",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -523,12 +546,8 @@
           "name": "sources_creator_id_users_id_fk",
           "tableFrom": "sources",
           "tableTo": "users",
-          "columnsFrom": [
-            "creator_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["creator_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -536,12 +555,8 @@
           "name": "sources_course_id_courses_id_fk",
           "tableFrom": "sources",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["course_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -618,12 +633,8 @@
           "name": "step_progress_user_id_users_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -631,12 +642,8 @@
           "name": "step_progress_step_id_steps_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "steps",
-          "columnsFrom": [
-            "step_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["step_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -644,12 +651,8 @@
           "name": "step_progress_task_id_tasks_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -657,12 +660,8 @@
           "name": "step_progress_task_progress_id_task_progress_id_fk",
           "tableFrom": "step_progress",
           "tableTo": "task_progress",
-          "columnsFrom": [
-            "task_progress_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_progress_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -753,12 +752,8 @@
           "name": "steps_task_id_tasks_id_fk",
           "tableFrom": "steps",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -830,12 +825,8 @@
           "name": "task_progress_task_id_tasks_id_fk",
           "tableFrom": "task_progress",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -843,12 +834,8 @@
           "name": "task_progress_user_id_users_id_fk",
           "tableFrom": "task_progress",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -856,12 +843,8 @@
           "name": "task_progress_last_completed_step_id_steps_id_fk",
           "tableFrom": "task_progress",
           "tableTo": "steps",
-          "columnsFrom": [
-            "last_completed_step_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["last_completed_step_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -905,7 +888,7 @@
           "name": "embedding",
           "type": "vector(1536)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "type": {
           "name": "type",
@@ -954,12 +937,8 @@
           "name": "tasks_module_id_modules_id_fk",
           "tableFrom": "tasks",
           "tableTo": "modules",
-          "columnsFrom": [
-            "module_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["module_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1003,7 +982,7 @@
           "name": "embedding",
           "type": "vector(1536)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "course_id": {
           "name": "course_id",
@@ -1085,12 +1064,8 @@
           "name": "units_course_id_courses_id_fk",
           "tableFrom": "units",
           "tableTo": "courses",
-          "columnsFrom": [
-            "course_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["course_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1144,28 +1119,17 @@
     "public.source_type": {
       "name": "source_type",
       "schema": "public",
-      "values": [
-        "FILE",
-        "URL"
-      ]
+      "values": ["FILE", "URL"]
     },
     "public.step_type": {
       "name": "step_type",
       "schema": "public",
-      "values": [
-        "TUTORIAL",
-        "EXAMPLE",
-        "QUESTION"
-      ]
+      "values": ["TUTORIAL", "EXAMPLE", "QUESTION"]
     },
     "public.task_type": {
       "name": "task_type",
       "schema": "public",
-      "values": [
-        "LESSON",
-        "QUIZ",
-        "MULTISTEP"
-      ]
+      "values": ["LESSON", "QUIZ", "MULTISTEP"]
     }
   },
   "schemas": {},

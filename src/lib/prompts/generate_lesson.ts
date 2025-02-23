@@ -1,11 +1,11 @@
 export function getGenerateLessonPrompt({
-  topic,
+  lesson,
   chunks,
   syllabus,
   unitTitle,
   moduleTitle,
 }: {
-  topic: {
+  lesson: {
     description: string;
     title: string;
   };
@@ -14,7 +14,7 @@ export function getGenerateLessonPrompt({
   unitTitle: string;
   moduleTitle: string;
 }) {
-  return `You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about "${topic.title}".
+  return `You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about "${lesson.title}".
 
 <context>
   <syllabus>
@@ -22,10 +22,10 @@ export function getGenerateLessonPrompt({
   </syllabus>
   <current-topic>
     <title>
-      ${topic.title}
+      ${lesson.title}
     </title>
     <description>
-      ${topic.description}
+      ${lesson.description}
     </description>
     <metadata>
       <module-title>
@@ -121,12 +121,12 @@ QUESTION steps should:
   }
 
 <reminder>
-  <topic-scope>
-    Focus only on the current topic. Do not cover material from other modules.
-    <topic-title>
-      ${topic.title}
-    </topic-title>
-  </topic-scope>
+  <lesson-scope>
+    Focus only on the current lesson. Do not cover material from other lessons.
+    <lesson-title>
+      ${lesson.title}
+    </lesson-title>
+  </lesson-scope>
   <step-count>
     Required step count: 10-15 steps total
   </step-count>

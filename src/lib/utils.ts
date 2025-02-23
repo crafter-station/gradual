@@ -30,8 +30,8 @@ export function formatSyllabus(syllabus: Syllabus): string {
     for (const module of unit.modules) {
       output += `   ${unit.order}.${module.order}. ${module.title}\n`;
 
-      for (const topic of module.topics) {
-        output += `      ${unit.order}.${module.order}.${topic.order}. ${topic.title}\n`;
+      for (const lesson of module.lessons) {
+        output += `      ${unit.order}.${module.order}.${lesson.order}. ${lesson.title}\n`;
       }
     }
   }

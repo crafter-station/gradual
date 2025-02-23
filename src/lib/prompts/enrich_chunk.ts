@@ -1,18 +1,18 @@
 import { CHUNK_SIZE } from '../constants';
 
 interface EnrichChunkInput {
-  documentSummary: string;
+  sourceSummary: string;
   chunk: string;
-  precedingChunk: string | null;
-  succeedingChunk: string | null;
+  precedingChunkContent: string | null;
+  succeedingChunkContent: string | null;
   chunkSize?: number;
 }
 
 export function getEnrichChunkPrompt({
-  documentSummary,
+  sourceSummary,
   chunk,
-  precedingChunk,
-  succeedingChunk,
+  precedingChunkContent,
+  succeedingChunkContent,
   chunkSize = CHUNK_SIZE,
 }: EnrichChunkInput): string {
   return `<task>
@@ -20,9 +20,9 @@ Enrich and refine the given chunk of text while maintaining its independence and
 </task>
 
 <context>
-<document_summary>${documentSummary}</document_summary>
-<preceding_chunk>${precedingChunk ?? 'None'}</preceding_chunk>
-<succeeding_chunk>${succeedingChunk ?? 'None'}</succeeding_chunk>
+<source_summary>${sourceSummary}</source_summary>
+<preceding_chunk>${precedingChunkContent ?? 'None'}</preceding_chunk>
+<succeeding_chunk>${succeedingChunkContent ?? 'None'}</succeeding_chunk>
 </context>
 
 <input_chunk>

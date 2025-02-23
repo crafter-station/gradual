@@ -19,9 +19,7 @@ if (!user) {
   throw new Error('User not found');
 }
 
-const document = new WebPageDoc(
-  'https://medium.com/@anuragmishra_27746/five-levels-of-chunking-strategies-in-rag-notes-from-gregs-video-7b735895694d',
-);
+const document = new WebPageDoc('https://www.rfc-editor.org/rfc/rfc959.html');
 
 await document.init();
 

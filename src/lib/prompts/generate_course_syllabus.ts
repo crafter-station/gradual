@@ -29,7 +29,7 @@ export function getGenerateCourseSyllabusPrompt({
        * Content is evenly distributed across units
        * Each unit builds upon knowledge from previous units
     3. Within each unit, develop 2-4 focused modules
-    4. Within each module, create 3-5 specific topics
+    4. Within each module, create 3-5 specific lessons
   </content_structure>
 
   <detailed_requirements>
@@ -66,9 +66,9 @@ export function getGenerateCourseSyllabusPrompt({
       * Include learning methodologies
       * Connect to both previous and upcoming content
     
-    Topic Requirements:
-    - Topics should be highly specific and actionable
-    - Each topic description should include:
+    Lesson Requirements:
+    - Lessons should be highly specific and actionable
+    - Each lesson description should include:
       * Detailed learning objectives (3-5 sentences)
       * Specific examples and applications
       * Common misconceptions and how to address them
@@ -116,13 +116,13 @@ export function getGenerateCourseSyllabusPrompt({
               "order": 1,
               "title": "Arrays and Linked Lists",
               "description": "[Detailed module description...]",
-              "topics": [
+              "lessons": [
                 {
                   "order": 1,
                   "title": "Introduction to Arrays",
-                  "description": "[Detailed topic description with 3-5 sentences...]"
+                  "description": "[Detailed lesson description with 3-5 sentences...]"
                 },
-                // 2-4 more topics...
+                // 2-4 more lessons...
               ]
             },
             // 2-3 more modules...
@@ -159,10 +159,10 @@ export function getGenerateCourseSyllabusPrompt({
        - A comprehensive description
        - Clear learning objectives
     4. Each module must have:
-       - 3-5 specific topics
+       - 3-5 specific lessons
        - A detailed description
        - Clear learning outcomes
-    5. Each topic must have:
+    5. Each lesson must have:
        - A clear title
        - A detailed 3-5 sentence description
        - Multiple tutorial steps when needed for complex concepts
@@ -197,10 +197,10 @@ export function getGenerateCourseSyllabusPrompt({
          - Don't separate strongly related concepts
          - Don't introduce concepts before prerequisites
 
-    4. Topic Planning (3-5 topics per module):
+    4. Lesson Planning (3-5 lessons per module):
        * Create specific, focused learning points
-       * Ensure topics support the module's objectives
-       * Maintain consistent depth across topics
+       * Ensure lessons support the module's objectives
+       * Maintain consistent depth across lessons
 
     5. Final Review Checklist:
        * Is each unit truly distinct from others?
@@ -213,7 +213,7 @@ export function getGenerateCourseSyllabusPrompt({
   <reflection_requirement>
     Before returning the syllabus:
     1. Review the entire structure for logical flow
-    2. Verify that each level (unit/module/topic) is properly scoped
+    2. Verify that each level (unit/module/lesson) is properly scoped
     3. Confirm that applications follow their theoretical foundations
     4. Check that related concepts are grouped appropriately
     5. Ensure no unit-level concepts are placed as modules
