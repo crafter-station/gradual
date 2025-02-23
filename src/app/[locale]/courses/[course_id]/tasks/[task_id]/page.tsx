@@ -207,6 +207,15 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
                 stepProgress?.selectedAlternativeOrder ?? undefined
               }
               isLastStep={isLastStep}
+              correctAlternativeOrder={
+                stepProgress?.completedAt
+                  ? step.content.alternatives.find(
+                      (alternative) =>
+                        alternative.order ===
+                        step.content.correctAlternativeOrder,
+                    )?.order
+                  : undefined
+              }
             />
           );
         })}

@@ -3,8 +3,7 @@
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { RadioGroupItem } from '@/components/ui/radio-group';
-import { RadioGroup } from '@/components/ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { QuestionStepContent } from '@/db/schema';
 import { cn } from '@/lib/utils';
 import { CheckIcon, Loader2, XIcon } from 'lucide-react';
@@ -25,6 +24,7 @@ type QuestionStepProps = Omit<
   explanation?: string;
   isLastStep: boolean;
   isLastVisibleStep: boolean;
+  correctAlternativeOrder?: number;
 };
 
 export const QuestionStep = ({
@@ -35,6 +35,7 @@ export const QuestionStep = ({
   stepIndex,
   explanation: initialExplanation,
   isCorrect: initialIsCorrect,
+  correctAlternativeOrder,
   isLastStep,
   isLastVisibleStep,
 }: QuestionStepProps) => {
@@ -94,8 +95,11 @@ export const QuestionStep = ({
       )}
     >
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          Question {stepIndex + 1}
+        <CardTitle className="flex items-center justify-between gap-2">
+          <span>Question {stepIndex + 1}</span>
+          {isCorrect && (
+            <span className="text-sm text-success">You got it right!</span>
+          )}
         </CardTitle>
       </CardHeader>
       <form action={action}>
@@ -110,20 +114,19 @@ export const QuestionStep = ({
               String(state?.success)
             }
             defaultValue={
-              selectedAlternativeOrder?.toString() ||
+              selectedAlternativeOrder?.toString() ??
               state?.form?.selectedAlternativeOrder?.toString()
             }
             disabled={!!explanation}
           >
             {alternatives
-              .sort((a, b) => a.order - b.order)
-
+              .toSorted((a, b) => a.order - b.order)
               .map((alternative, index) => (
                 <div
                   key={alternative.order}
                   className={cn(
                     'has-data-[state=checked]:!border-primary relative flex w-full items-center gap-2 rounded-lg border p-4 shadow-black/5 shadow-sm',
-                    (selectedAlternativeOrder ||
+                    (selectedAlternativeOrder ??
                       state?.form?.selectedAlternativeOrder) ===
                       alternative.order &&
                       (isCorrect
@@ -143,7 +146,7 @@ export const QuestionStep = ({
                   >
                     {alternative.content}
 
-                    {(selectedAlternativeOrder ||
+                    {(selectedAlternativeOrder ??
                       state?.form?.selectedAlternativeOrder) ===
                       alternative.order &&
                       (isCorrect ? (
@@ -164,6 +167,19 @@ export const QuestionStep = ({
               <div className="prose dark:prose-invert">
                 <ReactMarkdown>{explanation}</ReactMarkdown>
               </div>
+              {!isCorrect && (
+                <p className="mt-2 text-sm">
+                  Correct answer:{' '}
+                  <span className="font-bold">
+                    {
+                      alternatives.find(
+                        (alternative) =>
+                          alternative.order === correctAlternativeOrder,
+                      )?.content
+                    }
+                  </span>
+                </p>
+              )}
             </div>
           )}
           {isLastVisibleStep && (
