@@ -74,142 +74,150 @@ export function LessonsTab({
         </Button>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {selectedTasks.map((task, index) => {
-          const progress = selectedTasksProgresses.find(
-            (p) => p.taskId === task.id,
-          );
-          const isCompleted = progress?.stepsCompletedCount === task.stepsCount;
-          const themeStyles = getThemeStyles(task.type);
+        {selectedTasks
+          .toSorted((a, b) =>
+            a.module.order === b.module.order
+              ? a.order - b.order
+              : a.module.order - b.module.order,
+          )
+          .map((task, index) => {
+            const progress = selectedTasksProgresses.find(
+              (p) => p.taskId === task.id,
+            );
+            const isCompleted =
+              progress?.stepsCompletedCount === task.stepsCount;
+            const themeStyles = getThemeStyles(task.type);
 
-          return (
-            <Card
-              key={task.id}
-              className={cn(
-                'group relative animate-fade-up overflow-hidden border-border/50 bg-gradient-to-b from-background to-background/30 transition-all duration-300 hover:border-border/80 hover:shadow-lg',
-                isCompleted && [
-                  themeStyles.completedBg,
-                  themeStyles.completedBorder,
-                  'hover:-translate-y-0.5 hover:shadow-md',
-                ],
-              )}
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <div
+            return (
+              <Card
+                key={task.id}
                 className={cn(
-                  'pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100',
-                  themeStyles.gradient,
+                  'group relative animate-fade-up overflow-hidden border-border/50 bg-gradient-to-b from-background to-background/30 transition-all duration-300 hover:border-border/80 hover:shadow-lg',
+                  isCompleted && [
+                    themeStyles.completedBg,
+                    themeStyles.completedBorder,
+                    'hover:-translate-y-0.5 hover:shadow-md',
+                  ],
                 )}
-              />
-
-              {isCompleted && (
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
                 <div
                   className={cn(
-                    'absolute inset-x-0 top-0 h-[2px] transition-opacity duration-500',
-                    task.type === 'QUIZ' && 'bg-flexoki-blue',
-                    task.type === 'LESSON' && 'bg-flexoki-green',
-                    task.type === 'MULTISTEP' && 'bg-flexoki-purple',
+                    'pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100',
+                    themeStyles.gradient,
                   )}
                 />
-              )}
 
-              <CardContent className="relative z-10 space-y-4 p-4">
-                <div className="flex items-center justify-between">
-                  <Badge
-                    variant={
-                      {
-                        QUIZ: 'blue',
-                        LESSON: 'green',
-                        MULTISTEP: 'purple',
-                      }[task.type] as BadgeProps['variant']
-                    }
-                    className={cn(
-                      'transition-all duration-300',
-                      isCompleted &&
-                        'opacity-80 group-hover:scale-105 group-hover:shadow-sm',
-                    )}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      {isCompleted && <CheckCircle2Icon className="h-3 w-3" />}
-                      {task.type}
-                    </div>
-                  </Badge>
-                  <span
-                    className={cn(
-                      'font-mono text-xs',
-                      isCompleted ? themeStyles.text : 'text-muted-foreground',
-                    )}
-                  >
-                    {task.experiencePoints} XP
-                  </span>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h3
-                    className={cn(
-                      'font-medium leading-none transition-colors duration-300',
-                      isCompleted
-                        ? themeStyles.text
-                        : 'group-hover:text-primary',
-                    )}
-                  >
-                    {task.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm">
-                    {task.module.unit.order}.{task.module.order}{' '}
-                    {task.module.title}
-                  </p>
-                </div>
-
-                {isCompleted ? (
+                {isCompleted && (
                   <div
                     className={cn(
-                      'flex items-center gap-2 font-medium text-sm',
-                      themeStyles.text,
+                      'absolute inset-x-0 top-0 h-[2px] transition-opacity duration-500',
+                      task.type === 'QUIZ' && 'bg-flexoki-blue',
+                      task.type === 'LESSON' && 'bg-flexoki-green',
+                      task.type === 'MULTISTEP' && 'bg-flexoki-purple',
                     )}
-                  >
-                    <span>✨ Mastered</span>
-                  </div>
-                ) : (
-                  <TaskProgress
-                    stepsCount={task.stepsCount}
-                    stepsCompletedCount={progress?.stepsCompletedCount ?? 0}
-                    type={task.type}
                   />
                 )}
 
-                <Link
-                  href={`/courses/${course.id}/tasks/${task.id}`}
-                  className={cn(
-                    buttonVariants({ variant: 'outline' }),
-                    'w-full transition-all duration-300',
-                    {
-                      'group-hover:border-flexoki-blue/20 group-hover:bg-flexoki-blue/10 group-hover:text-flexoki-blue':
-                        task.type === 'QUIZ',
-                      'group-hover:border-flexoki-green/20 group-hover:bg-flexoki-green/10 group-hover:text-flexoki-green':
-                        task.type === 'LESSON',
-                      'group-hover:border-flexoki-purple/20 group-hover:bg-flexoki-purple/10 group-hover:text-flexoki-purple':
-                        task.type === 'MULTISTEP',
-                    },
-                    isCompleted && [
-                      themeStyles.text,
-                      themeStyles.border,
-                      'opacity-90 hover:opacity-100',
-                    ],
+                <CardContent className="relative z-10 space-y-4 p-4">
+                  <div className="flex items-center justify-between">
+                    <Badge
+                      variant={
+                        {
+                          QUIZ: 'blue',
+                          LESSON: 'green',
+                          MULTISTEP: 'purple',
+                        }[task.type] as BadgeProps['variant']
+                      }
+                      className={cn(
+                        'transition-all duration-300',
+                        isCompleted &&
+                          'opacity-80 group-hover:scale-105 group-hover:shadow-sm',
+                      )}
+                    >
+                      <div className="flex items-center gap-1.5">
+                        {isCompleted && (
+                          <CheckCircle2Icon className="h-3 w-3" />
+                        )}
+                        {task.type}
+                      </div>
+                    </Badge>
+                    <span
+                      className={cn(
+                        'font-mono text-xs',
+                        isCompleted
+                          ? themeStyles.text
+                          : 'text-muted-foreground',
+                      )}
+                    >
+                      {task.experiencePoints} XP
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <h3
+                      className={cn(
+                        'font-medium leading-none transition-colors duration-300',
+                        isCompleted
+                          ? themeStyles.text
+                          : 'group-hover:text-primary',
+                      )}
+                    >
+                      {task.module.unit.order}.{task.module.order}.{task.order}{' '}
+                      {task.title}
+                    </h3>
+                  </div>
+
+                  {isCompleted ? (
+                    <div
+                      className={cn(
+                        'flex items-center gap-2 font-medium text-sm',
+                        themeStyles.text,
+                      )}
+                    >
+                      <span>✨ Mastered</span>
+                    </div>
+                  ) : (
+                    <TaskProgress
+                      stepsCount={task.stepsCount}
+                      stepsCompletedCount={progress?.stepsCompletedCount ?? 0}
+                      type={task.type}
+                    />
                   )}
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    {isCompleted
-                      ? 'Review'
-                      : progress?.stepsCompletedCount
-                        ? 'Continue'
-                        : 'Start'}
-                    <ChevronRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </span>
-                </Link>
-              </CardContent>
-            </Card>
-          );
-        })}
+
+                  <Link
+                    href={`/courses/${course.id}/tasks/${task.id}`}
+                    className={cn(
+                      buttonVariants({ variant: 'outline' }),
+                      'w-full transition-all duration-300',
+                      {
+                        'group-hover:border-flexoki-blue/20 group-hover:bg-flexoki-blue/10 group-hover:text-flexoki-blue':
+                          task.type === 'QUIZ',
+                        'group-hover:border-flexoki-green/20 group-hover:bg-flexoki-green/10 group-hover:text-flexoki-green':
+                          task.type === 'LESSON',
+                        'group-hover:border-flexoki-purple/20 group-hover:bg-flexoki-purple/10 group-hover:text-flexoki-purple':
+                          task.type === 'MULTISTEP',
+                      },
+                      isCompleted && [
+                        themeStyles.text,
+                        themeStyles.border,
+                        'opacity-90 hover:opacity-100',
+                      ],
+                    )}
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      {isCompleted
+                        ? 'Review'
+                        : progress?.stepsCompletedCount
+                          ? 'Continue'
+                          : 'Start'}
+                      <ChevronRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+                    </span>
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
       </div>
     </div>
   );

@@ -38,7 +38,14 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
   const [currentUser, currentTask] = await Promise.all([
     db.query.users.findFirst(),
-    db.query.tasks.findFirst({ where: eq(tasks.id, task_id) }),
+    db.query.tasks.findFirst({
+      where: eq(tasks.id, task_id),
+      with: {
+        module: {
+          with: { unit: true },
+        },
+      },
+    }),
   ]);
 
   if (!currentUser) return notFound();
@@ -133,8 +140,11 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
   }
 
   return (
-    <div className="flex flex-col">
-      <h1>{currentTask.title}</h1>
+    <div className="mt-2 flex flex-col">
+      <h1 className="mt-2 text-center font-bold text-2xl">
+        {currentTask.module.unit.order}.{currentTask.module.order}.
+        {currentTask.order} {currentTask.title}
+      </h1>
 
       <div
         id="steps-container"

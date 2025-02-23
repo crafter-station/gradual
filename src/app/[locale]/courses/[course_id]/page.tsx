@@ -35,6 +35,7 @@ export default async function CoursePage({
             },
           },
         },
+        orderBy: (units, { asc }) => asc(units.order),
       },
       sources: true,
     },
@@ -48,24 +49,19 @@ export default async function CoursePage({
     );
   }
 
-  const selectedTasks = course.units
-    .flatMap((unit) =>
-      unit.modules.flatMap((module) =>
-        module.tasks.map((task) => ({
-          ...task,
-          module: {
-            ...module,
-            tasks: undefined,
-            unit: {
-              ...unit,
-              modules: undefined,
-            },
-          },
-        })),
-      ),
-    )
-    .sort(() => Math.random() - 0.5)
-    .slice(0, 10);
+  const selectedTasks = course.units[0].modules.flatMap((module) =>
+    module.tasks.map((task) => ({
+      ...task,
+      module: {
+        ...module,
+        tasks: undefined,
+        unit: {
+          ...course.units[0],
+          modules: undefined,
+        },
+      },
+    })),
+  );
 
   const selectedTasksProgresses = currentUser
     ? await db.query.taskProgress.findMany({
