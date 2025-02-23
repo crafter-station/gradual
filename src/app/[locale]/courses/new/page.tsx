@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { getI18n } from '@/locales/server';
 import { HomeIcon } from 'lucide-react';
-import { UploadForm } from './upload-form';
+import { CreateCourseForm } from './form';
 
 export default async function UploadPage() {
   const t = await getI18n();
@@ -31,7 +31,7 @@ export default async function UploadPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{t('upload.title')}</BreadcrumbPage>
+                <BreadcrumbPage>{t('createCourse.title')}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -43,12 +43,14 @@ export default async function UploadPage() {
           <div className="container mx-auto max-w-2xl">
             <div className="mb-8 text-center">
               <h1 className="mb-3 bg-gradient-to-r from-primary to-primary/80 bg-clip-text font-bold text-4xl text-transparent">
-                {t('upload.title')}
+                {t('createCourse.title')}
               </h1>
-              <p className="text-muted-foreground">{t('upload.subtitle')}</p>
+              <p className="text-muted-foreground">
+                {t('createCourse.subtitle')}
+              </p>
             </div>
 
-            <UploadForm />
+            <CreateCourseForm />
           </div>
         </div>
       </div>

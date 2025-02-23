@@ -35,8 +35,6 @@ export default {
     notFound: 'Course not found',
     about: {
       title: 'About this course',
-      description:
-        'Master the fundamentals of database management and SQL with hands-on projects and real-world scenarios. Perfect for beginners and intermediate developers looking to strengthen their data skills.',
     },
     features: {
       beginner: {
@@ -88,6 +86,7 @@ export default {
       title: 'Course Syllabus',
       description: 'Master the fundamentals through structured learning paths',
       download: 'Download PDF',
+      viewSource: 'View Source',
     },
     flashcards: {
       title: 'Flashcards',
@@ -191,8 +190,35 @@ export default {
       text: 'Learn about our methodology',
     },
   },
-  upload: {
-    title: 'Upload New Course',
-    subtitle: 'Upload a new course to Gradual',
+  createCourse: {
+    title: 'Create New Course',
+    subtitle: 'Add a new course to Gradual',
+    form: {
+      tabs: {
+        label: 'Source',
+        file: {
+          title: 'PDF',
+          label: 'Select a file',
+        },
+        url: {
+          title: 'URL',
+          label: 'Enter a URL',
+          placeholder: 'https://example.com/course',
+        },
+      },
+      buttonLabel: {
+        loading: 'Loading...',
+        default: 'Initiate Course Creation',
+      },
+      success: {
+        title: 'Course Creation Initiated',
+        description:
+          'Your course is being created.. It will be ready in 10min max',
+      },
+      error: {
+        title: 'Error',
+        description: 'Failed to create course',
+      },
+    },
   },
 } as const;

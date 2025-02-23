@@ -1,11 +1,37 @@
 interface GenerateCourseSyllabusInput {
   documentSummary: string;
   documentChunksSummariesJoined: string;
+  contentSize: 'small' | 'medium' | 'large';
 }
+
+const UNIT_RANGE_MAP = {
+  small: '2-3',
+  medium: '4-5',
+  large: '5-6',
+};
+
+const MODULE_RANGE_MAP = {
+  small: '2-3',
+  medium: '3-4',
+  large: '4-5',
+};
+
+const LESSON_RANGE_MAP = {
+  small: '2-3',
+  medium: '3-4',
+  large: '4-5',
+};
+
+const DURATION_MAP = {
+  small: '2-3',
+  medium: '4-6',
+  large: '6-8',
+};
 
 export function getGenerateCourseSyllabusPrompt({
   documentSummary,
   documentChunksSummariesJoined,
+  contentSize,
 }: GenerateCourseSyllabusInput): string {
   return `<role>You are a distinguished curriculum design expert with extensive experience in creating comprehensive educational content. You have a deep understanding of pedagogical principles and learning progression.</role>
 
@@ -18,7 +44,7 @@ export function getGenerateCourseSyllabusPrompt({
   <task>Create a detailed and pedagogically sound course structure following these comprehensive guidelines:</task>
   
   <content_structure>
-    1. First, analyze the entire content to determine the optimal number of units (3-5) based on:
+    1. First, analyze the entire content to determine the optimal number of units (${UNIT_RANGE_MAP[contentSize]}) based on:
        * The complexity and breadth of the subject matter
        * Natural thematic divisions in the content
        * Logical learning progression
@@ -46,7 +72,7 @@ export function getGenerateCourseSyllabusPrompt({
       * Overview of the learning approach and time commitment
     
     Unit Requirements:
-    - Must create 3-5 distinct units total
+    - Must create ${UNIT_RANGE_MAP[contentSize]} distinct units total
     - Units should follow this general progression:
       * Early units: Foundational concepts and basic principles
       * Middle units: Core techniques and standard applications
@@ -59,6 +85,7 @@ export function getGenerateCourseSyllabusPrompt({
       * Include the estimated time investment
     
     Module Requirements:
+    - Must create ${MODULE_RANGE_MAP[contentSize]} modules per unit
     - Ensure clear thematic connections between modules
     - Each module description should:
       * Detail the specific concepts covered
@@ -67,6 +94,7 @@ export function getGenerateCourseSyllabusPrompt({
       * Connect to both previous and upcoming content
     
     Lesson Requirements:
+    - Must create ${LESSON_RANGE_MAP[contentSize]} lessons per module
     - Lessons should be highly specific and actionable
     - Each lesson description should include:
       * Detailed learning objectives (3-5 sentences)
@@ -91,7 +119,7 @@ export function getGenerateCourseSyllabusPrompt({
     - Consider diverse learning styles and approaches
   </quality_standards>
 
-  <duration>Structure the content for a 4-6 week course, with clear time estimates for each component.</duration>
+  <duration>Structure the content for a ${DURATION_MAP[contentSize]} week course, with clear time estimates for each component.</duration>
 
   <output_format>
     Follow the provided JSON schema strictly:
@@ -153,13 +181,13 @@ export function getGenerateCourseSyllabusPrompt({
   <structure_requirements>
     Course Structure Must Have:
     1. Exactly one title
-    2. Between 3-5 units (typically 4)
+    2. Between ${UNIT_RANGE_MAP[contentSize]} units
     3. Each unit must have:
-       - 3-5 modules
+       - ${MODULE_RANGE_MAP[contentSize]} modules
        - A comprehensive description
        - Clear learning objectives
     4. Each module must have:
-       - 3-5 specific lessons
+       - ${LESSON_RANGE_MAP[contentSize]} specific lessons
        - A detailed description
        - Clear learning outcomes
     5. Each lesson must have:
@@ -178,7 +206,7 @@ export function getGenerateCourseSyllabusPrompt({
        * List potential prerequisites
        * Consider the logical progression of learning
 
-    2. Unit Planning (3-5 units):
+    2. Unit Planning (${UNIT_RANGE_MAP[contentSize]}):
        * Identify truly distinct major phases of learning
        * Ensure each unit represents a complete conceptual area
        * Avoid premature introduction of advanced applications
@@ -188,7 +216,7 @@ export function getGenerateCourseSyllabusPrompt({
          - Don't split closely related concepts across units
          - Don't introduce applications before core concepts are mastered
 
-    3. Module Planning (3-5 modules per unit):
+    3. Module Planning (${MODULE_RANGE_MAP[contentSize]} modules per unit):
        * Break down each unit into coherent sub-topics
        * Ensure modules within a unit are closely related
        * Verify that modules follow a logical progression
@@ -197,7 +225,7 @@ export function getGenerateCourseSyllabusPrompt({
          - Don't separate strongly related concepts
          - Don't introduce concepts before prerequisites
 
-    4. Lesson Planning (3-5 lessons per module):
+    4. Lesson Planning (${LESSON_RANGE_MAP[contentSize]} lessons per module):
        * Create specific, focused learning points
        * Ensure lessons support the module's objectives
        * Maintain consistent depth across lessons

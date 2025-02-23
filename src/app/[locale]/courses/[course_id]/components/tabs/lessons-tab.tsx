@@ -17,17 +17,11 @@ interface LessonsTabProps {
   selectedTasksProgresses: SelectTaskProgress[];
 }
 
-interface TaskCardProps {
-  task: TaskWithRelations;
-  courseId: string;
-  progress?: SelectTaskProgress;
-}
-
 export function LessonsTab({
   course,
   selectedTasks,
   selectedTasksProgresses,
-}: LessonsTabProps) {
+}: Readonly<LessonsTabProps>) {
   const getThemeStyles = (type: string) => {
     switch (type) {
       case 'QUIZ':
@@ -225,17 +219,17 @@ function TaskProgress({
   stepsCount,
   stepsCompletedCount,
   type,
-}: {
+}: Readonly<{
   stepsCount: number;
   stepsCompletedCount: number;
   type: string;
-}) {
+}>) {
   const progressClasses =
     {
       QUIZ: '[&>div]:bg-flexoki-blue/50',
       LESSON: '[&>div]:bg-flexoki-green/50',
       MULTISTEP: '[&>div]:bg-flexoki-purple/50',
-    }[type] || '[&>div]:bg-primary/50';
+    }[type] ?? '[&>div]:bg-primary/50';
 
   return (
     <div className="space-y-1.5">

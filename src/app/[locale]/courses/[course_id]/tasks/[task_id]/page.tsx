@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default async function TaskPage({ params }: PageProps) {
-  const { task_id, course_id } = await params;
+export default async function TaskPage({ params }: Readonly<PageProps>) {
+  const { task_id } = await params;
   const startedAt = new Date();
 
   const [currentUser, currentTask] = await Promise.all([
@@ -177,6 +177,7 @@ export default async function TaskPage({ params }: PageProps) {
           return (
             <QuestionStep
               key={step.id}
+              type={step.type}
               alternatives={step.content.alternatives}
               question={step.content.question}
               id={step.id}

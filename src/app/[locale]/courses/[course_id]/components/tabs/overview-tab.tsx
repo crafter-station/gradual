@@ -1,3 +1,4 @@
+import type { CourseWithRelations } from '@/db/types';
 import type { TFunction } from '@/locales/types';
 import {
   CheckIcon,
@@ -20,9 +21,10 @@ interface PrerequisiteItemProps {
 
 interface OverviewTabProps {
   t: TFunction;
+  course: CourseWithRelations;
 }
 
-export function OverviewTab({ t }: OverviewTabProps) {
+export function OverviewTab({ t, course }: Readonly<OverviewTabProps>) {
   const features: FeatureItemProps[] = [
     {
       icon: <GraduationCapIcon className="h-5 w-5" />,
@@ -58,9 +60,7 @@ export function OverviewTab({ t }: OverviewTabProps) {
     <div className="grid gap-6 md:grid-cols-2">
       <div>
         <h3 className="font-semibold text-lg">{t('course.about.title')}</h3>
-        <p className="mt-2 text-muted-foreground">
-          {t('course.about.description')}
-        </p>
+        <p className="mt-2 text-muted-foreground">{course.description}</p>
 
         <div className="mt-6 grid gap-4">
           {features.map((feature) => (
@@ -104,7 +104,7 @@ export function OverviewTab({ t }: OverviewTabProps) {
   );
 }
 
-function FeatureItem({ icon, title, description }: FeatureItemProps) {
+function FeatureItem({ icon, title, description }: Readonly<FeatureItemProps>) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -118,7 +118,7 @@ function FeatureItem({ icon, title, description }: FeatureItemProps) {
   );
 }
 
-function PrerequisiteItem({ text }: PrerequisiteItemProps) {
+function PrerequisiteItem({ text }: Readonly<PrerequisiteItemProps>) {
   return (
     <li className="flex items-center gap-2">
       <CircleIcon className="h-4 w-4 text-muted-foreground" />

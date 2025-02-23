@@ -36,6 +36,7 @@ export default async function CoursePage({
           },
         },
       },
+      sources: true,
     },
   });
 

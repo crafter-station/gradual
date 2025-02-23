@@ -40,6 +40,7 @@ export type {
 export type CourseWithRelations = Course & {
   units: UnitWithRelations[];
   creator: User;
+  sources: Source[];
 };
 
 export type UnitWithRelations = Unit & {

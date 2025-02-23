@@ -278,6 +278,9 @@ export const StepContentSchema = z.union([
 ]);
 
 export type StepContent = z.infer<typeof StepContentSchema>;
+export type TutorialStepContent = z.infer<typeof TutorialStepContentSchema>;
+export type ExampleStepContent = z.infer<typeof ExampleStepContentSchema>;
+export type QuestionStepContent = z.infer<typeof QuestionStepContentSchema>;
 
 export const steps = pgTable(
   'steps',

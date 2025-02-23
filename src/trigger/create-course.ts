@@ -12,11 +12,13 @@ import {
 } from '@/db/schema';
 import { getCurrentUser } from '@/db/utils';
 import { CHUNK_SIZE } from '@/lib/constants';
-import { getEnrichChunkPrompt } from '@/lib/prompts/enrich_chunk';
-import { getGenerateCourseSyllabusPrompt } from '@/lib/prompts/generate_course_syllabus';
-import { getGenerateLessonPrompt } from '@/lib/prompts/generate_lesson';
-import { getSummarizeDocumentPrompt } from '@/lib/prompts/summarize-document';
-import { getSummarizeChunkPrompt } from '@/lib/prompts/summarize_chunk';
+import {
+  getEnrichChunkPrompt,
+  getGenerateCourseSyllabusPrompt,
+  getGenerateLessonPrompt,
+  getSummarizeChunkPrompt,
+  getSummarizeDocumentPrompt,
+} from '@/lib/prompts';
 import { SyllabusSchema } from '@/lib/schemas';
 import { formatSyllabus } from '@/lib/utils';
 import { openai } from '@ai-sdk/openai';
@@ -34,6 +36,14 @@ const FirecrawlClient = new Firecrawl({
 const CreateCourseTaskSchema = z.object({
   url: z.string().url(),
 });
+
+function getContentSize(sourceContentLength: number) {
+  return sourceContentLength > CHUNK_SIZE * 50
+    ? 'large'
+    : sourceContentLength > CHUNK_SIZE * 10
+      ? 'medium'
+      : 'small';
+}
 
 export const CreateCourseTask = schemaTask({
   id: 'create-course',
@@ -186,6 +196,8 @@ export const CreateCourseTask = schemaTask({
       throw new Error('Failed to store chunks');
     }
 
+    const contentSize = getContentSize(sourceContent.length);
+
     const syllabusResult = await tasks.triggerAndWait<
       typeof GenerateCourseSyllabusTask
     >('generate-course-syllabus', {
@@ -193,6 +205,7 @@ export const CreateCourseTask = schemaTask({
       documentChunksSummaries: enrichedChunks.map(
         (chunk) => chunk.enrichedSummary,
       ),
+      contentSize,
     });
 
     if (!syllabusResult.ok) {
@@ -308,6 +321,7 @@ export const CreateCourseTask = schemaTask({
       units,
       modules,
       lessons,
+      sourceId,
     });
 
     await batch.triggerByTaskAndWait(
@@ -591,6 +605,7 @@ export const GenerateCourseSyllabusTask = schemaTask({
   schema: z.object({
     documentSummary: z.string(),
     documentChunksSummaries: z.array(z.string()),
+    contentSize: z.enum(['small', 'medium', 'large']),
   }),
   run: async (payload) => {
     const syllabusResult = await generateObject({
@@ -599,6 +614,7 @@ export const GenerateCourseSyllabusTask = schemaTask({
         documentSummary: payload.documentSummary,
         documentChunksSummariesJoined:
           payload.documentChunksSummaries.join('\n'),
+        contentSize: payload.contentSize,
       }),
       schema: SyllabusSchema,
     });
@@ -684,12 +700,19 @@ export const StoreSyllabusTask = schemaTask({
     units: z.array(InsertUnitSchema),
     modules: z.array(InsertModuleSchema),
     lessons: z.array(InsertTaskSchema),
+    sourceId: z.string(),
   }),
   run: async (payload) => {
     await db.insert(schema.courses).values(payload.course);
     await db.insert(schema.units).values(payload.units);
     await db.insert(schema.modules).values(payload.modules);
     await db.insert(schema.tasks).values(payload.lessons);
+    await db
+      .update(schema.sources)
+      .set({
+        courseId: payload.course.id,
+      })
+      .where(eq(schema.sources.id, payload.sourceId));
   },
 });
 

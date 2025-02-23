@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "./shadcn.css";
-@plugin "@midudev/tailwind-animations";
+@import "uploadthing/tw/v4";
+
+@plugin '@midudev/tailwind-animations';
+@source '../../../node_modules/@uploadthing/react/dist';
 
 @theme {
   --color-background: hsl(var(--background));
