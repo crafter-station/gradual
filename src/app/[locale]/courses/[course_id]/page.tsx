@@ -1,15 +1,13 @@
-import { Progress } from '@/components/ui/progress';
 import { db } from '@/db';
 import { taskProgress } from '@/db/schema';
+import { getCurrentUser } from '@/db/utils';
 import { getI18n } from '@/locales/server';
-import { eq, inArray } from 'drizzle-orm';
-import { and } from 'drizzle-orm';
-import { getCurrentUser } from './tasks/[task_id]/helpers';
+import { and, eq, inArray } from 'drizzle-orm';
 
+import type { CourseWithRelations } from '@/db/types';
 import { CourseHeader } from './components/course-header';
 import { CourseHero } from './components/course-hero';
 import { CourseTabs } from './components/course-tabs';
-import type { CourseWithRelations } from '@/db/types';
 
 export const metadata = {
   title: 'Course',
@@ -19,9 +17,9 @@ export const revalidate = 0;
 
 export default async function CoursePage({
   params,
-}: {
+}: Readonly<{
   params: Promise<{ course_id: string }>;
-}) {
+}>) {
   const { course_id: courseId } = await params;
   const t = await getI18n();
   const currentUser = await getCurrentUser();
@@ -38,6 +36,7 @@ export default async function CoursePage({
           },
         },
       },
+      sources: true,
     },
   });
 
@@ -95,20 +94,5 @@ export default async function CoursePage({
         />
       </div>
     </div>
-  );
-}
-
-async function TaskProgress({
-  stepsCount,
-  stepsCompletedCount,
-}: {
-  stepsCount: number;
-  stepsCompletedCount: number;
-}) {
-  return (
-    <Progress
-      value={(stepsCompletedCount / stepsCount) * 100}
-      className="h-1.5 overflow-hidden rounded-full"
-    />
   );
 }

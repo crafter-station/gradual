@@ -16,7 +16,7 @@ interface CourseHeroProps {
   t: TFunction;
 }
 
-export function CourseHero({ course, t }: CourseHeroProps) {
+export function CourseHero({ course, t }: Readonly<CourseHeroProps>) {
   return (
     <div className="relative animate-fade-in">
       <Cover

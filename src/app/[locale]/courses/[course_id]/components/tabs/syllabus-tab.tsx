@@ -1,15 +1,14 @@
-import { Button } from '@/components/ui/button';
 import { UnitsWithConnector } from '@/components/units-with-connector';
 import type { CourseWithRelations } from '@/db/types';
 import type { TFunction } from '@/locales/types';
-import { FileTextIcon } from 'lucide-react';
+import { ViewSourceButton } from './view-source-button';
 
 interface SyllabusTabProps {
   course: CourseWithRelations;
   t: TFunction;
 }
 
-export function SyllabusTab({ course, t }: SyllabusTabProps) {
+export function SyllabusTab({ course, t }: Readonly<SyllabusTabProps>) {
   return (
     <div className="w-full">
       <div className="mb-8 flex items-center justify-between px-6">
@@ -21,10 +20,7 @@ export function SyllabusTab({ course, t }: SyllabusTabProps) {
             {t('course.syllabus.description')}
           </p>
         </div>
-        <Button variant="outline" className="animate-fade-left gap-2">
-          <FileTextIcon className="h-4 w-4" />
-          {t('course.syllabus.download')}
-        </Button>
+        <ViewSourceButton sourceUrl={course.sources[0].filePath} />
       </div>
 
       <div className="relative min-h-[400px] w-full">

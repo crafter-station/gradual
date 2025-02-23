@@ -1,1 +1,0 @@
-ALTER TABLE "tasks" ALTER COLUMN "experience_points" SET DEFAULT 10;

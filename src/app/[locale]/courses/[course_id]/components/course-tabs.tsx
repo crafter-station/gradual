@@ -24,7 +24,7 @@ export function CourseTabs({
   selectedTasks,
   selectedTasksProgresses,
   t,
-}: CourseTabsProps) {
+}: Readonly<CourseTabsProps>) {
   return (
     <div className="border-b bg-background">
       <div className="mx-auto max-w-7xl px-6">
@@ -37,8 +37,18 @@ export function CourseTabs({
               >
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="syllabus">Syllabus</TabsTrigger>
-              <TabsTrigger value="lessons">Lessons</TabsTrigger>
+              <TabsTrigger
+                value="syllabus"
+                className="relative rounded-none border-transparent border-b-2 bg-transparent px-4 pt-2 pb-3 font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
+              >
+                Syllabus
+              </TabsTrigger>
+              <TabsTrigger
+                value="lessons"
+                className="relative rounded-none border-transparent border-b-2 bg-transparent px-4 pt-2 pb-3 font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
+              >
+                Lessons
+              </TabsTrigger>
               <TabsTrigger
                 value="flashcards"
                 className="relative rounded-none border-transparent border-b-2 bg-transparent px-4 pt-2 pb-3 font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground"
@@ -61,7 +71,7 @@ export function CourseTabs({
           </div>
 
           <TabsContent value="overview" className="py-6">
-            <OverviewTab t={t} />
+            <OverviewTab t={t} course={course} />
           </TabsContent>
 
           <TabsContent value="syllabus" className="py-6">

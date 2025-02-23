@@ -119,106 +119,110 @@ export function UnitsWithConnector({ units }: UnitsWithConnectorProps) {
       </svg>
 
       <div ref={containerRef} className="relative z-10 space-y-12">
-        {units.map((unit) => (
-          <div
-            key={unit.id}
-            className="animate-fade-up"
-            style={{ animationDelay: `${(unit.order - 1) * 100}ms` }}
-          >
+        {units
+          .toSorted((a, b) => a.order - b.order)
+          .map((unit) => (
             <div
-              className={cn(
-                'relative flex items-center gap-4 py-8',
-                unit.order % 2 === 1 ? 'flex-row' : 'flex-row-reverse',
-              )}
+              key={unit.id}
+              className="animate-fade-up"
+              style={{ animationDelay: `${unit.order * 100}ms` }}
             >
-              <div className="group relative">
-                <div className="absolute inset-0 bg-primary/10 blur-2xl transition-colors duration-500 group-hover:bg-primary/20" />
-                <div className="unit-circle relative flex h-12 w-12 items-center justify-center bg-gradient-to-b from-primary/90 to-primary shadow-lg">
-                  <span className="font-medium font-mono text-lg text-primary-foreground">
-                    {unit.order}
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <h3 className="inline-block rounded-md px-3 py-1.5 font-medium text-base uppercase leading-none">
-                  {unit.title}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {unit.modules.length} modules •{' '}
-                  {unit.modules.reduce(
-                    (acc, module) =>
-                      acc +
-                      module.tasks.reduce(
-                        (sum, task) => sum + task.stepsCount,
-                        0,
-                      ),
-                    0,
-                  )}{' '}
-                  steps
-                </p>
-              </div>
-            </div>
-
-            <div
-              className={cn(
-                'grid gap-3',
-                unit.order % 2 === 1 ? 'pl-16' : 'pr-16',
-              )}
-            >
-              {unit.modules.map((module) => (
-                <div
-                  key={module.id}
-                  className="group hover:-translate-y-0.5 relative transition-all duration-300"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/5 to-[#BFE8D9] opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:to-[#122F2C]" />
-
-                  <div className="relative flex items-center gap-4 border border-border/50 bg-card/50 p-4 backdrop-blur-xs transition-colors group-hover:shadow-lg">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary/10 font-mono text-primary text-sm">
-                      {unit.order}.{module.order}
-                    </div>
-
-                    <div className="flex flex-1 items-center justify-between gap-4">
-                      <div className="space-y-1">
-                        <span className="font-medium text-sm leading-none">
-                          {module.title}
-                        </span>
-                        <div className="flex items-center gap-3 text-muted-foreground text-xs">
-                          <div className="flex items-center gap-1">
-                            <BookOpenIcon className="h-3 w-3" />
-                            <span>{module.tasks.length} tasks</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <LayersIcon className="h-3 w-3" />
-                            <span>
-                              {module.tasks.reduce(
-                                (sum, task) => sum + task.experiencePoints,
-                                0,
-                              )}{' '}
-                              XP
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <ClockIcon className="h-3 w-3" />
-                            <span>
-                              {module.tasks.reduce(
-                                (sum, task) => sum + task.stepsCount,
-                                0,
-                              )}{' '}
-                              steps
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <ChevronRightIcon className="h-4 w-4 text-muted-foreground/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-primary" />
-                    </div>
+              <div
+                className={cn(
+                  'relative flex items-center gap-4 py-8',
+                  unit.order % 2 === 1 ? 'flex-row' : 'flex-row-reverse',
+                )}
+              >
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-primary/10 blur-2xl transition-colors duration-500 group-hover:bg-primary/20" />
+                  <div className="unit-circle relative flex h-12 w-12 items-center justify-center bg-gradient-to-b from-primary/90 to-primary shadow-lg">
+                    <span className="font-medium font-mono text-lg text-primary-foreground">
+                      {unit.order}
+                    </span>
                   </div>
                 </div>
-              ))}
+
+                <div className="space-y-1">
+                  <h3 className="inline-block rounded-md px-3 py-1.5 font-medium text-base uppercase leading-none">
+                    {unit.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {unit.modules.length} modules •{' '}
+                    {unit.modules.reduce(
+                      (acc, module) =>
+                        acc +
+                        module.tasks.reduce(
+                          (sum, task) => sum + task.stepsCount,
+                          0,
+                        ),
+                      0,
+                    )}{' '}
+                    steps
+                  </p>
+                </div>
+              </div>
+
+              <div
+                className={cn(
+                  'grid gap-3',
+                  unit.order % 2 === 1 ? 'pl-16' : 'pr-16',
+                )}
+              >
+                {unit.modules
+                  .toSorted((a, b) => a.order - b.order)
+                  .map((module) => (
+                    <div
+                      key={module.id}
+                      className="group hover:-translate-y-0.5 relative transition-all duration-300"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/5 to-[#BFE8D9] opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:to-[#122F2C]" />
+
+                      <div className="relative flex items-center gap-4 border border-border/50 bg-card/50 p-4 backdrop-blur-xs transition-colors group-hover:shadow-lg">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary/10 font-mono text-primary text-sm">
+                          {unit.order}.{module.order}
+                        </div>
+
+                        <div className="flex flex-1 items-center justify-between gap-4">
+                          <div className="space-y-1">
+                            <span className="font-medium text-sm leading-none">
+                              {module.title}
+                            </span>
+                            <div className="flex items-center gap-3 text-muted-foreground text-xs">
+                              <div className="flex items-center gap-1">
+                                <BookOpenIcon className="h-3 w-3" />
+                                <span>{module.tasks.length} tasks</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <LayersIcon className="h-3 w-3" />
+                                <span>
+                                  {module.tasks.reduce(
+                                    (sum, task) => sum + task.experiencePoints,
+                                    0,
+                                  )}{' '}
+                                  XP
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <ClockIcon className="h-3 w-3" />
+                                <span>
+                                  {module.tasks.reduce(
+                                    (sum, task) => sum + task.stepsCount,
+                                    0,
+                                  )}{' '}
+                                  steps
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <ChevronRightIcon className="h-4 w-4 text-muted-foreground/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:text-primary" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

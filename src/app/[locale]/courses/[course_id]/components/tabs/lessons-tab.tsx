@@ -8,7 +8,7 @@ import type {
   TaskWithRelations,
 } from '@/db/types';
 import { cn } from '@/lib/utils';
-import { ChevronRightIcon, ListTodoIcon, CheckCircle2Icon } from 'lucide-react';
+import { CheckCircle2Icon, ChevronRightIcon, ListTodoIcon } from 'lucide-react';
 import Link from 'next/link';
 
 interface LessonsTabProps {
@@ -17,17 +17,11 @@ interface LessonsTabProps {
   selectedTasksProgresses: SelectTaskProgress[];
 }
 
-interface TaskCardProps {
-  task: TaskWithRelations;
-  courseId: string;
-  progress?: SelectTaskProgress;
-}
-
 export function LessonsTab({
   course,
   selectedTasks,
   selectedTasksProgresses,
-}: LessonsTabProps) {
+}: Readonly<LessonsTabProps>) {
   const getThemeStyles = (type: string) => {
     switch (type) {
       case 'QUIZ':
@@ -68,11 +62,11 @@ export function LessonsTab({
   return (
     <div className="grid gap-8">
       <div className="flex items-center justify-between">
-        <h2 className='animate-fade-up font-semibold text-2xl tracking-tight'>
+        <h2 className="animate-fade-up font-semibold text-2xl tracking-tight">
           Continue Learning
         </h2>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="animate-fade-left gap-2 transition-all hover:bg-background/50 hover:shadow-sm"
         >
           <ListTodoIcon className="h-4 w-4" />
@@ -95,26 +89,30 @@ export function LessonsTab({
                 isCompleted && [
                   themeStyles.completedBg,
                   themeStyles.completedBorder,
-                  'hover:-translate-y-0.5 hover:shadow-md'
-                ]
+                  'hover:-translate-y-0.5 hover:shadow-md',
+                ],
               )}
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className={cn(
-                "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100",
-                themeStyles.gradient
-              )} />
-              
+              <div
+                className={cn(
+                  'pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100',
+                  themeStyles.gradient,
+                )}
+              />
+
               {isCompleted && (
-                <div className={cn(
-                  "absolute inset-x-0 top-0 h-[2px] transition-opacity duration-500",
-                  task.type === 'QUIZ' && "bg-flexoki-blue",
-                  task.type === 'LESSON' && "bg-flexoki-green",
-                  task.type === 'MULTISTEP' && "bg-flexoki-purple"
-                )} />
+                <div
+                  className={cn(
+                    'absolute inset-x-0 top-0 h-[2px] transition-opacity duration-500',
+                    task.type === 'QUIZ' && 'bg-flexoki-blue',
+                    task.type === 'LESSON' && 'bg-flexoki-green',
+                    task.type === 'MULTISTEP' && 'bg-flexoki-purple',
+                  )}
+                />
               )}
-              
-              <CardContent className='relative z-10 space-y-4 p-4'>
+
+              <CardContent className="relative z-10 space-y-4 p-4">
                 <div className="flex items-center justify-between">
                   <Badge
                     variant={
@@ -125,8 +123,9 @@ export function LessonsTab({
                       }[task.type] as BadgeProps['variant']
                     }
                     className={cn(
-                      "transition-all duration-300",
-                      isCompleted && "opacity-80 group-hover:scale-105 group-hover:shadow-sm"
+                      'transition-all duration-300',
+                      isCompleted &&
+                        'opacity-80 group-hover:scale-105 group-hover:shadow-sm',
                     )}
                   >
                     <div className="flex items-center gap-1.5">
@@ -134,32 +133,40 @@ export function LessonsTab({
                       {task.type}
                     </div>
                   </Badge>
-                  <span className={cn(
-                    "font-mono text-xs",
-                    isCompleted ? themeStyles.text : "text-muted-foreground"
-                  )}>
+                  <span
+                    className={cn(
+                      'font-mono text-xs',
+                      isCompleted ? themeStyles.text : 'text-muted-foreground',
+                    )}
+                  >
                     {task.experiencePoints} XP
                   </span>
                 </div>
 
                 <div className="space-y-1.5">
-                  <h3 className={cn(
-                    "font-medium leading-none transition-colors duration-300",
-                    isCompleted ? themeStyles.text : "group-hover:text-primary"
-                  )}>
+                  <h3
+                    className={cn(
+                      'font-medium leading-none transition-colors duration-300',
+                      isCompleted
+                        ? themeStyles.text
+                        : 'group-hover:text-primary',
+                    )}
+                  >
                     {task.title}
                   </h3>
-                  <p className='text-muted-foreground text-sm'>
+                  <p className="text-muted-foreground text-sm">
                     {task.module.unit.order}.{task.module.order}{' '}
                     {task.module.title}
                   </p>
                 </div>
 
                 {isCompleted ? (
-                  <div className={cn(
-                    'flex items-center gap-2 font-medium text-sm',
-                    themeStyles.text
-                  )}>
+                  <div
+                    className={cn(
+                      'flex items-center gap-2 font-medium text-sm',
+                      themeStyles.text,
+                    )}
+                  >
                     <span>✨ Mastered</span>
                   </div>
                 ) : (
@@ -176,19 +183,26 @@ export function LessonsTab({
                     buttonVariants({ variant: 'outline' }),
                     'w-full transition-all duration-300',
                     {
-                      'group-hover:border-flexoki-blue/20 group-hover:bg-flexoki-blue/10 group-hover:text-flexoki-blue': task.type === 'QUIZ',
-                      'group-hover:border-flexoki-green/20 group-hover:bg-flexoki-green/10 group-hover:text-flexoki-green': task.type === 'LESSON',
-                      'group-hover:border-flexoki-purple/20 group-hover:bg-flexoki-purple/10 group-hover:text-flexoki-purple': task.type === 'MULTISTEP',
+                      'group-hover:border-flexoki-blue/20 group-hover:bg-flexoki-blue/10 group-hover:text-flexoki-blue':
+                        task.type === 'QUIZ',
+                      'group-hover:border-flexoki-green/20 group-hover:bg-flexoki-green/10 group-hover:text-flexoki-green':
+                        task.type === 'LESSON',
+                      'group-hover:border-flexoki-purple/20 group-hover:bg-flexoki-purple/10 group-hover:text-flexoki-purple':
+                        task.type === 'MULTISTEP',
                     },
                     isCompleted && [
                       themeStyles.text,
                       themeStyles.border,
-                      'opacity-90 hover:opacity-100'
-                    ]
+                      'opacity-90 hover:opacity-100',
+                    ],
                   )}
                 >
                   <span className="flex items-center justify-center gap-2">
-                    {isCompleted ? 'Review' : progress?.stepsCompletedCount ? 'Continue' : 'Start'}
+                    {isCompleted
+                      ? 'Review'
+                      : progress?.stepsCompletedCount
+                        ? 'Continue'
+                        : 'Start'}
                     <ChevronRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </span>
                 </Link>
@@ -205,27 +219,28 @@ function TaskProgress({
   stepsCount,
   stepsCompletedCount,
   type,
-}: {
+}: Readonly<{
   stepsCount: number;
   stepsCompletedCount: number;
   type: string;
-}) {
-  const progressClasses = {
-    QUIZ: '[&>div]:bg-flexoki-blue/50',
-    LESSON: '[&>div]:bg-flexoki-green/50',
-    MULTISTEP: '[&>div]:bg-flexoki-purple/50',
-  }[type] || '[&>div]:bg-primary/50';
+}>) {
+  const progressClasses =
+    {
+      QUIZ: '[&>div]:bg-flexoki-blue/50',
+      LESSON: '[&>div]:bg-flexoki-green/50',
+      MULTISTEP: '[&>div]:bg-flexoki-purple/50',
+    }[type] ?? '[&>div]:bg-primary/50';
 
   return (
     <div className="space-y-1.5">
       <Progress
         value={(stepsCompletedCount / stepsCount) * 100}
         className={cn(
-          "h-1 overflow-hidden rounded-full bg-muted/30 transition-all group-hover:bg-muted/50",
-          progressClasses
+          'h-1 overflow-hidden rounded-full bg-muted/30 transition-all group-hover:bg-muted/50',
+          progressClasses,
         )}
       />
-      <p className='text-muted-foreground text-xs'>
+      <p className="text-muted-foreground text-xs">
         {stepsCompletedCount} of {stepsCount} steps completed
       </p>
     </div>
