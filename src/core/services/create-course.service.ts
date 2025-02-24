@@ -1,7 +1,6 @@
 export class CreateCourseService {
-  constructor() {
-  }
-  
+  constructor() {}
+
   async execute(): Promise<any> {
     return null;
   }

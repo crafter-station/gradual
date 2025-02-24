@@ -1,5 +1,9 @@
-import { db } from '@/db';
-import * as schema from '@/db/schema';
+import { Scrapper } from "@/core/domain/scrapper";
+import { UserRepo } from "@/core/domain/user-repo";
+import { extractChunkTexts } from "@/core/services/extract-chunks-texts";
+import { ParseSourceService } from "@/core/services/parse-source.service";
+import { db } from "@/db";
+import * as schema from "@/db/schema";
 import {
   type InsertCourse,
   InsertCourseSchema,
@@ -9,29 +13,25 @@ import {
   InsertTaskSchema,
   type InsertUnit,
   InsertUnitSchema,
-} from '@/db/schema';
-import { getCurrentUser } from '@/db/utils';
-import { CHUNK_SIZE } from '@/lib/constants';
+} from "@/db/schema";
+import { CHUNK_SIZE } from "@/lib/constants";
 import {
   getEnrichChunkPrompt,
   getGenerateCourseSyllabusPrompt,
   getGenerateLessonPrompt,
   getSummarizeChunkPrompt,
   getSummarizeDocumentPrompt,
-} from '@/lib/prompts';
-import { SyllabusSchema } from '@/lib/schemas';
-import { formatSyllabus } from '@/lib/utils';
-import { openai } from '@ai-sdk/openai';
-import Firecrawl from '@mendable/firecrawl-js';
-import { batch, logger, schemaTask, tasks } from '@trigger.dev/sdk/v3';
-import { embed, embedMany, generateObject, generateText } from 'ai';
-import { and, cosineDistance, desc, eq, gte, sql } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
-import { z } from 'zod';
+} from "@/lib/prompts";
+import { SyllabusSchema } from "@/lib/schemas";
+import { formatSyllabus } from "@/lib/utils";
+import { openai } from "@ai-sdk/openai";
+import { batch, logger, schemaTask, tasks } from "@trigger.dev/sdk/v3";
+import { embed, embedMany, generateObject, generateText } from "ai";
+import { and, cosineDistance, desc, eq, gte, sql } from "drizzle-orm";
+import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 
-const FirecrawlClient = new Firecrawl({
-  apiKey: process.env.FIRECRAWL_API_KEY,
-});
+const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY);
 
 const CreateCourseTaskSchema = z.object({
   url: z.string().url(),
@@ -39,42 +39,43 @@ const CreateCourseTaskSchema = z.object({
 
 function getContentSize(sourceContentLength: number) {
   return sourceContentLength > CHUNK_SIZE * 50
-    ? 'large'
+    ? "large"
     : sourceContentLength > CHUNK_SIZE * 10
-      ? 'medium'
-      : 'small';
+    ? "medium"
+    : "small";
 }
 
 export const CreateCourseTask = schemaTask({
-  id: 'create-course',
+  id: "create-course",
   schema: CreateCourseTaskSchema,
   run: async (payload) => {
-    const user = await getCurrentUser();
+    const userRepo = new UserRepo();
+    const user = await userRepo.findFirst();
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     const parseSourceRun = await tasks.triggerAndWait<typeof ParseSourceTask>(
-      'parse-source',
+      "parse-source",
       {
         url: payload.url,
-      },
+      }
     );
 
     if (!parseSourceRun.ok) {
-      throw new Error('Failed to parse source');
+      throw new Error("Failed to parse source");
     }
 
     const sourceContent = parseSourceRun.output;
 
     const chunkenizeSourceContentRun = await tasks.triggerAndWait<
       typeof ChunkenizeSourceContentTask
-    >('chunkenize-source-content', {
+    >("chunkenize-source-content", {
       content: sourceContent,
     });
 
     if (!chunkenizeSourceContentRun.ok) {
-      throw new Error('Failed to chunk content');
+      throw new Error("Failed to chunk content");
     }
 
     const chunks = chunkenizeSourceContentRun.output;
@@ -89,7 +90,7 @@ export const CreateCourseTask = schemaTask({
       chunks.map((chunk, index) => ({
         task: SummarizeChunkContentTask,
         payload: { rawContent: chunk, order: index },
-      })),
+      }))
     );
 
     for (const run of runs) {
@@ -104,12 +105,12 @@ export const CreateCourseTask = schemaTask({
 
     const summarizeSourceTask = await tasks.triggerAndWait<
       typeof SummarizeSourceContentTask
-    >('summarize-source-content', {
+    >("summarize-source-content", {
       chunkSummaries: summarizedChunks.map((chunk) => chunk.summary),
     });
 
     if (!summarizeSourceTask.ok) {
-      throw new Error('Failed to summarize source');
+      throw new Error("Failed to summarize source");
     }
 
     let sourceSummary = summarizeSourceTask.output.summary;
@@ -135,7 +136,7 @@ export const CreateCourseTask = schemaTask({
             summarizedChunks.find((c) => c.order === chunk.order + 1)
               ?.rawContent ?? null,
         },
-      })),
+      }))
     );
 
     for (const run of enrichChunksRuns) {
@@ -153,34 +154,34 @@ export const CreateCourseTask = schemaTask({
 
     const enrichedSourceSummary = await tasks.triggerAndWait<
       typeof SummarizeSourceContentTask
-    >('summarize-source-content', {
+    >("summarize-source-content", {
       chunkSummaries: enrichedChunks.map((chunk) => chunk.enrichedSummary),
     });
 
     if (!enrichedSourceSummary.ok) {
-      throw new Error('Failed to enrich source summary');
+      throw new Error("Failed to enrich source summary");
     }
 
     sourceSummary = enrichedSourceSummary.output.summary;
 
     const storeSourceRun = await tasks.triggerAndWait<typeof StoreSourceTask>(
-      'store-source',
+      "store-source",
       {
         url: payload.url,
         userId: user.id,
         sourceSummary,
         chunksCount: enrichedChunks.length,
-      },
+      }
     );
 
     if (!storeSourceRun.ok) {
-      throw new Error('Failed to store source');
+      throw new Error("Failed to store source");
     }
 
     const sourceId = storeSourceRun.output;
 
     const storeChunksRun = await tasks.triggerAndWait<typeof StoreChunksTask>(
-      'store-chunks',
+      "store-chunks",
       {
         sourceId,
         chunks: enrichedChunks.map((chunk) => ({
@@ -189,39 +190,39 @@ export const CreateCourseTask = schemaTask({
           summary: chunk.enrichedSummary,
           enrichedContent: chunk.enrichedContent,
         })),
-      },
+      }
     );
 
     if (!storeChunksRun.ok) {
-      throw new Error('Failed to store chunks');
+      throw new Error("Failed to store chunks");
     }
 
     const contentSize = getContentSize(sourceContent.length);
 
     const syllabusResult = await tasks.triggerAndWait<
       typeof GenerateCourseSyllabusTask
-    >('generate-course-syllabus', {
+    >("generate-course-syllabus", {
       documentSummary: sourceSummary,
       documentChunksSummaries: enrichedChunks.map(
-        (chunk) => chunk.enrichedSummary,
+        (chunk) => chunk.enrichedSummary
       ),
       contentSize,
     });
 
     if (!syllabusResult.ok) {
-      throw new Error('Failed to generate course syllabus');
+      throw new Error("Failed to generate course syllabus");
     }
 
     const syllabus = syllabusResult.output;
 
     const syllabusEmbeddingsResult = await tasks.triggerAndWait<
       typeof GenerateSyllabusEmbeddingsTask
-    >('generate-syllabus-embeddings', {
+    >("generate-syllabus-embeddings", {
       syllabus,
     });
 
     if (!syllabusEmbeddingsResult.ok) {
-      throw new Error('Failed to generate course syllabus embeddings');
+      throw new Error("Failed to generate course syllabus embeddings");
     }
 
     const {
@@ -247,7 +248,7 @@ export const CreateCourseTask = schemaTask({
         // biome-ignore lint/style/noNonNullAssertion: <explanation>
         embedding: unitEmbeddings.find((u) => u.unitOrder === unit.order)!
           .embedding,
-      }),
+      })
     );
 
     const modules: (InsertModule & { id: string })[] = syllabus.units.flatMap(
@@ -260,9 +261,9 @@ export const CreateCourseTask = schemaTask({
           order: module.order,
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
           embedding: moduleEmbeddings.find(
-            (u) => u.moduleOrder === module.order && u.unitOrder === unit.order,
+            (u) => u.moduleOrder === module.order && u.unitOrder === unit.order
           )!.embedding,
-        })),
+        }))
     );
 
     const getModuleId = (unitOrder: number, moduleOrder: number) =>
@@ -271,7 +272,7 @@ export const CreateCourseTask = schemaTask({
         (m) =>
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
           m.unitId === units.find((u) => u.order === unitOrder)!.id &&
-          m.order === moduleOrder,
+          m.order === moduleOrder
       )!.id;
 
     const getUnitId = (unitOrder: number) =>
@@ -281,19 +282,19 @@ export const CreateCourseTask = schemaTask({
     const getEmbedding = (
       unitOrder: number,
       moduleOrder: number,
-      lessonOrder: number,
+      lessonOrder: number
     ) =>
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
       lessonEmbeddings.find(
         (l) =>
           l.lessonOrder === lessonOrder &&
           l.moduleOrder === moduleOrder &&
-          l.unitOrder === unitOrder,
+          l.unitOrder === unitOrder
       )!.embedding;
 
     const lessons: (InsertTask & {
       id: string;
-      type: 'LESSON';
+      type: "LESSON";
       unitId: string;
       courseId: string;
       unitOrder: number;
@@ -305,18 +306,18 @@ export const CreateCourseTask = schemaTask({
           ...lesson,
           moduleId: getModuleId(unit.order, module.order),
           order: lesson.order,
-          type: 'LESSON',
+          type: "LESSON",
           stepsCount: 0,
           embedding: getEmbedding(unit.order, module.order, lesson.order),
           unitId: getUnitId(unit.order),
           courseId: course.id,
           unitOrder: unit.order,
           moduleOrder: module.order,
-        })),
-      ),
+        }))
+      )
     );
 
-    await tasks.triggerAndWait<typeof StoreSyllabusTask>('store-syllabus', {
+    await tasks.triggerAndWait<typeof StoreSyllabusTask>("store-syllabus", {
       course,
       units,
       modules,
@@ -339,103 +340,45 @@ export const CreateCourseTask = schemaTask({
           moduleTitle: modules.find((m) => m.order === lesson.moduleOrder)!
             .title,
         },
-      })),
+      }))
     );
   },
 });
 
 export const ParseSourceTask = schemaTask({
-  id: 'parse-source',
+  id: "parse-source",
   schema: z.object({
     url: z.string().url(),
   }),
   run: async (payload) => {
-    const scrapeResult = await FirecrawlClient.scrapeUrl(payload.url, {
-      formats: ['markdown'],
-    });
-
-    if (!scrapeResult.success) {
-      logger.error(`Error scraping ${payload.url}`, {
-        scrapeResult,
-      });
-      throw new Error('Failed to scrape source');
-    }
-
-    if (!scrapeResult.markdown) {
-      logger.error(`No markdown content found for ${payload.url}`, {
-        scrapeResult,
-      });
-      throw new Error('No markdown content found');
-    }
-
-    logger.info(`Scraped ${payload.url}`, {
-      scrapeResult,
-    });
-
-    return scrapeResult.markdown;
+    const parseSourceService = new ParseSourceService(scrapper, logger);
+    return parseSourceService.execute(payload.url);
   },
 });
 
 export const ChunkenizeSourceContentTask = schemaTask({
-  id: 'chunkenize-source-content',
+  id: "chunkenize-source-content",
   schema: z.object({
     content: z.string(),
   }),
   run: async (payload) => {
-    const chunks: string[] = [];
-
-    const recursiveChunk = (text: string) => {
-      // Base case - text is small enough to be a chunk
-      if (text.length <= CHUNK_SIZE) {
-        chunks.push(text);
-        return;
-      }
-
-      // Find the best split point near the middle
-      const splitIndex = Math.floor(text.length / 2);
-      let leftEnd = text.lastIndexOf('\n', splitIndex);
-      let rightStart = text.indexOf('\n', splitIndex);
-
-      // If no newlines found, fall back to splitting on spaces
-      if (leftEnd === -1 && rightStart === -1) {
-        leftEnd = text.lastIndexOf(' ', splitIndex);
-        rightStart = text.indexOf(' ', splitIndex);
-      }
-
-      // If still no good split points, just split in the middle
-      if (leftEnd === -1) leftEnd = splitIndex;
-      if (rightStart === -1) rightStart = splitIndex;
-
-      // Choose the split point closest to the middle
-      const splitPoint =
-        Math.abs(splitIndex - leftEnd) < Math.abs(splitIndex - rightStart)
-          ? leftEnd
-          : rightStart;
-
-      // Recursively process each half
-      recursiveChunk(text.slice(0, splitPoint).trim());
-      recursiveChunk(text.slice(splitPoint).trim());
-    };
-
-    recursiveChunk(payload.content);
-
-    return chunks;
+    return extractChunkTexts(payload.content, CHUNK_SIZE);
   },
 });
 
 export const SummarizeChunkContentTask = schemaTask({
-  id: 'summarize-chunk-content',
+  id: "summarize-chunk-content",
   schema: z.object({
     rawContent: z.string(),
     order: z.number(),
   }),
   run: async (payload) => {
     const summary = await generateText({
-      model: openai('o3-mini'),
+      model: openai("o3-mini"),
       prompt: getSummarizeChunkPrompt({ chunk: payload.rawContent }),
       experimental_telemetry: {
         isEnabled: true,
-        functionId: 'summarize-chunk-content',
+        functionId: "summarize-chunk-content",
       },
     });
 
@@ -447,19 +390,19 @@ export const SummarizeChunkContentTask = schemaTask({
 });
 
 export const SummarizeSourceContentTask = schemaTask({
-  id: 'summarize-source-content',
+  id: "summarize-source-content",
   schema: z.object({
     chunkSummaries: z.array(z.string()),
   }),
   run: async (payload) => {
     const documentSummary = await generateText({
-      model: openai('gpt-4o-mini'),
+      model: openai("gpt-4o-mini"),
       prompt: getSummarizeDocumentPrompt({
-        content: payload.chunkSummaries.join('\n'),
+        content: payload.chunkSummaries.join("\n"),
       }),
       experimental_telemetry: {
         isEnabled: true,
-        functionId: 'summarize-source-content',
+        functionId: "summarize-source-content",
       },
     });
 
@@ -470,7 +413,7 @@ export const SummarizeSourceContentTask = schemaTask({
 });
 
 export const EnrichChunkContentTask = schemaTask({
-  id: 'enrich-chunk-content',
+  id: "enrich-chunk-content",
   schema: z.object({
     rawContent: z.string(),
     sourceSummary: z.string(),
@@ -479,7 +422,7 @@ export const EnrichChunkContentTask = schemaTask({
   }),
   run: async (payload) => {
     const enrichedContent = await generateText({
-      model: openai('gpt-4o-mini'),
+      model: openai("gpt-4o-mini"),
       prompt: getEnrichChunkPrompt({
         chunk: payload.rawContent,
         sourceSummary: payload.sourceSummary,
@@ -496,7 +439,7 @@ export const EnrichChunkContentTask = schemaTask({
 });
 
 export const EnrichChunkTask = schemaTask({
-  id: 'enrich-chunk',
+  id: "enrich-chunk",
   schema: z.object({
     order: z.number(),
     rawContent: z.string(),
@@ -507,7 +450,7 @@ export const EnrichChunkTask = schemaTask({
   run: async (payload) => {
     const enrichedChunkContent = await tasks.triggerAndWait<
       typeof EnrichChunkContentTask
-    >('enrich-chunk-content', {
+    >("enrich-chunk-content", {
       rawContent: payload.rawContent,
       sourceSummary: payload.sourceSummary,
       precedingChunkContent: payload.precedingChunkContent,
@@ -515,18 +458,18 @@ export const EnrichChunkTask = schemaTask({
     });
 
     if (!enrichedChunkContent.ok) {
-      throw new Error('Failed to enrich chunk!');
+      throw new Error("Failed to enrich chunk!");
     }
 
     const enrichedSummary = await tasks.triggerAndWait<
       typeof SummarizeChunkContentTask
-    >('summarize-chunk-content', {
+    >("summarize-chunk-content", {
       order: payload.order,
       rawContent: enrichedChunkContent.output.enrichedContent,
     });
 
     if (!enrichedSummary.ok) {
-      throw new Error('Failed to summarize chunk!');
+      throw new Error("Failed to summarize chunk!");
     }
 
     return {
@@ -538,7 +481,7 @@ export const EnrichChunkTask = schemaTask({
 });
 
 export const StoreSourceTask = schemaTask({
-  id: 'store-source',
+  id: "store-source",
   schema: z.object({
     url: z.string(),
     userId: z.string(),
@@ -548,14 +491,14 @@ export const StoreSourceTask = schemaTask({
 
   run: async (payload) => {
     const sourceEmbedding = await embed({
-      model: openai.embedding('text-embedding-3-large', { dimensions: 1536 }),
+      model: openai.embedding("text-embedding-3-large", { dimensions: 1536 }),
       value: payload.sourceSummary,
     });
 
     const [source] = await db
       .insert(schema.sources)
       .values({
-        type: 'URL',
+        type: "URL",
         filePath: payload.url,
         creatorId: payload.userId,
         summary: payload.sourceSummary,
@@ -569,7 +512,7 @@ export const StoreSourceTask = schemaTask({
 });
 
 export const StoreChunksTask = schemaTask({
-  id: 'store-chunks',
+  id: "store-chunks",
   schema: z.object({
     sourceId: z.string(),
     chunks: z.array(
@@ -578,12 +521,12 @@ export const StoreChunksTask = schemaTask({
         rawContent: z.string(),
         summary: z.string(),
         enrichedContent: z.string(),
-      }),
+      })
     ),
   }),
   run: async (payload) => {
     const embeddingsResult = await embedMany({
-      model: openai.embedding('text-embedding-3-large', { dimensions: 1536 }),
+      model: openai.embedding("text-embedding-3-large", { dimensions: 1536 }),
       values: payload.chunks.map((chunk) => chunk.enrichedContent),
     });
 
@@ -595,25 +538,25 @@ export const StoreChunksTask = schemaTask({
         summary: chunk.summary,
         embedding: embeddingsResult.embeddings[index],
         sourceId: payload.sourceId,
-      })),
+      }))
     );
   },
 });
 
 export const GenerateCourseSyllabusTask = schemaTask({
-  id: 'generate-course-syllabus',
+  id: "generate-course-syllabus",
   schema: z.object({
     documentSummary: z.string(),
     documentChunksSummaries: z.array(z.string()),
-    contentSize: z.enum(['small', 'medium', 'large']),
+    contentSize: z.enum(["small", "medium", "large"]),
   }),
   run: async (payload) => {
     const syllabusResult = await generateObject({
-      model: openai('o3-mini'),
+      model: openai("o3-mini"),
       prompt: getGenerateCourseSyllabusPrompt({
         documentSummary: payload.documentSummary,
         documentChunksSummariesJoined:
-          payload.documentChunksSummaries.join('\n'),
+          payload.documentChunksSummaries.join("\n"),
         contentSize: payload.contentSize,
       }),
       schema: SyllabusSchema,
@@ -627,7 +570,7 @@ export const GenerateCourseSyllabusTask = schemaTask({
 });
 
 export const GenerateSyllabusEmbeddingsTask = schemaTask({
-  id: 'generate-syllabus-embeddings',
+  id: "generate-syllabus-embeddings",
   schema: z.object({
     syllabus: SyllabusSchema,
   }),
@@ -644,7 +587,7 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
         description: module.description,
         moduleOrder: module.order,
         unitOrder: unit.order,
-      })),
+      }))
     );
 
     const lessons = payload.syllabus.units.flatMap((unit) =>
@@ -655,12 +598,12 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
           lessonOrder: lesson.order,
           moduleOrder: module.order,
           unitOrder: unit.order,
-        })),
-      ),
+        }))
+      )
     );
 
     const courseEmbeddingResult = await embedMany({
-      model: openai.embedding('text-embedding-3-large', { dimensions: 1536 }),
+      model: openai.embedding("text-embedding-3-large", { dimensions: 1536 }),
       values: [
         `${payload.syllabus.title} ${payload.syllabus.description}`,
         ...units.map((unit) => `${unit.title} ${unit.description}`),
@@ -694,7 +637,7 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
 });
 
 export const StoreSyllabusTask = schemaTask({
-  id: 'store-syllabus',
+  id: "store-syllabus",
   schema: z.object({
     course: InsertCourseSchema,
     units: z.array(InsertUnitSchema),
@@ -717,7 +660,7 @@ export const StoreSyllabusTask = schemaTask({
 });
 
 export const GenerateLessonStepsTask = schemaTask({
-  id: 'generate-lesson-steps',
+  id: "generate-lesson-steps",
   schema: z.object({
     lesson: InsertTaskSchema,
     syllabus: SyllabusSchema,
@@ -738,7 +681,7 @@ export const GenerateLessonStepsTask = schemaTask({
   }) => {
     const similarity = sql<number>`1 - (${cosineDistance(
       schema.chunks.embedding,
-      lesson.embedding,
+      lesson.embedding
     )})`;
 
     const chunks = await db
@@ -749,7 +692,7 @@ export const GenerateLessonStepsTask = schemaTask({
       .limit(5);
 
     const stepsResult = await generateObject({
-      model: openai('o3-mini'),
+      model: openai("o3-mini"),
       prompt: getGenerateLessonPrompt({
         lesson: {
           ...lesson,
@@ -782,7 +725,7 @@ export const GenerateLessonStepsTask = schemaTask({
         type: step.type,
         // biome-ignore lint/style/noNonNullAssertion: <explanation>
         taskId: lesson.id!,
-      })),
+      }))
     );
   },
 });

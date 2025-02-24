@@ -1,1 +1,3 @@
-export interface StepRepo {};
+export interface StepRepo {
+  something(): void;
+}
