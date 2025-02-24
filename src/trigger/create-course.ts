@@ -2,7 +2,10 @@ import { Scrapper } from "@/core/domain/scrapper";
 import { UserRepo } from "@/core/domain/user-repo";
 import { EnrichChunkContentService } from "@/core/services/enrich-chunk-content.service";
 import { extractChunkTexts } from "@/core/services/extract-chunks-texts";
-import { ParseSourceService } from "@/core/services/parse-source.service";
+import {
+  ParseSourceService,
+  ParseSourceServiceTask,
+} from "@/core/services/parse-source.service";
 import { SummarizeChunkContentService } from "@/core/services/summarize-chunk-content.service";
 import { SummarizeSourceContentService } from "@/core/services/summarize-source-content.service";
 import { db } from "@/db";
@@ -55,18 +58,9 @@ export const CreateCourseTask = schemaTask({
       throw new Error("User not found");
     }
 
-    const parseSourceRun = await tasks.triggerAndWait<typeof ParseSourceTask>(
-      "parse-source",
-      {
-        url: payload.url,
-      }
-    );
-
-    if (!parseSourceRun.ok) {
-      throw new Error("Failed to parse source");
-    }
-
-    const sourceContent = parseSourceRun.output;
+    const sourceContent = await new ParseSourceServiceTask(
+      new ParseSourceService(scrapper, logger)
+    ).execute(payload.url);
 
     const chunkenizeSourceContentRun = await tasks.triggerAndWait<
       typeof ChunkenizeSourceContentTask
@@ -342,17 +336,6 @@ export const CreateCourseTask = schemaTask({
         },
       }))
     );
-  },
-});
-
-export const ParseSourceTask = schemaTask({
-  id: "parse-source",
-  schema: z.object({
-    url: z.string().url(),
-  }),
-  run: async (payload) => {
-    const parseSourceService = new ParseSourceService(scrapper, logger);
-    return parseSourceService.execute(payload.url);
   },
 });
 

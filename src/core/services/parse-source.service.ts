@@ -1,7 +1,13 @@
 import type { Logger } from "@/core/domain/logger";
 import type { Scrapper } from "@/core/domain/scrapper";
+import { schemaTask, tasks } from "@trigger.dev/sdk/v3";
+import { z } from "zod";
 
-export class ParseSourceService {
+export interface IParseSourceService {
+  execute(url: string): Promise<string>;
+}
+
+export class ParseSourceService implements IParseSourceService {
   constructor(private scrapper: Scrapper, private logger: Logger) {}
 
   async execute(url: string): Promise<string> {
@@ -26,5 +32,34 @@ export class ParseSourceService {
     });
 
     return scrapeResult.markdown;
+  }
+}
+
+export class ParseSourceServiceTask implements IParseSourceService {
+  constructor(private parseSourceService: IParseSourceService) {}
+
+  async execute(url: string): Promise<string> {
+    const ParseSourceTask = schemaTask({
+      id: "parse-source",
+      schema: z.object({
+        url: z.string().url(),
+      }),
+      run: async (payload) => {
+        return this.parseSourceService.execute(payload.url);
+      },
+    });
+
+    const parseSourceRun = await tasks.triggerAndWait<typeof ParseSourceTask>(
+      "parse-source",
+      {
+        url: url,
+      }
+    );
+
+    if (!parseSourceRun.ok) {
+      throw new Error("Failed to parse source");
+    }
+
+    return parseSourceRun.output;
   }
 }
