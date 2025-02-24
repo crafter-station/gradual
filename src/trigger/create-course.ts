@@ -2,6 +2,7 @@ import { Scrapper } from "@/core/domain/scrapper";
 import { UserRepo } from "@/core/domain/user-repo";
 import { extractChunkTexts } from "@/core/services/extract-chunks-texts";
 import { ParseSourceService } from "@/core/services/parse-source.service";
+import { SummarizeChunkContentService } from "@/core/services/summarize-chunk-content.service";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import {
@@ -19,7 +20,6 @@ import {
   getEnrichChunkPrompt,
   getGenerateCourseSyllabusPrompt,
   getGenerateLessonPrompt,
-  getSummarizeChunkPrompt,
   getSummarizeDocumentPrompt,
 } from "@/lib/prompts";
 import { SyllabusSchema } from "@/lib/schemas";
@@ -373,19 +373,10 @@ export const SummarizeChunkContentTask = schemaTask({
     order: z.number(),
   }),
   run: async (payload) => {
-    const summary = await generateText({
-      model: openai("o3-mini"),
-      prompt: getSummarizeChunkPrompt({ chunk: payload.rawContent }),
-      experimental_telemetry: {
-        isEnabled: true,
-        functionId: "summarize-chunk-content",
-      },
-    });
-
-    return {
-      order: payload.order,
-      summary: summary.text,
-    };
+    return new SummarizeChunkContentService().execute(
+      payload.rawContent,
+      payload.order
+    );
   },
 });
 
