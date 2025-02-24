@@ -1,8 +1,10 @@
 import { Scrapper } from "@/core/domain/scrapper";
 import { UserRepo } from "@/core/domain/user-repo";
+import { EnrichChunkContentService } from "@/core/services/enrich-chunk-content.service";
 import { extractChunkTexts } from "@/core/services/extract-chunks-texts";
 import { ParseSourceService } from "@/core/services/parse-source.service";
 import { SummarizeChunkContentService } from "@/core/services/summarize-chunk-content.service";
+import { SummarizeSourceContentService } from "@/core/services/summarize-source-content.service";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import {
@@ -17,16 +19,14 @@ import {
 } from "@/db/schema";
 import { CHUNK_SIZE } from "@/lib/constants";
 import {
-  getEnrichChunkPrompt,
   getGenerateCourseSyllabusPrompt,
   getGenerateLessonPrompt,
-  getSummarizeDocumentPrompt,
 } from "@/lib/prompts";
 import { SyllabusSchema } from "@/lib/schemas";
 import { formatSyllabus } from "@/lib/utils";
 import { openai } from "@ai-sdk/openai";
 import { batch, logger, schemaTask, tasks } from "@trigger.dev/sdk/v3";
-import { embed, embedMany, generateObject, generateText } from "ai";
+import { embed, embedMany, generateObject } from "ai";
 import { and, cosineDistance, desc, eq, gte, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -386,20 +386,7 @@ export const SummarizeSourceContentTask = schemaTask({
     chunkSummaries: z.array(z.string()),
   }),
   run: async (payload) => {
-    const documentSummary = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: getSummarizeDocumentPrompt({
-        content: payload.chunkSummaries.join("\n"),
-      }),
-      experimental_telemetry: {
-        isEnabled: true,
-        functionId: "summarize-source-content",
-      },
-    });
-
-    return {
-      summary: documentSummary.text,
-    };
+    return new SummarizeSourceContentService().execute(payload.chunkSummaries);
   },
 });
 
@@ -412,20 +399,13 @@ export const EnrichChunkContentTask = schemaTask({
     succeedingChunkContent: z.string().nullable(),
   }),
   run: async (payload) => {
-    const enrichedContent = await generateText({
-      model: openai("gpt-4o-mini"),
-      prompt: getEnrichChunkPrompt({
-        chunk: payload.rawContent,
-        sourceSummary: payload.sourceSummary,
-        precedingChunkContent: payload.precedingChunkContent,
-        succeedingChunkContent: payload.succeedingChunkContent,
-        chunkSize: CHUNK_SIZE,
-      }),
-    });
-
-    return {
-      enrichedContent: enrichedContent.text,
-    };
+    return new EnrichChunkContentService().execute(
+      payload.rawContent,
+      payload.sourceSummary,
+      payload.precedingChunkContent,
+      payload.succeedingChunkContent,
+      CHUNK_SIZE
+    );
   },
 });
 
