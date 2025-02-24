@@ -37,6 +37,7 @@ export async function createCourse(
 
     await tasks.trigger<typeof CreateCourseTask>('create-course', {
       url: parsed.data.url,
+      userId: user.id,
     });
 
     return { success: true };

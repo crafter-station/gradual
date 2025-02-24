@@ -10,7 +10,6 @@ import {
   type InsertUnit,
   InsertUnitSchema,
 } from '@/db/schema';
-import { getCurrentUser } from '@/db/utils';
 import { CHUNK_SIZE } from '@/lib/constants';
 import {
   getEnrichChunkPrompt,
@@ -35,6 +34,7 @@ const FirecrawlClient = new Firecrawl({
 
 const CreateCourseTaskSchema = z.object({
   url: z.string().url(),
+  userId: z.string().uuid(),
 });
 
 function getContentSize(sourceContentLength: number) {
@@ -49,11 +49,6 @@ export const CreateCourseTask = schemaTask({
   id: 'create-course',
   schema: CreateCourseTaskSchema,
   run: async (payload) => {
-    const user = await getCurrentUser();
-    if (!user) {
-      throw new Error('User not found');
-    }
-
     const parseSourceRun = await tasks.triggerAndWait<typeof ParseSourceTask>(
       'parse-source',
       {
@@ -167,7 +162,7 @@ export const CreateCourseTask = schemaTask({
       'store-source',
       {
         url: payload.url,
-        userId: user.id,
+        userId: payload.userId,
         sourceSummary,
         chunksCount: enrichedChunks.length,
       },
@@ -235,7 +230,7 @@ export const CreateCourseTask = schemaTask({
       id: uuidv4(),
       title: syllabus.title,
       description: syllabus.description,
-      creatorId: user.id,
+      creatorId: payload.userId,
       embedding: courseEmbedding,
     };
     const units: (InsertUnit & { id: string })[] = syllabus.units.map(
@@ -441,7 +436,7 @@ export const SummarizeChunkContentTask = schemaTask({
   }),
   run: async (payload) => {
     const summary = await generateText({
-      model: openai('o3-mini'),
+      model: openai('gpt-4o-mini'),
       prompt: getSummarizeChunkPrompt({ chunk: payload.rawContent }),
       experimental_telemetry: {
         isEnabled: true,
@@ -497,6 +492,10 @@ export const EnrichChunkContentTask = schemaTask({
         succeedingChunkContent: payload.succeedingChunkContent,
         chunkSize: CHUNK_SIZE,
       }),
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'enrich-chunk-content',
+      },
     });
 
     return {
@@ -627,6 +626,10 @@ export const GenerateCourseSyllabusTask = schemaTask({
         contentSize: payload.contentSize,
       }),
       schema: SyllabusSchema,
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'generate-course-syllabus',
+      },
     });
 
     return syllabusResult.object;

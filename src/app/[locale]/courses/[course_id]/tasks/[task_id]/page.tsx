@@ -154,6 +154,23 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
             (progress) => progress.stepId === step.id,
           );
 
+          if (step.type === 'ANALOGY') {
+            return (
+              <div key={step.id}>
+                <h2>{step.content.title}</h2>
+                <p>{step.content.body}</p>
+              </div>
+            );
+          }
+
+          if (step.type === 'BINARY') {
+            return (
+              <div key={step.id}>
+                <h2>{step.content.questionBody}</h2>
+              </div>
+            );
+          }
+
           if (step.type === 'TUTORIAL') {
             return (
               <TutorialStep
