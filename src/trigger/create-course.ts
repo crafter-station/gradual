@@ -1,5 +1,11 @@
 import { Scrapper } from "@/core/domain/scrapper";
+import { SourceRepo } from "@/core/domain/source-repo";
 import { UserRepo } from "@/core/domain/user-repo";
+import { createMultipleEmbeddings } from "@/core/services/create-embedding";
+import {
+  CreateSourceService,
+  CreateSourceServiceTask,
+} from "@/core/services/create-source.service";
 import {
   EnrichChunkContentService,
   EnrichChunkContentServiceTask,
@@ -43,7 +49,7 @@ import { SyllabusSchema } from "@/lib/schemas";
 import { formatSyllabus } from "@/lib/utils";
 import { openai } from "@ai-sdk/openai";
 import { batch, logger, schemaTask, tasks } from "@trigger.dev/sdk/v3";
-import { embed, embedMany, generateObject } from "ai";
+import { generateObject } from "ai";
 import { and, cosineDistance, desc, eq, gte, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -114,33 +120,16 @@ export const CreateCourseTask = schemaTask({
 
     summarizedChunks = [];
 
-    const enrichedSourceSummary = await tasks.triggerAndWait<
-      typeof SummarizeSourceContentTask
-    >("summarize-source-content", {
-      chunkSummaries: enrichedChunks.map((chunk) => chunk.enrichedSummary),
-    });
+    // enriched source summary
+    sourceSummary = await new SummarizeSourceContentServiceTask(
+      new SummarizeSourceContentService()
+    ).execute(enrichedChunks.map((chunk) => chunk.enrichedSummary));
 
-    if (!enrichedSourceSummary.ok) {
-      throw new Error("Failed to enrich source summary");
-    }
+    const source = await new CreateSourceServiceTask(
+      new CreateSourceService(new SourceRepo())
+    ).execute(payload.url, user.id, sourceSummary, enrichedChunks.length);
 
-    sourceSummary = enrichedSourceSummary.output;
-
-    const storeSourceRun = await tasks.triggerAndWait<typeof StoreSourceTask>(
-      "store-source",
-      {
-        url: payload.url,
-        userId: user.id,
-        sourceSummary,
-        chunksCount: enrichedChunks.length,
-      }
-    );
-
-    if (!storeSourceRun.ok) {
-      throw new Error("Failed to store source");
-    }
-
-    const sourceId = storeSourceRun.output;
+    const sourceId = source.id;
 
     const storeChunksRun = await tasks.triggerAndWait<typeof StoreChunksTask>(
       "store-chunks",
@@ -307,61 +296,6 @@ export const CreateCourseTask = schemaTask({
   },
 });
 
-export const SummarizeChunkContentTask = schemaTask({
-  id: "summarize-chunk-content",
-  schema: z.object({
-    rawContent: z.string(),
-    order: z.number(),
-  }),
-  run: async (payload) => {
-    return new SummarizeChunkContentService().execute(
-      payload.rawContent,
-      payload.order
-    );
-  },
-});
-
-export const SummarizeSourceContentTask = schemaTask({
-  id: "summarize-source-content",
-  schema: z.object({
-    chunkSummaries: z.array(z.string()),
-  }),
-  run: async (payload) => {
-    return new SummarizeSourceContentService().execute(payload.chunkSummaries);
-  },
-});
-
-export const StoreSourceTask = schemaTask({
-  id: "store-source",
-  schema: z.object({
-    url: z.string(),
-    userId: z.string(),
-    sourceSummary: z.string(),
-    chunksCount: z.number(),
-  }),
-
-  run: async (payload) => {
-    const sourceEmbedding = await embed({
-      model: openai.embedding("text-embedding-3-large", { dimensions: 1536 }),
-      value: payload.sourceSummary,
-    });
-
-    const [source] = await db
-      .insert(schema.sources)
-      .values({
-        type: "URL",
-        filePath: payload.url,
-        creatorId: payload.userId,
-        summary: payload.sourceSummary,
-        embedding: sourceEmbedding.embedding,
-        chunksCount: payload.chunksCount,
-      })
-      .returning({ id: schema.sources.id });
-
-    return source.id;
-  },
-});
-
 export const StoreChunksTask = schemaTask({
   id: "store-chunks",
   schema: z.object({
@@ -376,10 +310,9 @@ export const StoreChunksTask = schemaTask({
     ),
   }),
   run: async (payload) => {
-    const embeddingsResult = await embedMany({
-      model: openai.embedding("text-embedding-3-large", { dimensions: 1536 }),
-      values: payload.chunks.map((chunk) => chunk.enrichedContent),
-    });
+    const embeddingsResult = await createMultipleEmbeddings(
+      payload.chunks.map((chunk) => chunk.enrichedContent)
+    );
 
     await db.insert(schema.chunks).values(
       payload.chunks.map((chunk, index) => ({
@@ -453,15 +386,12 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
       )
     );
 
-    const courseEmbeddingResult = await embedMany({
-      model: openai.embedding("text-embedding-3-large", { dimensions: 1536 }),
-      values: [
-        `${payload.syllabus.title} ${payload.syllabus.description}`,
-        ...units.map((unit) => `${unit.title} ${unit.description}`),
-        ...modules.map((module) => `${module.title} ${module.description}`),
-        ...lessons.map((lesson) => `${lesson.title} ${lesson.description}`),
-      ],
-    });
+    const courseEmbeddingResult = await createMultipleEmbeddings([
+      `${payload.syllabus.title} ${payload.syllabus.description}`,
+      ...units.map((unit) => `${unit.title} ${unit.description}`),
+      ...modules.map((module) => `${module.title} ${module.description}`),
+      ...lessons.map((lesson) => `${lesson.title} ${lesson.description}`),
+    ]);
 
     return {
       courseEmbedding: courseEmbeddingResult.embeddings[0],

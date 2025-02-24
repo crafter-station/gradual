@@ -1,19 +1,24 @@
 export class User {
-  constructor(private userRecord: any) {}
+  constructor(
+    private _id: string,
+    private _fullname: string,
+    private _email: string,
+    private _avatarUrl: string
+  ) {}
 
   get id(): string {
-    return this.userRecord.id;
+    return this._id;
   }
 
-  get name(): string {
-    return this.userRecord.name;
+  get fullname(): string {
+    return this._fullname;
   }
 
   get email(): string {
-    return this.userRecord.email;
+    return this._email;
   }
 
   get avatarUrl(): string {
-    return this.userRecord.avatarUrl;
+    return this._avatarUrl;
   }
 }

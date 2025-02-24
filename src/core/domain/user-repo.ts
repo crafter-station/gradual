@@ -3,10 +3,10 @@ import { db } from "@/db";
 
 export class UserRepo {
   async findFirst(): Promise<User | null> {
-    const user = db.query.users.findFirst();
+    const user = await db.query.users.findFirst();
     if (!user) {
       return null;
     }
-    return new User(user);
+    return new User(user.id, user.fullname, user.email, user.avatarUrl);
   }
 }
