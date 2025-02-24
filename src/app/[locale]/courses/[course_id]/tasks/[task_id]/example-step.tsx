@@ -46,7 +46,7 @@ export const ExampleStep = ({
         <CardTitle className="flex items-center gap-2">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-sm">
             {stepIndex + 1}
-          </span>
+          </span>{' '}
           Example
         </CardTitle>
       </CardHeader>

@@ -1,40 +1,32 @@
 import type {
-  ExampleStepContent,
-  QuestionStepContent,
+  module,
   SelectTask,
   SelectTaskProgress,
   StepContent,
-  TutorialStepContent,
-  courses,
-  enrollments,
-  modules,
-  sources,
+  course,
+  enrollment,
+  source,
+  step,
   stepProgress,
-  steps,
-  units,
-  users,
+  unit,
+  user,
 } from '@/db/schema';
 import type { InferSelectModel } from 'drizzle-orm';
 
 // Base types from schema
-export type User = InferSelectModel<typeof users>;
-export type Course = InferSelectModel<typeof courses>;
-export type Unit = InferSelectModel<typeof units>;
-export type Module = InferSelectModel<typeof modules>;
+export type User = InferSelectModel<typeof user>;
+export type Course = InferSelectModel<typeof course>;
+export type Unit = InferSelectModel<typeof unit>;
+export type Module = InferSelectModel<typeof module>;
 export type Task = SelectTask;
-export type Step = InferSelectModel<typeof steps>;
+export type Step = InferSelectModel<typeof step>;
 export type TaskProgress = SelectTaskProgress;
 export type StepProgress = InferSelectModel<typeof stepProgress>;
-export type Enrollment = InferSelectModel<typeof enrollments>;
-export type Source = InferSelectModel<typeof sources>;
+export type Enrollment = InferSelectModel<typeof enrollment>;
+export type Source = InferSelectModel<typeof source>;
 
 // Re-export step content types
-export type {
-  StepContent,
-  TutorialStepContent,
-  ExampleStepContent,
-  QuestionStepContent,
-};
+export type { StepContent };
 
 // Extended types with relations
 export type CourseWithRelations = Course & {

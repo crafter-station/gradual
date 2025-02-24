@@ -43,82 +43,206 @@ export function getGenerateLessonPrompt({
 
 Important: Focus only on the current topic. Do not cover material from other modules in the syllabus:
 
-The lesson should follow this progression:
-1. Start with tutorial steps that introduce and explain concepts (from basic to advanced)
-2. Include examples that demonstrate the concepts
-3. Reinforce with questions throughout the lesson
-4. Continue alternating between tutorials, examples, and questions
+Required step count: 15-20 steps total
 
-Required step count: 10-15 steps total
 
-Example pattern of steps:
-TUTORIAL (introduce foundational concept)
-EXAMPLE (demonstrate foundational concept)
-QUESTION (test foundational concept)
-QUESTION (reinforce foundational concept)
-TUTORIAL (introduce intermediate concept)
-EXAMPLE (demonstrate intermediate concept)
-QUESTION (test intermediate concept)
-QUESTION (reinforce intermediate concept)
-EXAMPLE (demonstrate advanced application)
-QUESTION (test advanced application)
-TUTORIAL (deeper concept)
-QUESTION (comprehensive application)
-... continues
 
 Guidelines:
 - Use markdown formatting in the content
 - Make the progression logical and build upon previous knowledge
 - Include code examples when relevant
-- For questions, provide meaningful explanations for each alternative
+- For questions, provide meaningful explanations
 - Stay focused on the specific topic scope
 - Avoid covering material from other modules
 
 Each step must follow one of these formats:
 
-TUTORIAL steps should:
-- Start with foundational concepts
+INTRODUCTION steps should:
+- Start with a story to engage the user
 - Use clear explanations with markdown formatting
 - Include relevant code snippets or diagrams when needed
 - Break down complex topics into digestible parts
-- Format content as:
-  {
-    type: "TUTORIAL",
-    title: "Clear, concise title",
-    body: "Detailed explanation in markdown"
-  }
 
-EXAMPLE steps should:
-- Demonstrate practical applications
-- Show real-world scenarios
+DEFINITION steps should:
+- Define a new concept
+- Use markdown formatting
+
+TUTORIAL steps should:
+- Explain the concept in detail or follow up on the previous step
+- Use markdown formatting
+- Include relevant code snippets or diagrams when needed
+- Be longer than the other steps
+
+ANALOGY steps should:
+- Explain a concept by comparing it to something else
+- Use markdown formatting
+
+SOLVED_EXERCISE steps should:
+- Solve a problem step by step
+- Use markdown formatting
 - Include both the problem and its solution
 - Explain the reasoning behind the solution
-- Format content as:
+
+FUN_FACT steps should:
+- Share a fun fact
+- Use markdown formatting
+
+QUOTE steps should:
+- Share a quote
+- Use markdown formatting
+- Include the author of the quote
+- Examples:
   {
-    type: "EXAMPLE",
-    body: "Problem description",
-    answer: "Detailed solution"
+    type: "QUOTE",
+    body: "The only way to do great work is to love what you do.",
+    author: "Steve Jobs",
+  }
+  {
+    type: "QUOTE",
+    body: "The most difficult things in computer science are 0. parsing, 1. naming things and 2. cache invalidation.",
+    author: "Unknown",
   }
 
 QUESTION steps should:
 - Test understanding of previously covered concepts
-- Have 3-4 carefully crafted alternatives
-- Include detailed explanations for each alternative
-- Ensure the correct alternative is clearly superior
-- Format content as:
+- Have 1 correct alternative
+- Have 3-4 distractors
+- If thinking in a Yes/No question, use a BINARY step instead
+- Include detailed explanations for the correct alternative
+- Ensure the correct alternative is clearly superior to the distractors
+- Provide a list of distractors with explanations
+- Examples:
   {
     type: "QUESTION",
-    question: "Clear question text",
-    alternatives: [
+    questionBody: "What is the capital of France?",
+    correctAlternative: "Paris",
+    correctAlternativeExplanation: "Paris is the capital of France.",
+    distractors: [
       {
-        order: 1,
-        content: "Alternative text",
-        explanation: "Why this is/isn't correct"
+        alternative: "Rome", 
+        explanation: "Rome is the capital of Italy, not France.",
       },
-      // ... more alternatives
+      {
+        alternative: "Marseille",
+        explanation: "Marseille is the capital of France, not Paris.",
+      },
+      {
+        alternative: "Lyon",
+        explanation: "Lyon is the capital of France, not Paris.",
+      },
     ],
-    correctAlternativeOrder: number
   }
+  {
+    type: "QUESTION",
+    questionBody: "When was the Declaration of Independence signed?",
+    correctAlternative: "1776",
+    correctAlternativeExplanation: "The Declaration of Independence was signed in 1776 by the Continental Congress.",
+    distractors: [
+      {
+        alternative: "1775",
+        explanation: "1775 is the year the Declaration of Independence was proposed, but not signed.",
+      },
+      {
+        alternative: "1789",
+        explanation: "1789 is the year the French Revolution started, not the Declaration of Independence.",
+      },
+    ],
+  }
+
+MULTIPLE_CHOICE steps should:
+- Test understanding of previously covered concepts
+- Have 2-3 carefully crafted correct alternatives
+- Have 3-4 carefully crafted distractors
+- Include the explanation for the solution
+- Examples:
+  {
+    type: "MULTIPLE_CHOICE",
+    questionBody: "Which of the following are cities in France?",
+    correctAlternatives: [
+      "Paris",
+      "Nantes",
+      "Bordeaux",
+    ],
+    distractors: ["London", "Rome", "Marseille"],
+    explanation: "Paris is the capital of France, Nantes is a city in France, and Bordeaux is a city in France.",
+  }
+  {
+    type: "MULTIPLE_CHOICE",
+    questionBody: "Which of the following options are true about Python?",
+    correctAlternatives: [
+      "Python is a dynamically typed language",
+      "Python uses indentation for code blocks",
+    ],
+    distractors: [
+      "Python requires semicolons at the end of statements",
+      "All variables in Python must be declared before use",
+      "Python supports multiple inheritance",
+      "Python arrays are immutable by default",
+    ],
+    explanation: "Python is a dynamically typed language, uses indentation for code blocks, and arrays are mutable by default.",
+  }
+
+FILL_IN_THE_BLANK steps should:
+- Test understanding of previously covered concepts
+- Have 1-2 blanks
+- Include the explanation for the solution
+- Write the full sentence in the body
+- Provide the blanks as a list of strings in the blanks property
+- Examples:
+  {
+    type: "FILL_IN_THE_BLANK",
+    body: "The capital of [0] is [1].",
+    blanks: ["France", "Paris"],
+    distractors: ["London","Germany", "Berlin", "Spain", "Italy", "Portugal"],
+  }
+  {
+    type: "FILL_IN_THE_BLANK",
+    body: "A quadratic equation has [0] solutions",
+    blanks: ["two"],
+    distractors: ["one", "three", "four", "many"],
+  }
+
+BINARY steps should:
+- Test understanding of previously covered concepts
+- Have 2 alternatives
+- Include the explanation for the solution
+- Examples:
+  {
+    type: "BINARY",
+    questionBody: "Is Python a statically typed language?",
+    correctAnswer: true,
+    explanation: "Python is a dynamically typed language, not a statically typed language.",
+  }
+  {
+    type: "BINARY",
+    questionBody: "Is New York City the capital of the United States?",
+    correctAnswer: false,
+    explanation: "New York City is not the capital of the United States, the capital is Washington D.C.",
+  }
+
+Example pattern of steps:
+INTRODUCTION
+TUTORIAL
+FILL_IN_THE_BLANK
+BINARY
+INTRODUCTION
+DEFINITION
+BINARY
+ANALOGY
+TUTORIAL
+MULTIPLE_CHOICE
+...
+
+Another example pattern of steps:
+INTRODUCTION
+TUTORIAL
+ANALOGY
+MULTIPLE_CHOICE
+BINARY
+INTRODUCTION
+TUTORIAL
+QUESTION
+...
 
 <reminder>
   <lesson-scope>
@@ -128,7 +252,7 @@ QUESTION steps should:
     </lesson-title>
   </lesson-scope>
   <step-count>
-    Required step count: 10-15 steps total
+    Required step count: 15-20 steps total
   </step-count>
 </reminder>
 

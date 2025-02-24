@@ -324,11 +324,20 @@ export const CreateCourseTask = schemaTask({
       sourceId,
     });
 
+    const firstUnitFirstModuleLessons = lessons.filter(
+      (lesson) => lesson.unitOrder === 1 && lesson.moduleOrder === 1,
+    );
+
     await batch.triggerByTaskAndWait(
-      lessons.map((lesson) => ({
+      firstUnitFirstModuleLessons.map((lesson) => ({
         task: GenerateLessonStepsTask,
         payload: {
-          lesson,
+          lesson: {
+            ...lesson,
+            // We are retrieving the embedding from the database, so we don't need to pass it to the task
+            // This is to avoid the task payload from becoming too large
+            embedding: undefined,
+          },
           syllabus,
           sourceId,
           unitOrder: lesson.unitOrder,
@@ -352,6 +361,7 @@ export const ParseSourceTask = schemaTask({
   run: async (payload) => {
     const scrapeResult = await FirecrawlClient.scrapeUrl(payload.url, {
       formats: ['markdown'],
+      timeout: 100000,
     });
 
     if (!scrapeResult.success) {
@@ -553,7 +563,7 @@ export const StoreSourceTask = schemaTask({
     });
 
     const [source] = await db
-      .insert(schema.sources)
+      .insert(schema.source)
       .values({
         type: 'URL',
         filePath: payload.url,
@@ -562,7 +572,7 @@ export const StoreSourceTask = schemaTask({
         embedding: sourceEmbedding.embedding,
         chunksCount: payload.chunksCount,
       })
-      .returning({ id: schema.sources.id });
+      .returning({ id: schema.source.id });
 
     return source.id;
   },
@@ -587,7 +597,7 @@ export const StoreChunksTask = schemaTask({
       values: payload.chunks.map((chunk) => chunk.enrichedContent),
     });
 
-    await db.insert(schema.chunks).values(
+    await db.insert(schema.chunk).values(
       payload.chunks.map((chunk, index) => ({
         order: chunk.order,
         rawContent: chunk.rawContent,
@@ -703,23 +713,23 @@ export const StoreSyllabusTask = schemaTask({
     sourceId: z.string(),
   }),
   run: async (payload) => {
-    await db.insert(schema.courses).values(payload.course);
-    await db.insert(schema.units).values(payload.units);
-    await db.insert(schema.modules).values(payload.modules);
-    await db.insert(schema.tasks).values(payload.lessons);
+    await db.insert(schema.course).values(payload.course);
+    await db.insert(schema.unit).values(payload.units);
+    await db.insert(schema.module).values(payload.modules);
+    await db.insert(schema.task).values(payload.lessons);
     await db
-      .update(schema.sources)
+      .update(schema.source)
       .set({
         courseId: payload.course.id,
       })
-      .where(eq(schema.sources.id, payload.sourceId));
+      .where(eq(schema.source.id, payload.sourceId));
   },
 });
 
 export const GenerateLessonStepsTask = schemaTask({
   id: 'generate-lesson-steps',
   schema: z.object({
-    lesson: InsertTaskSchema,
+    lesson: InsertTaskSchema.omit({ embedding: true }),
     syllabus: SyllabusSchema,
     sourceId: z.string(),
     unitOrder: z.number(),
@@ -736,15 +746,21 @@ export const GenerateLessonStepsTask = schemaTask({
     unitTitle,
     moduleTitle,
   }) => {
+    const [lessonEmbedding] = await db
+      .select({ embedding: schema.task.embedding })
+      .from(schema.task)
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      .where(eq(schema.task.id, lesson.id!));
+
     const similarity = sql<number>`1 - (${cosineDistance(
-      schema.chunks.embedding,
-      lesson.embedding,
+      schema.chunk.embedding,
+      lessonEmbedding.embedding,
     )})`;
 
     const chunks = await db
       .select()
-      .from(schema.chunks)
-      .where(and(eq(schema.chunks.sourceId, sourceId), gte(similarity, 0.5)))
+      .from(schema.chunk)
+      .where(and(eq(schema.chunk.sourceId, sourceId), gte(similarity, 0.5)))
       .orderBy(desc(similarity))
       .limit(5);
 
@@ -763,19 +779,23 @@ export const GenerateLessonStepsTask = schemaTask({
       schema: z.object({
         steps: z.array(schema.StepContentSchema),
       }),
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'generate-lesson-steps',
+      },
     });
 
     const steps = stepsResult.object.steps;
 
     await db
-      .update(schema.tasks)
+      .update(schema.task)
       .set({
         stepsCount: steps.length,
       })
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      .where(eq(schema.tasks.id, lesson.id!));
+      .where(eq(schema.task.id, lesson.id!));
 
-    await db.insert(schema.steps).values(
+    await db.insert(schema.step).values(
       steps.map((step, stepIndex) => ({
         order: stepIndex,
         content: step,

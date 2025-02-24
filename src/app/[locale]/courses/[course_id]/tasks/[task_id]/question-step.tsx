@@ -4,7 +4,6 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import type { QuestionStepContent } from '@/db/schema';
 import { cn } from '@/lib/utils';
 import { CheckIcon, Loader2, XIcon } from 'lucide-react';
 import Link from 'next/link';
@@ -13,19 +12,26 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { submitAnswerAction } from './question-step.action';
 
-type QuestionStepProps = Omit<
-  QuestionStepContent,
-  'correctAlternativeOrder'
-> & {
-  selectedAlternativeOrder?: number;
+interface Alternative {
+  text: string;
+  explanation: string;
+  isCorrect: boolean;
+  order: number;
+}
+
+interface QuestionStepProps {
   id: string;
+  type: 'QUESTION';
+  question: string;
+  alternatives: Alternative[];
+  isLastVisibleStep: boolean;
   isCorrect?: boolean;
   stepIndex: number;
   explanation?: string;
+  selectedAlternativeOrder?: number;
   isLastStep: boolean;
-  isLastVisibleStep: boolean;
   correctAlternativeOrder?: number;
-};
+}
 
 export const QuestionStep = ({
   id,
@@ -144,7 +150,7 @@ export const QuestionStep = ({
                     htmlFor={`question-${id}-answer-${index}`}
                     className="flex grow cursor-pointer items-center justify-between text-[14px]"
                   >
-                    {alternative.content}
+                    {alternative.text}
 
                     {(selectedAlternativeOrder ??
                       state?.form?.selectedAlternativeOrder) ===
@@ -175,7 +181,7 @@ export const QuestionStep = ({
                       alternatives.find(
                         (alternative) =>
                           alternative.order === correctAlternativeOrder,
-                      )?.content
+                      )?.text
                     }
                   </span>
                 </p>

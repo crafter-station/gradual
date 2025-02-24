@@ -60,7 +60,7 @@ function NewDiscussion() {
   );
 }
 
-function DiscussionPost({ index }: { index: number }) {
+function DiscussionPost({ index }: Readonly<{ index: number }>) {
   return (
     <div className="flex gap-4">
       <Avatar>

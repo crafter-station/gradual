@@ -24,8 +24,8 @@ export default async function CoursePage({
   const t = await getI18n();
   const currentUser = await getCurrentUser();
 
-  const course = await db.query.courses.findFirst({
-    where: (courses, { eq }) => eq(courses.id, courseId),
+  const course = await db.query.course.findFirst({
+    where: (course, { eq }) => eq(course.id, courseId),
     with: {
       units: {
         with: {
@@ -35,7 +35,7 @@ export default async function CoursePage({
             },
           },
         },
-        orderBy: (units, { asc }) => asc(units.order),
+        orderBy: (unit, { asc }) => asc(unit.order),
       },
       sources: true,
     },

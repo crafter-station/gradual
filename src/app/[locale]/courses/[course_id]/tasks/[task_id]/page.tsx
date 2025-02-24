@@ -1,13 +1,7 @@
 import { db } from '@/db';
 
-import {
-  type SelectStep,
-  stepProgress,
-  steps,
-  taskProgress,
-} from '@/db/schema';
-import { tasks } from '@/db/schema';
-import { and, asc, eq, lte } from 'drizzle-orm';
+import { type SelectStep, taskProgress } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { ExampleStep } from './example-step';
 import {
@@ -37,9 +31,9 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
   const startedAt = new Date();
 
   const [currentUser, currentTask] = await Promise.all([
-    db.query.users.findFirst(),
-    db.query.tasks.findFirst({
-      where: eq(tasks.id, task_id),
+    db.query.user.findFirst(),
+    db.query.task.findFirst({
+      where: (task, { eq }) => eq(task.id, task_id),
       with: {
         module: {
           with: { unit: true },
@@ -75,20 +69,22 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
   // Get visible steps and their progress
   const [visibleSteps, stepsProgress] = await Promise.all([
-    db.query.steps.findMany({
-      where: and(
-        eq(steps.taskId, currentTask.id),
-        lte(steps.order, currentStep.order),
-      ),
-      orderBy: [asc(steps.order)],
+    db.query.step.findMany({
+      where: (step, { and, eq, lte }) =>
+        and(
+          eq(step.taskId, currentTask.id),
+          lte(step.order, currentStep.order),
+        ),
+      orderBy: (step, { asc }) => asc(step.order),
     }) as unknown as SelectStep[],
     db.query.stepProgress.findMany({
-      where: and(
-        eq(stepProgress.taskId, currentTask.id),
-        eq(stepProgress.userId, currentUser.id),
-        eq(stepProgress.taskProgressId, currentTaskProgress.id),
-      ),
-      orderBy: [asc(stepProgress.startedAt)],
+      where: (stepProgress, { and, eq }) =>
+        and(
+          eq(stepProgress.taskId, currentTask.id),
+          eq(stepProgress.userId, currentUser.id),
+          eq(stepProgress.taskProgressId, currentTaskProgress.id),
+        ),
+      orderBy: (stepProgress, { asc }) => asc(stepProgress.startedAt),
     }),
   ]);
 
@@ -172,7 +168,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
             );
           }
 
-          if (step.type === 'EXAMPLE') {
+          if (step.type === 'SOLVED_EXERCISE') {
             return (
               <ExampleStep
                 key={step.id}
@@ -180,44 +176,103 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
                 isLastVisibleStep={isLastVisibleStep}
                 stepIndex={stepIndex}
                 body={step.content.body}
-                answer={step.content.answer}
+                answer={step.content.solution}
+                title={step.content.title}
               />
             );
           }
-          return (
-            <QuestionStep
-              key={step.id}
-              type={step.type}
-              alternatives={step.content.alternatives}
-              question={step.content.question}
-              id={step.id}
-              isLastVisibleStep={isLastVisibleStep}
-              isCorrect={stepProgress?.isCorrect ?? undefined}
-              stepIndex={stepIndex}
-              explanation={
-                stepProgress?.selectedAlternativeOrder
-                  ? step.content.alternatives.find(
-                      (alternative) =>
-                        alternative.order ===
-                        stepProgress?.selectedAlternativeOrder,
-                    )?.explanation
-                  : undefined
-              }
-              selectedAlternativeOrder={
-                stepProgress?.selectedAlternativeOrder ?? undefined
-              }
-              isLastStep={isLastStep}
-              correctAlternativeOrder={
-                stepProgress?.completedAt
-                  ? step.content.alternatives.find(
-                      (alternative) =>
-                        alternative.order ===
-                        step.content.correctAlternativeOrder,
-                    )?.order
-                  : undefined
-              }
-            />
-          );
+
+          // Handle different question types
+          if (step.type === 'QUESTION') {
+            return (
+              <QuestionStep
+                key={step.id}
+                type={step.type}
+                question={step.content.questionBody}
+                id={step.id}
+                isLastVisibleStep={isLastVisibleStep}
+                isCorrect={stepProgress?.isCorrect ?? undefined}
+                stepIndex={stepIndex}
+                alternatives={[
+                  {
+                    text: step.content.correctAlternative,
+                    explanation: step.content.correctAlternativeExplanation,
+                    isCorrect: true,
+                    order: 0,
+                  },
+                  ...step.content.distractors.map((distractor, index) => ({
+                    text: distractor.alternative,
+                    explanation: distractor.explanation,
+                    isCorrect: false,
+                    order: index + 1,
+                  })),
+                ]}
+                explanation={
+                  stepProgress?.selectedAlternativeOrder !== undefined
+                    ? stepProgress.selectedAlternativeOrder === 0
+                      ? step.content.correctAlternativeExplanation
+                      : step.content.distractors[
+                          stepProgress.selectedAlternativeOrder - 1
+                        ]?.explanation
+                    : undefined
+                }
+                selectedAlternativeOrder={
+                  stepProgress?.selectedAlternativeOrder ?? undefined
+                }
+                isLastStep={isLastStep}
+                correctAlternativeOrder={0} // For QUESTION type, correct is always first alternative
+              />
+            );
+          }
+
+          if (step.type === 'MULTIPLE_CHOICE') {
+            // TODO: Implement MultipleChoiceStep component
+            return null;
+          }
+
+          if (step.type === 'BINARY') {
+            // TODO: Implement BinaryStep component
+            return null;
+          }
+
+          if (step.type === 'FILL_IN_THE_BLANK') {
+            // TODO: Implement FillInTheBlankStep component
+            return null;
+          }
+
+          // Handle theoretical steps
+          if (
+            step.type === 'INTRODUCTION' ||
+            step.type === 'DEFINITION' ||
+            step.type === 'ANALOGY' ||
+            step.type === 'FUN_FACT' ||
+            step.type === 'QUOTE'
+          ) {
+            return (
+              <TutorialStep
+                key={step.id}
+                id={step.id}
+                isLastVisibleStep={isLastVisibleStep}
+                isSecondLastVisibleStep={isSecondLastVisibleStep}
+                stepIndex={stepIndex}
+                title={
+                  'title' in step.content
+                    ? step.content.title
+                    : step.content.term
+                }
+                body={
+                  'body' in step.content
+                    ? step.content.body
+                    : step.content.definition
+                }
+                author={
+                  'author' in step.content ? step.content.author : undefined
+                }
+              />
+            );
+          }
+
+          return null;
         })}
       </div>
 

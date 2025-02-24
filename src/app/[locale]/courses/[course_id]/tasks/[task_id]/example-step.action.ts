@@ -61,8 +61,8 @@ export async function completeExampleAction(
       throw new Error('Step already completed');
     }
 
-    if (currentStep.type !== 'EXAMPLE') {
-      throw new Error('Step is not an example');
+    if (currentStep.type !== 'SOLVED_EXERCISE') {
+      throw new Error('Step is not a solved exercise');
     }
 
     await db
