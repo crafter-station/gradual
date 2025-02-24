@@ -6,8 +6,14 @@ import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from "@/core/services/parse-source.service";
-import { SummarizeChunkContentService } from "@/core/services/summarize-chunk-content.service";
-import { SummarizeSourceContentService } from "@/core/services/summarize-source-content.service";
+import {
+  SumarizeChunksContentsServiceTask,
+  SummarizeChunkContentService,
+} from "@/core/services/summarize-chunk-content.service";
+import {
+  SummarizeSourceContentService,
+  SummarizeSourceContentServiceTask,
+} from "@/core/services/summarize-source-content.service";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
 import {
@@ -34,7 +40,7 @@ import { and, cosineDistance, desc, eq, gte, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
-const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY);
+const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY as string);
 
 const CreateCourseTaskSchema = z.object({
   url: z.string().url(),
@@ -63,41 +69,13 @@ export const CreateCourseTask = schemaTask({
     ).execute(payload.url);
 
     const chunks = await extractChunkTextsTask(sourceContent, CHUNK_SIZE);
+    let summarizedChunks = await new SumarizeChunksContentsServiceTask(
+      new SummarizeChunkContentService()
+    ).execute(chunks);
 
-    let summarizedChunks: {
-      order: number;
-      summary: string;
-      rawContent: string;
-    }[] = [];
-
-    const { runs } = await batch.triggerByTaskAndWait(
-      chunks.map((chunk, index) => ({
-        task: SummarizeChunkContentTask,
-        payload: { rawContent: chunk, order: index },
-      }))
-    );
-
-    for (const run of runs) {
-      if (run.ok) {
-        summarizedChunks.push({
-          order: run.output.order,
-          summary: run.output.summary,
-          rawContent: chunks[run.output.order],
-        });
-      }
-    }
-
-    const summarizeSourceTask = await tasks.triggerAndWait<
-      typeof SummarizeSourceContentTask
-    >("summarize-source-content", {
-      chunkSummaries: summarizedChunks.map((chunk) => chunk.summary),
-    });
-
-    if (!summarizeSourceTask.ok) {
-      throw new Error("Failed to summarize source");
-    }
-
-    let sourceSummary = summarizeSourceTask.output.summary;
+    let sourceSummary = await new SummarizeSourceContentServiceTask(
+      new SummarizeSourceContentService()
+    ).execute(summarizedChunks.map((chunk) => chunk.summary));
 
     const enrichedChunks: {
       order: number;
@@ -146,7 +124,7 @@ export const CreateCourseTask = schemaTask({
       throw new Error("Failed to enrich source summary");
     }
 
-    sourceSummary = enrichedSourceSummary.output.summary;
+    sourceSummary = enrichedSourceSummary.output;
 
     const storeSourceRun = await tasks.triggerAndWait<typeof StoreSourceTask>(
       "store-source",
