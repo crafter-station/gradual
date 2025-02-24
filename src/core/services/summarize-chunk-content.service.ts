@@ -1,8 +1,15 @@
 import { getSummarizeChunkPrompt } from "@/lib/prompts";
 import { openai } from "@ai-sdk/openai";
-import { batch, schemaTask } from "@trigger.dev/sdk/v3";
+import { batch, schemaTask, tasks } from "@trigger.dev/sdk/v3";
 import { generateText } from "ai";
 import { z } from "zod";
+
+export interface ISummarizeChunkContentService {
+  execute(
+    rawContent: string,
+    order: number
+  ): Promise<{ order: number; summary: string }>;
+}
 
 export interface ISumarizeChunksContentsService {
   execute(chunks: string[]): Promise<
@@ -14,7 +21,9 @@ export interface ISumarizeChunksContentsService {
   >;
 }
 
-export class SummarizeChunkContentService {
+export class SummarizeChunkContentService
+  implements ISummarizeChunkContentService
+{
   async execute(
     rawContent: string,
     order: number
@@ -32,6 +41,41 @@ export class SummarizeChunkContentService {
       order: order,
       summary: summary.text,
     };
+  }
+}
+
+export class SummarizeChunkContentServiceTask
+  implements ISummarizeChunkContentService
+{
+  constructor(private service: SummarizeChunkContentService) {}
+
+  async execute(
+    rawContent: string,
+    order: number
+  ): Promise<{ order: number; summary: string }> {
+    const SummarizeChunkContentTask = schemaTask({
+      id: "summarize-chunk-content",
+      schema: z.object({
+        rawContent: z.string(),
+        order: z.number(),
+      }),
+      run: async (payload) => {
+        return this.service.execute(payload.rawContent, payload.order);
+      },
+    });
+
+    const enrichedSummary = await tasks.triggerAndWait<
+      typeof SummarizeChunkContentTask
+    >("summarize-chunk-content", {
+      order: order,
+      rawContent: rawContent,
+    });
+
+    if (!enrichedSummary.ok) {
+      throw new Error("Failed to summarize chunk!");
+    }
+
+    return enrichedSummary.output;
   }
 }
 

@@ -1,6 +1,13 @@
 import { Scrapper } from "@/core/domain/scrapper";
 import { UserRepo } from "@/core/domain/user-repo";
-import { EnrichChunkContentService } from "@/core/services/enrich-chunk-content.service";
+import {
+  EnrichChunkContentService,
+  EnrichChunkContentServiceTask,
+} from "@/core/services/enrich-chunk-content.service";
+import {
+  EnrichChunkService,
+  EnrichChunksServiceTask,
+} from "@/core/services/enrich-chunk.service";
 import { extractChunkTextsTask } from "@/core/services/extract-chunks-texts";
 import {
   ParseSourceService,
@@ -9,6 +16,7 @@ import {
 import {
   SumarizeChunksContentsServiceTask,
   SummarizeChunkContentService,
+  SummarizeChunkContentServiceTask,
 } from "@/core/services/summarize-chunk-content.service";
 import {
   SummarizeSourceContentService,
@@ -77,39 +85,31 @@ export const CreateCourseTask = schemaTask({
       new SummarizeSourceContentService()
     ).execute(summarizedChunks.map((chunk) => chunk.summary));
 
-    const enrichedChunks: {
-      order: number;
-      enrichedContent: string;
-      enrichedSummary: string;
-      rawContent: string;
-    }[] = [];
-
-    const { runs: enrichChunksRuns } = await batch.triggerByTaskAndWait(
+    const enrichedChunks = await new EnrichChunksServiceTask(
+      new EnrichChunkService(
+        new SummarizeChunkContentServiceTask(
+          new SummarizeChunkContentService()
+        ),
+        new EnrichChunkContentServiceTask(new EnrichChunkContentService())
+      )
+    ).execute(
       summarizedChunks.map((chunk) => ({
-        task: EnrichChunkTask,
-        payload: {
-          order: chunk.order,
-          rawContent: chunk.rawContent,
-          sourceSummary: sourceSummary,
-          precedingChunkContent:
-            summarizedChunks.find((c) => c.order === chunk.order - 1)
-              ?.rawContent ?? null,
-          succeedingChunkContent:
-            summarizedChunks.find((c) => c.order === chunk.order + 1)
-              ?.rawContent ?? null,
-        },
-      }))
+        order: chunk.order,
+        rawContent: chunk.rawContent,
+        sourceSummary: sourceSummary,
+        precedingChunkContent:
+          summarizedChunks.find((c) => c.order === chunk.order - 1)
+            ?.rawContent ?? null,
+        succeedingChunkContent:
+          summarizedChunks.find((c) => c.order === chunk.order + 1)
+            ?.rawContent ?? null,
+      })),
+      CHUNK_SIZE
     );
 
-    for (const run of enrichChunksRuns) {
-      if (run.ok) {
-        enrichedChunks.push({
-          order: run.output.order,
-          enrichedContent: run.output.enrichedContent,
-          enrichedSummary: run.output.enrichedSummary,
-          rawContent: summarizedChunks[run.output.order].rawContent,
-        });
-      }
+    for (let i = 0; i < enrichedChunks.length; i++) {
+      enrichedChunks[i].rawContent =
+        summarizedChunks[enrichedChunks[i].order].rawContent;
     }
 
     summarizedChunks = [];
@@ -328,67 +328,6 @@ export const SummarizeSourceContentTask = schemaTask({
   }),
   run: async (payload) => {
     return new SummarizeSourceContentService().execute(payload.chunkSummaries);
-  },
-});
-
-export const EnrichChunkContentTask = schemaTask({
-  id: "enrich-chunk-content",
-  schema: z.object({
-    rawContent: z.string(),
-    sourceSummary: z.string(),
-    precedingChunkContent: z.string().nullable(),
-    succeedingChunkContent: z.string().nullable(),
-  }),
-  run: async (payload) => {
-    return new EnrichChunkContentService().execute(
-      payload.rawContent,
-      payload.sourceSummary,
-      payload.precedingChunkContent,
-      payload.succeedingChunkContent,
-      CHUNK_SIZE
-    );
-  },
-});
-
-export const EnrichChunkTask = schemaTask({
-  id: "enrich-chunk",
-  schema: z.object({
-    order: z.number(),
-    rawContent: z.string(),
-    sourceSummary: z.string(),
-    precedingChunkContent: z.string().nullable(),
-    succeedingChunkContent: z.string().nullable(),
-  }),
-  run: async (payload) => {
-    const enrichedChunkContent = await tasks.triggerAndWait<
-      typeof EnrichChunkContentTask
-    >("enrich-chunk-content", {
-      rawContent: payload.rawContent,
-      sourceSummary: payload.sourceSummary,
-      precedingChunkContent: payload.precedingChunkContent,
-      succeedingChunkContent: payload.succeedingChunkContent,
-    });
-
-    if (!enrichedChunkContent.ok) {
-      throw new Error("Failed to enrich chunk!");
-    }
-
-    const enrichedSummary = await tasks.triggerAndWait<
-      typeof SummarizeChunkContentTask
-    >("summarize-chunk-content", {
-      order: payload.order,
-      rawContent: enrichedChunkContent.output.enrichedContent,
-    });
-
-    if (!enrichedSummary.ok) {
-      throw new Error("Failed to summarize chunk!");
-    }
-
-    return {
-      order: payload.order,
-      enrichedContent: enrichedChunkContent.output.enrichedContent,
-      enrichedSummary: enrichedSummary.output.summary,
-    };
   },
 });
 
