@@ -1,7 +1,7 @@
 import { Scrapper } from "@/core/domain/scrapper";
 import { UserRepo } from "@/core/domain/user-repo";
 import { EnrichChunkContentService } from "@/core/services/enrich-chunk-content.service";
-import { extractChunkTexts } from "@/core/services/extract-chunks-texts";
+import { extractChunkTextsTask } from "@/core/services/extract-chunks-texts";
 import {
   ParseSourceService,
   ParseSourceServiceTask,
@@ -62,17 +62,7 @@ export const CreateCourseTask = schemaTask({
       new ParseSourceService(scrapper, logger)
     ).execute(payload.url);
 
-    const chunkenizeSourceContentRun = await tasks.triggerAndWait<
-      typeof ChunkenizeSourceContentTask
-    >("chunkenize-source-content", {
-      content: sourceContent,
-    });
-
-    if (!chunkenizeSourceContentRun.ok) {
-      throw new Error("Failed to chunk content");
-    }
-
-    const chunks = chunkenizeSourceContentRun.output;
+    const chunks = await extractChunkTextsTask(sourceContent, CHUNK_SIZE);
 
     let summarizedChunks: {
       order: number;
@@ -336,16 +326,6 @@ export const CreateCourseTask = schemaTask({
         },
       }))
     );
-  },
-});
-
-export const ChunkenizeSourceContentTask = schemaTask({
-  id: "chunkenize-source-content",
-  schema: z.object({
-    content: z.string(),
-  }),
-  run: async (payload) => {
-    return extractChunkTexts(payload.content, CHUNK_SIZE);
   },
 });
 

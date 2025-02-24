@@ -1,3 +1,6 @@
+import { schemaTask, tasks } from "@trigger.dev/sdk/v3";
+import { z } from "zod";
+
 export const extractChunkTexts = (
   content: string,
   chunkSize: number
@@ -40,4 +43,31 @@ export const extractChunkTexts = (
   recursiveChunk(content);
 
   return chunks;
+};
+
+export const extractChunkTextsTask = async (
+  content: string,
+  chunkSize: number
+): Promise<string[]> => {
+  const ChunkenizeSourceContentTask = schemaTask({
+    id: "chunkenize-source-content",
+    schema: z.object({
+      content: z.string(),
+    }),
+    run: async (payload) => {
+      return extractChunkTexts(payload.content, chunkSize);
+    },
+  });
+
+  const chunkenizeSourceContentRun = await tasks.triggerAndWait<
+    typeof ChunkenizeSourceContentTask
+  >("chunkenize-source-content", {
+    content: content,
+  });
+
+  if (!chunkenizeSourceContentRun.ok) {
+    throw new Error("Failed to chunk content");
+  }
+
+  return chunkenizeSourceContentRun.output;
 };
