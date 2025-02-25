@@ -2,7 +2,8 @@
 @import "./shadcn.css";
 @import "uploadthing/tw/v4";
 
-@plugin '@midudev/tailwind-animations';
+/* this is breaking animations like animate-spin */
+/* @plugin '@midudev/tailwind-animations'; */
 @source '../../../node_modules/@uploadthing/react/dist';
 
 @theme {

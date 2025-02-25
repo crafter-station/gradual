@@ -13,8 +13,6 @@ export const metadata = {
   title: 'Course',
 };
 
-export const revalidate = 0;
-
 export default async function CoursePage({
   params,
 }: Readonly<{
@@ -22,26 +20,57 @@ export default async function CoursePage({
 }>) {
   const { course_id: courseId } = await params;
   const t = await getI18n();
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser.execute();
 
-  const course = await db.query.courses.findFirst({
-    where: (courses, { eq }) => eq(courses.id, courseId),
-    with: {
-      units: {
-        with: {
-          modules: {
-            with: {
-              tasks: true,
-            },
-          },
-        },
-        orderBy: (units, { asc }) => asc(units.order),
+  const [course, units] = await Promise.all([
+    db.query.course.findFirst({
+      where: (course, { eq }) => eq(course.id, courseId),
+      with: {
+        sources: true,
       },
-      sources: true,
-    },
-  });
+    }),
+    db.query.unit.findMany({
+      where: (unit, { eq }) => eq(unit.courseId, courseId),
+      orderBy: (unit, { asc }) => asc(unit.order),
+    }),
+  ]);
 
-  if (!course) {
+  const sections = units.length
+    ? await db.query.section.findMany({
+        where: (section, { inArray }) =>
+          inArray(
+            section.unitId,
+            units.map((unit) => unit.id),
+          ),
+      })
+    : [];
+
+  const tasks = sections.length
+    ? await db.query.task.findMany({
+        where: (task, { inArray }) =>
+          inArray(
+            task.sectionId,
+            sections.map((section) => section.id),
+          ),
+      })
+    : [];
+
+  const courseWithRelations = course
+    ? {
+        ...course,
+        units: units.map((unit) => ({
+          ...unit,
+          sections: sections
+            .filter((section) => section.unitId === unit.id)
+            .map((section) => ({
+              ...section,
+              tasks: tasks.filter((task) => task.sectionId === section.id),
+            })),
+        })),
+      }
+    : null;
+
+  if (!courseWithRelations) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
         {t('course.notFound')}
@@ -49,19 +78,36 @@ export default async function CoursePage({
     );
   }
 
-  const selectedTasks = course.units[0].modules.flatMap((module) =>
-    module.tasks.map((task) => ({
-      ...task,
-      module: {
-        ...module,
-        tasks: undefined,
-        unit: {
-          ...course.units[0],
-          modules: undefined,
+  const selectedTasks = courseWithRelations.units.flatMap((unit) =>
+    unit.sections.flatMap((section) =>
+      section.tasks.map((task) => ({
+        ...task,
+        section: {
+          ...section,
+          unit: {
+            ...unit,
+            sections: undefined,
+          },
         },
-      },
-    })),
+      })),
+    ),
   );
+
+  selectedTasks.sort((a, b) => {
+    const aUnitOrder = a.section.unit.order;
+    const bUnitOrder = b.section.unit.order;
+    const aSectionOrder = a.section.order;
+    const bSectionOrder = b.section.order;
+    const aTaskOrder = a.order;
+    const bTaskOrder = b.order;
+
+    // Create a combined order number for easier comparison
+    // Multiply by large numbers to ensure proper ordering
+    const aOrder = aUnitOrder * 10000 + aSectionOrder * 100 + aTaskOrder;
+    const bOrder = bUnitOrder * 10000 + bSectionOrder * 100 + bTaskOrder;
+
+    return aOrder - bOrder;
+  });
 
   const selectedTasksProgresses = currentUser
     ? await db.query.taskProgress.findMany({
@@ -77,13 +123,13 @@ export default async function CoursePage({
 
   return (
     <div className="flex h-full flex-col">
-      <CourseHeader course={course as CourseWithRelations} t={t} />
+      <CourseHeader course={courseWithRelations as CourseWithRelations} t={t} />
 
       <div className="flex-1 overflow-auto">
-        <CourseHero course={course as CourseWithRelations} t={t} />
+        <CourseHero course={courseWithRelations as CourseWithRelations} t={t} />
 
         <CourseTabs
-          course={course as CourseWithRelations}
+          course={courseWithRelations as CourseWithRelations}
           selectedTasks={selectedTasks}
           selectedTasksProgresses={selectedTasksProgresses}
           t={t}

@@ -20,7 +20,7 @@ export async function createCourse(
   };
 
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser.execute();
     if (!user) {
       throw new Error('User not found');
     }
@@ -37,6 +37,7 @@ export async function createCourse(
 
     await tasks.trigger<typeof CreateCourseTask>('create-course', {
       url: parsed.data.url,
+      userId: user.id,
     });
 
     return { success: true };

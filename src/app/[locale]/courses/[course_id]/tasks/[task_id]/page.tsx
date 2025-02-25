@@ -1,51 +1,46 @@
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const fetchCache = 'force-no-store';
+
 import { db } from '@/db';
 
-import {
-  type SelectStep,
-  stepProgress,
-  steps,
-  taskProgress,
-} from '@/db/schema';
-import { tasks } from '@/db/schema';
-import { and, asc, eq, lte } from 'drizzle-orm';
+import { type SelectStep, taskProgress } from '@/db/schema';
+import { getCurrentUser } from '@/db/utils';
+import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
-import { ExampleStep } from './example-step';
 import {
   calculateEarnedExperiencePoints,
   getCurrentStep,
+  getFullTask,
   getLastStep,
   getOrCreateStepProgress,
   getOrCreateTaskProgress,
+  getTaskStepsProgress,
+  getVisibleSteps,
 } from './helpers';
-import { QuestionStep } from './question-step';
+import { ActiveIntroductionStep } from './introduction-step/active';
+import { DoneIntroductionStep } from './introduction-step/done';
+import { ActiveQuestionStep } from './question-step/active';
+import { DoneQuestionStep } from './question-step/done';
 import StatsCard from './stats';
-import { TutorialStep } from './tutorial-step';
+import { submitStepAction } from './submit/action';
+import { SubmitButton } from './submit/button';
+import { Test } from './test';
 
 type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps) {
-  const { task_id } = await params;
-  return {
-    title: `Task ${task_id}`,
-  };
-}
-
 export default async function TaskPage({ params }: Readonly<PageProps>) {
-  const { task_id } = await params;
+  const params_ = await params;
+  const { task_id, course_id } = params_;
+  console.log('TaskPage', { task_id, course_id });
+
   const startedAt = new Date();
 
   const [currentUser, currentTask] = await Promise.all([
-    db.query.users.findFirst(),
-    db.query.tasks.findFirst({
-      where: eq(tasks.id, task_id),
-      with: {
-        module: {
-          with: { unit: true },
-        },
-      },
-    }),
+    getCurrentUser.execute(),
+    getFullTask.execute({ taskId: task_id }),
   ]);
 
   if (!currentUser) return notFound();
@@ -75,20 +70,12 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
   // Get visible steps and their progress
   const [visibleSteps, stepsProgress] = await Promise.all([
-    db.query.steps.findMany({
-      where: and(
-        eq(steps.taskId, currentTask.id),
-        lte(steps.order, currentStep.order),
-      ),
-      orderBy: [asc(steps.order)],
+    getVisibleSteps.execute({
+      taskId: task_id,
+      lastStepOrder: currentStep.order,
     }) as unknown as SelectStep[],
-    db.query.stepProgress.findMany({
-      where: and(
-        eq(stepProgress.taskId, currentTask.id),
-        eq(stepProgress.userId, currentUser.id),
-        eq(stepProgress.taskProgressId, currentTaskProgress.id),
-      ),
-      orderBy: [asc(stepProgress.startedAt)],
+    getTaskStepsProgress.execute({
+      taskProgressId: currentTaskProgress.id,
     }),
   ]);
 
@@ -108,7 +95,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       incorrectQuestionsCount: visibleSteps.filter(
         (step) =>
           step.type === 'QUESTION' &&
-          stepsProgress.find((progress) => progress.stepId === step.id)
+          stepsProgress?.find((progress) => progress.stepId === step.id)
             ?.isCorrect === false,
       ).length,
       time:
@@ -139,86 +126,115 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
     }
   }
 
+  const lastVisibleStep = visibleSteps.slice(-1)[0];
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  const lastVisibleStepProgress = stepsProgress?.find(
+    (progress) => progress.stepId === lastVisibleStep.id,
+  )!;
+
   return (
     <div className="mt-2 flex flex-col">
       <h1 className="mt-2 text-center font-bold text-2xl">
-        {currentTask.module.unit.order}.{currentTask.module.order}.
+        {currentTask.section.unit.order}.{currentTask.section.order}.
         {currentTask.order} {currentTask.title}
       </h1>
 
       <div
-        id="steps-container"
+        id="done-steps-container"
         className="mx-auto flex max-w-2xl flex-col gap-4"
       >
-        {visibleSteps.map((step, stepIndex) => {
-          const isLastVisibleStep = stepIndex === visibleSteps.length - 1;
-          const isSecondLastVisibleStep = stepIndex === visibleSteps.length - 2;
-
-          const stepProgress = stepsProgress.find(
+        {visibleSteps.slice(0, -1).map((step, stepIndex) => {
+          const stepProgress = stepsProgress?.find(
             (progress) => progress.stepId === step.id,
           );
 
-          if (step.type === 'TUTORIAL') {
+          if (!stepProgress?.completedAt) return null;
+
+          if (step.type === 'INTRODUCTION') {
             return (
-              <TutorialStep
+              <DoneIntroductionStep
                 key={step.id}
-                id={step.id}
-                isLastVisibleStep={isLastVisibleStep}
-                isSecondLastVisibleStep={isSecondLastVisibleStep}
-                stepIndex={stepIndex}
-                title={step.content.title}
-                body={step.content.body}
+                content={step.content}
+                stepOrder={stepIndex + 1}
+                totalSteps={currentTask.stepsCount}
               />
             );
           }
 
-          if (step.type === 'EXAMPLE') {
+          if (
+            step.type === 'QUESTION' &&
+            stepProgress.state?.type === 'QUESTION'
+          ) {
             return (
-              <ExampleStep
-                key={step.id}
+              <DoneQuestionStep
                 id={step.id}
-                isLastVisibleStep={isLastVisibleStep}
-                stepIndex={stepIndex}
-                body={step.content.body}
-                answer={step.content.answer}
+                key={step.id}
+                content={step.content}
+                stepOrder={stepIndex + 1}
+                totalSteps={currentTask.stepsCount}
+                progressState={stepProgress.state}
               />
             );
           }
-          return (
-            <QuestionStep
-              key={step.id}
-              type={step.type}
-              alternatives={step.content.alternatives}
-              question={step.content.question}
-              id={step.id}
-              isLastVisibleStep={isLastVisibleStep}
-              isCorrect={stepProgress?.isCorrect ?? undefined}
-              stepIndex={stepIndex}
-              explanation={
-                stepProgress?.selectedAlternativeOrder
-                  ? step.content.alternatives.find(
-                      (alternative) =>
-                        alternative.order ===
-                        stepProgress?.selectedAlternativeOrder,
-                    )?.explanation
-                  : undefined
-              }
-              selectedAlternativeOrder={
-                stepProgress?.selectedAlternativeOrder ?? undefined
-              }
-              isLastStep={isLastStep}
-              correctAlternativeOrder={
-                stepProgress?.completedAt
-                  ? step.content.alternatives.find(
-                      (alternative) =>
-                        alternative.order ===
-                        step.content.correctAlternativeOrder,
-                    )?.order
-                  : undefined
-              }
-            />
-          );
+
+          return <pre key={step.id}>{JSON.stringify(step, null, 2)}</pre>;
         })}
+
+        <form action={submitStepAction}>
+          <input type="hidden" name="taskId" value={task_id} />
+          <input type="hidden" name="courseId" value={course_id} />
+
+          {lastVisibleStep?.type === 'QUESTION' &&
+            (lastVisibleStepProgress.state?.type === 'QUESTION' ? (
+              <DoneQuestionStep
+                id={lastVisibleStep.id}
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={visibleSteps.length}
+                totalSteps={currentTask.stepsCount}
+                progressState={lastVisibleStepProgress.state}
+              />
+            ) : (
+              <ActiveQuestionStep
+                id={lastVisibleStep.id}
+                alternatives={[
+                  lastVisibleStep.content.correctAlternative,
+                  ...lastVisibleStep.content.distractors.map(
+                    (distractor) => distractor.alternative,
+                  ),
+                ].sort(() => Math.random() - 0.5)}
+                questionBody={lastVisibleStep.content.questionBody}
+                stepOrder={visibleSteps.length}
+                totalSteps={currentTask.stepsCount}
+              />
+            ))}
+          {lastVisibleStep?.type === 'INTRODUCTION' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneIntroductionStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={visibleSteps.length}
+                totalSteps={currentTask.stepsCount}
+              />
+            ) : (
+              <ActiveIntroductionStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={visibleSteps.length}
+                totalSteps={currentTask.stepsCount}
+              />
+            ))}
+          {!['QUESTION', 'INTRODUCTION'].includes(
+            lastVisibleStep?.type ?? '',
+          ) && (
+            <Test>
+              <pre key={lastVisibleStep?.id}>
+                {JSON.stringify(lastVisibleStep, null, 2)}
+              </pre>
+            </Test>
+          )}
+          <SubmitButton />
+        </form>
       </div>
 
       {stats && (

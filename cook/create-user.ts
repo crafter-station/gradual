@@ -1,7 +1,7 @@
 import { db } from '@/db';
-import { users } from '@/db/schema';
+import { user } from '@/db/schema';
 
-await db.insert(users).values({
+await db.insert(user).values({
   fullname: 'John Doe',
   email: 'john.doe@example.com',
   avatarUrl: 'https://example.com/avatar.png',

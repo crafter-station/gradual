@@ -6,12 +6,12 @@ export async function resetDb() {
   await db.execute(sql`
     DROP SCHEMA drizzle CASCADE;
     CREATE SCHEMA drizzle;
-    GRANT ALL ON SCHEMA drizzle TO postgres;
+    GRANT ALL ON SCHEMA drizzle TO neondb_owner;
     GRANT ALL ON SCHEMA drizzle TO public;
 
     DROP SCHEMA public CASCADE;
     CREATE SCHEMA public;
-    GRANT ALL ON SCHEMA public TO postgres;
+    GRANT ALL ON SCHEMA public TO neondb_owner;
     GRANT ALL ON SCHEMA public TO public;
   `);
 }
