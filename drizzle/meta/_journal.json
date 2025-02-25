@@ -15,6 +15,13 @@
       "when": 1740458374195,
       "tag": "0001_new_the_twelve",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740499712957,
+      "tag": "0002_married_the_hunter",
+      "breakpoints": true
     }
   ]
 }

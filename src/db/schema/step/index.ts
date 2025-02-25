@@ -5,6 +5,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  timestamp,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
@@ -68,6 +69,13 @@ export const step = pgTable(
     taskId: uuid('task_id')
       .notNull()
       .references(() => task.id),
+
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (table) => [
     uniqueIndex('steps_order_task_id_unique').on(table.order, table.taskId),
