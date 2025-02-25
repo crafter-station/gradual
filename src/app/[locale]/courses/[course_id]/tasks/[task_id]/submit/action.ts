@@ -4,7 +4,6 @@ import { db } from '@/db';
 import { type SelectStep, stepProgress, taskProgress } from '@/db/schema';
 import type { StepProgressState } from '@/db/schema/step/progress-state';
 import { getCurrentUser } from '@/db/utils';
-import type { ActionState } from '@/lib/utils';
 import { eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -15,24 +14,8 @@ export type SubmitStepForm = {
   courseId: string;
 };
 
-export type SubmitStepData =
-  | {
-      isCorrect: boolean;
-      explanation?: string;
-      correctAlternative?: string;
-    }
-  | {
-      isCorrect: undefined;
-    };
-
-type State = ActionState<SubmitStepForm, SubmitStepData>;
-
-export async function submitStepAction(
-  prevState: State | undefined,
-  formData: FormData,
-): Promise<State> {
+export async function submitStepAction(formData: FormData) {
   const form = Object.fromEntries(formData) as unknown as SubmitStepForm;
-  console.log(form);
 
   try {
     const date = new Date();
@@ -74,10 +57,7 @@ export async function submitStepAction(
       throw new Error('Step already completed');
     }
 
-    const { isCorrect, explanation, correctAlternative, state } = getData(
-      currentStep,
-      formData,
-    );
+    const { isCorrect, state } = getData(currentStep, formData);
 
     await db
       .update(stepProgress)
@@ -97,43 +77,8 @@ export async function submitStepAction(
       .where(eq(taskProgress.id, currentTaskProgress.id));
 
     revalidatePath(`/courses/${courseId}/tasks/${taskId}`);
-
-    if (state !== undefined) {
-      if (isCorrect === undefined) {
-        throw new Error('isCorrect is undefined');
-      }
-
-      return {
-        success: true,
-        form: {
-          courseId,
-          taskId,
-        },
-        data: {
-          isCorrect,
-          explanation,
-          correctAlternative,
-        },
-      };
-    }
-
-    return {
-      success: true,
-      form: {
-        courseId,
-        taskId,
-      },
-      data: {
-        isCorrect: undefined,
-      },
-    };
   } catch (error) {
     console.log(error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      form,
-    };
   }
 }
 

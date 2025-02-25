@@ -15,7 +15,9 @@ import { DoneIntroductionStep } from './introduction-step/done';
 import { ActiveQuestionStep } from './question-step/active';
 import { DoneQuestionStep } from './question-step/done';
 import StatsCard from './stats';
+import { submitStepAction } from './submit/action';
 import { SubmitButton } from './submit/button';
+import { Test } from './test';
 
 type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
@@ -191,7 +193,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           return <pre key={step.id}>{JSON.stringify(step, null, 2)}</pre>;
         })}
 
-        <form id="active-step-container">
+        <form action={submitStepAction}>
           <input type="hidden" name="taskId" value={task_id} />
           <input type="hidden" name="courseId" value={course_id} />
 
@@ -238,9 +240,11 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           {!['QUESTION', 'INTRODUCTION'].includes(
             lastVisibleStep?.type ?? '',
           ) && (
-            <pre key={lastVisibleStep?.id}>
-              {JSON.stringify(lastVisibleStep, null, 2)}
-            </pre>
+            <Test>
+              <pre key={lastVisibleStep?.id}>
+                {JSON.stringify(lastVisibleStep, null, 2)}
+              </pre>
+            </Test>
           )}
           <SubmitButton />
         </form>

@@ -2,37 +2,14 @@
 
 import { Button } from '@/components/ui/button';
 import { Loader2Icon } from 'lucide-react';
-import * as React from 'react';
-import { toast } from 'sonner';
-import { submitStepAction } from './action';
+import { useFormStatus } from 'react-dom';
 
 export function SubmitButton() {
-  const [state, formAction, isSubmitting] = React.useActionState(
-    submitStepAction,
-    undefined,
-  );
-
-  React.useEffect(() => {
-    if (state?.success) {
-      if (state.data.isCorrect === undefined) {
-        toast.info("Let's move on!");
-      } else {
-        if (state.data.isCorrect) {
-          toast.success('Correct!');
-        } else {
-          toast.error('Incorrect!');
-        }
-        state.data.explanation &&
-          toast.info(`Explanation: ${state.data.explanation}`);
-        state.data.correctAlternative &&
-          toast.info(`Correct answer: ${state.data.correctAlternative}`);
-      }
-    }
-  }, [state]);
+  const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" formAction={formAction} disabled={isSubmitting}>
-      {isSubmitting ? (
+    <Button type="submit" disabled={pending} className="mt-4">
+      {pending ? (
         <>
           <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
           Submitting...
