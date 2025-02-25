@@ -255,7 +255,7 @@ QUESTION
     </lesson-title>
   </lesson-scope>
   <step-count>
-    Required step count: 15-20 steps total
+    Required step count: 15-20 steps total. 2/3 of the steps should be exercises.
   </step-count>
 </reminder>
 
