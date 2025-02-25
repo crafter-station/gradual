@@ -23,13 +23,6 @@ type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps) {
-  const { task_id } = await params;
-  return {
-    title: `Task ${task_id}`,
-  };
-}
-
 export default async function TaskPage({ params }: Readonly<PageProps>) {
   const { task_id, course_id } = await params;
   const startedAt = new Date();

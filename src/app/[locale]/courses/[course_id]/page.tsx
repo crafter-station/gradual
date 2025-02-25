@@ -13,8 +13,6 @@ export const metadata = {
   title: 'Course',
 };
 
-export const revalidate = 0;
-
 export default async function CoursePage({
   params,
 }: Readonly<{
@@ -24,24 +22,55 @@ export default async function CoursePage({
   const t = await getI18n();
   const currentUser = await getCurrentUser();
 
-  const course = await db.query.course.findFirst({
-    where: (course, { eq }) => eq(course.id, courseId),
-    with: {
-      units: {
-        with: {
-          modules: {
-            with: {
-              tasks: true,
-            },
-          },
-        },
-        orderBy: (unit, { asc }) => asc(unit.order),
+  const [course, units] = await Promise.all([
+    db.query.course.findFirst({
+      where: (course, { eq }) => eq(course.id, courseId),
+      with: {
+        sources: true,
       },
-      sources: true,
-    },
-  });
+    }),
+    db.query.unit.findMany({
+      where: (unit, { eq }) => eq(unit.courseId, courseId),
+      orderBy: (unit, { asc }) => asc(unit.order),
+    }),
+  ]);
 
-  if (!course) {
+  const modules = units.length
+    ? await db.query.module.findMany({
+        where: (module, { inArray }) =>
+          inArray(
+            module.unitId,
+            units.map((unit) => unit.id),
+          ),
+      })
+    : [];
+
+  const tasks = modules.length
+    ? await db.query.task.findMany({
+        where: (task, { inArray }) =>
+          inArray(
+            task.moduleId,
+            modules.map((module) => module.id),
+          ),
+      })
+    : [];
+
+  const courseWithRelations = course
+    ? {
+        ...course,
+        units: units.map((unit) => ({
+          ...unit,
+          modules: modules
+            .filter((module) => module.unitId === unit.id)
+            .map((module) => ({
+              ...module,
+              tasks: tasks.filter((task) => task.moduleId === module.id),
+            })),
+        })),
+      }
+    : null;
+
+  if (!courseWithRelations) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
         {t('course.notFound')}
@@ -49,7 +78,7 @@ export default async function CoursePage({
     );
   }
 
-  const selectedTasks = course.units.flatMap((unit) =>
+  const selectedTasks = courseWithRelations.units.flatMap((unit) =>
     unit.modules.flatMap((module) =>
       module.tasks.map((task) => ({
         ...task,
@@ -94,13 +123,13 @@ export default async function CoursePage({
 
   return (
     <div className="flex h-full flex-col">
-      <CourseHeader course={course as CourseWithRelations} t={t} />
+      <CourseHeader course={courseWithRelations as CourseWithRelations} t={t} />
 
       <div className="flex-1 overflow-auto">
-        <CourseHero course={course as CourseWithRelations} t={t} />
+        <CourseHero course={courseWithRelations as CourseWithRelations} t={t} />
 
         <CourseTabs
-          course={course as CourseWithRelations}
+          course={courseWithRelations as CourseWithRelations}
           selectedTasks={selectedTasks}
           selectedTasksProgresses={selectedTasksProgresses}
           t={t}
