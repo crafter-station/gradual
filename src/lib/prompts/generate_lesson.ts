@@ -185,19 +185,22 @@ MULTIPLE_CHOICE steps should:
 FILL_IN_THE_BLANK steps should:
 - Test understanding of previously covered concepts
 - Have 1-2 blanks
+- A blank can be a single word or phrase
+- Represent the blank with ____ (four underscores)
 - Include the explanation for the solution
 - Write the full sentence in the body
 - Provide the blanks as a list of strings in the blanks property
+- Remember to represent the blank with ____ (exactly four underscores)
 - Examples:
   {
     type: "FILL_IN_THE_BLANK",
-    body: "The capital of [0] is [1].",
+    body: "The capital of ____ is ____.",
     blanks: ["France", "Paris"],
     distractors: ["London","Germany", "Berlin", "Spain", "Italy", "Portugal"],
   }
   {
     type: "FILL_IN_THE_BLANK",
-    body: "A quadratic equation has [0] solutions",
+    body: "A quadratic equation has ____ solutions",
     blanks: ["two"],
     distractors: ["one", "three", "four", "many"],
   }

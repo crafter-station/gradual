@@ -49,19 +49,36 @@ export default async function CoursePage({
     );
   }
 
-  const selectedTasks = course.units[0].modules.flatMap((module) =>
-    module.tasks.map((task) => ({
-      ...task,
-      module: {
-        ...module,
-        tasks: undefined,
-        unit: {
-          ...course.units[0],
-          modules: undefined,
+  const selectedTasks = course.units.flatMap((unit) =>
+    unit.modules.flatMap((module) =>
+      module.tasks.map((task) => ({
+        ...task,
+        module: {
+          ...module,
+          unit: {
+            ...unit,
+            modules: undefined,
+          },
         },
-      },
-    })),
+      })),
+    ),
   );
+
+  selectedTasks.sort((a, b) => {
+    const aUnitOrder = a.module.unit.order;
+    const bUnitOrder = b.module.unit.order;
+    const aModuleOrder = a.module.order;
+    const bModuleOrder = b.module.order;
+    const aTaskOrder = a.order;
+    const bTaskOrder = b.order;
+
+    // Create a combined order number for easier comparison
+    // Multiply by large numbers to ensure proper ordering
+    const aOrder = aUnitOrder * 10000 + aModuleOrder * 100 + aTaskOrder;
+    const bOrder = bUnitOrder * 10000 + bModuleOrder * 100 + bTaskOrder;
+
+    return aOrder - bOrder;
+  });
 
   const selectedTasksProgresses = currentUser
     ? await db.query.taskProgress.findMany({

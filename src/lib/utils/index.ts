@@ -1,6 +1,5 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import type { Syllabus } from '../schemas';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -21,7 +20,21 @@ export type ActionState<
     }
 );
 
-export function formatSyllabus(syllabus: Syllabus): string {
+export function formatSyllabus(syllabus: {
+  title: string;
+  units: {
+    order: number;
+    title: string;
+    modules: {
+      order: number;
+      title: string;
+      lessons: {
+        order: number;
+        title: string;
+      }[];
+    }[];
+  }[];
+}): string {
   let output = `Course: ${syllabus.title}\n\n`;
 
   for (const unit of syllabus.units) {

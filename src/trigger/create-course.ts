@@ -809,3 +809,131 @@ export const GenerateLessonStepsTask = schemaTask({
     );
   },
 });
+
+export async function getSyllabus(courseId: string) {
+  const course = await db.query.course.findFirst({
+    columns: {
+      title: true,
+      description: true,
+    },
+    where: (course, { eq }) => eq(course.id, courseId),
+    with: {
+      units: {
+        columns: {
+          order: true,
+          title: true,
+          description: true,
+        },
+        with: {
+          modules: {
+            columns: {
+              order: true,
+              title: true,
+              description: true,
+            },
+            with: {
+              tasks: {
+                where: (task, { eq }) => eq(task.type, 'LESSON'),
+                columns: {
+                  id: true,
+                  order: true,
+                  title: true,
+                  description: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!course) {
+    throw new Error('Course not found');
+  }
+
+  const syllabus = {
+    title: course.title,
+    description: course.description,
+    units: course.units.map((unit) => ({
+      order: unit.order,
+      title: unit.title,
+      description: unit.description,
+      modules: unit.modules.map((module) => ({
+        order: module.order,
+        title: module.title,
+        description: module.description,
+        lessons: module.tasks.map((lesson) => ({
+          id: lesson.id,
+          order: lesson.order,
+          title: lesson.title,
+          description: lesson.description,
+        })),
+      })),
+    })),
+  };
+
+  return syllabus;
+}
+
+export const GenerateLessonStepsTaskById = schemaTask({
+  id: 'generate-lesson-steps-by-id',
+  schema: z.object({
+    lessonId: z.string().uuid(),
+    courseId: z.string().uuid(),
+  }),
+  run: async ({ lessonId, courseId }) => {
+    const [lesson] = await db
+      .select()
+      .from(schema.task)
+      .where(eq(schema.task.id, lessonId))
+      .limit(1);
+
+    if (!lesson) {
+      throw new Error('Lesson not found');
+    }
+
+    const [source] = await db
+      .select()
+      .from(schema.source)
+      .where(eq(schema.source.courseId, courseId))
+      .limit(1);
+
+    if (!source) {
+      throw new Error('Source not found');
+    }
+
+    const syllabus = await getSyllabus(courseId);
+
+    if (!syllabus) {
+      throw new Error('Syllabus not found');
+    }
+
+    const currentUnit = syllabus.units.find((unit) =>
+      unit.modules.some((module) =>
+        module.lessons.some((lesson) => lesson.id === lessonId),
+      ),
+    );
+
+    const currentModule = currentUnit?.modules.find((module) =>
+      module.lessons.some((lesson) => lesson.id === lessonId),
+    );
+
+    if (!currentUnit || !currentModule) {
+      throw new Error('Unit or module not found');
+    }
+
+    await tasks.triggerAndWait<typeof GenerateLessonStepsTask>(
+      'generate-lesson-steps',
+      {
+        lesson,
+        syllabus,
+        sourceId: source.id,
+        unitTitle: `${currentUnit.order}. ${currentUnit.title}`,
+        moduleTitle: `${currentUnit.order}.${currentModule.order}. ${currentModule.title}`,
+        moduleOrder: currentModule.order,
+        unitOrder: currentUnit.order,
+      },
+    );
+  },
+});

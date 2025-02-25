@@ -36,7 +36,7 @@ export async function getLastStep(taskId: string) {
     where: (step, { eq }) => eq(step.taskId, taskId),
     orderBy: (step, { desc }) => desc(step.order),
   });
-  return lastStep;
+  return lastStep as unknown as SelectStep | undefined;
 }
 
 export async function getCurrentStep(
