@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/db/utils';
 import type { CreateCourseTask } from '@/trigger/create-course';
 import { tasks } from '@trigger.dev/sdk/v3';
 
-const currentUser = await getCurrentUser();
+const currentUser = await getCurrentUser.execute();
 
 if (!currentUser) {
   throw new Error('Current user not found');

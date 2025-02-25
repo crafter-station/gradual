@@ -1,7 +1,8 @@
 import { db } from '@/db';
 
 import { type SelectStep, taskProgress } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { getCurrentUser } from '@/db/utils';
+import { eq, sql } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import {
   calculateEarnedExperiencePoints,
@@ -25,35 +26,45 @@ type PageProps = {
 
 export const dynamic = 'force-dynamic';
 
-async function getTask(taskId: string) {
-  const task = await db.query.task.findFirst({
-    where: (task, { eq }) => eq(task.id, taskId),
-  });
-  if (!task) return null;
-  const module = await db.query.module.findFirst({
-    where: (module, { eq }) => eq(module.id, task?.moduleId),
-  });
-  if (!module) return null;
-  const unit = await db.query.unit.findFirst({
-    where: (unit, { eq }) => eq(unit.id, module?.unitId),
-  });
-  if (!unit) return null;
-  return {
-    ...task,
-    module: {
-      ...module,
-      unit,
+const getTask = db.query.task
+  .findFirst({
+    where: (task, { eq }) => eq(task.id, sql.placeholder('taskId')),
+    with: {
+      module: {
+        with: {
+          unit: true,
+        },
+      },
     },
-  };
-}
+  })
+  .prepare('getTask');
+
+const getVisibleSteps = db.query.step
+  .findMany({
+    where: (step, { and, eq, lte }) =>
+      and(
+        eq(step.taskId, sql.placeholder('taskId')),
+        lte(step.order, sql.placeholder('lastStepOrder')),
+      ),
+    orderBy: (step, { asc }) => asc(step.order),
+  })
+  .prepare('getVisibleSteps');
+
+const getTaskStepsProgress = db.query.stepProgress
+  .findMany({
+    where: (stepProgress, { eq }) =>
+      eq(stepProgress.taskProgressId, sql.placeholder('taskProgressId')),
+    orderBy: (stepProgress, { asc }) => asc(stepProgress.startedAt),
+  })
+  .prepare('getTaskStepsProgress');
 
 export default async function TaskPage({ params }: Readonly<PageProps>) {
   const { task_id, course_id } = await params;
   const startedAt = new Date();
 
   const [currentUser, currentTask] = await Promise.all([
-    db.query.user.findFirst(),
-    getTask(task_id),
+    getCurrentUser.execute(),
+    getTask.execute({ taskId: task_id }),
   ]);
 
   if (!currentUser) return notFound();
@@ -83,22 +94,12 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
   // Get visible steps and their progress
   const [visibleSteps, stepsProgress] = await Promise.all([
-    db.query.step.findMany({
-      where: (step, { and, eq, lte }) =>
-        and(
-          eq(step.taskId, currentTask.id),
-          lte(step.order, currentStep.order),
-        ),
-      orderBy: (step, { asc }) => asc(step.order),
+    getVisibleSteps.execute({
+      taskId: task_id,
+      lastStepOrder: currentStep.order,
     }) as unknown as SelectStep[],
-    db.query.stepProgress.findMany({
-      where: (stepProgress, { and, eq }) =>
-        and(
-          eq(stepProgress.taskId, currentTask.id),
-          eq(stepProgress.userId, currentUser.id),
-          eq(stepProgress.taskProgressId, currentTaskProgress.id),
-        ),
-      orderBy: (stepProgress, { asc }) => asc(stepProgress.startedAt),
+    getTaskStepsProgress.execute({
+      taskProgressId: currentTaskProgress.id,
     }),
   ]);
 

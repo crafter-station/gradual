@@ -20,7 +20,7 @@ export async function createCourse(
   };
 
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser.execute();
     if (!user) {
       throw new Error('User not found');
     }

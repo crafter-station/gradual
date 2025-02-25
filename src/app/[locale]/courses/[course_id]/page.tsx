@@ -20,7 +20,7 @@ export default async function CoursePage({
 }>) {
   const { course_id: courseId } = await params;
   const t = await getI18n();
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser.execute();
 
   const [course, units] = await Promise.all([
     db.query.course.findFirst({

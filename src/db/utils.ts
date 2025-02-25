@@ -1,5 +1,5 @@
 import { db } from '@/db';
 
-export async function getCurrentUser() {
-  return db.query.user.findFirst();
-}
+export const getCurrentUser = db.query.user
+  .findFirst()
+  .prepare('getCurrentUser');

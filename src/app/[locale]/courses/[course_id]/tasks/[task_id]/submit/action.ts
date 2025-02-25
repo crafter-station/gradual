@@ -19,7 +19,7 @@ export async function submitStepAction(formData: FormData) {
 
   try {
     const date = new Date();
-    const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser.execute();
     if (!currentUser) {
       throw new Error('User not found');
     }
