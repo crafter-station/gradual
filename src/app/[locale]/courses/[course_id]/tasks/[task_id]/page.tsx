@@ -23,6 +23,8 @@ type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function TaskPage({ params }: Readonly<PageProps>) {
   const { task_id, course_id } = await params;
   const startedAt = new Date();
@@ -137,7 +139,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
   const lastVisibleStepProgress = stepsProgress.find(
     (progress) => progress.stepId === lastVisibleStep.id,
   )!;
-  console.log({ lastStep });
+
   return (
     <div className="mt-2 flex flex-col">
       <h1 className="mt-2 text-center font-bold text-2xl">

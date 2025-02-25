@@ -64,7 +64,7 @@ export async function getCurrentStep(
       const lastStep = await getLastStep(taskId);
 
       if (lastStep?.id === lastCompletedStep.id) {
-        step = lastStep as SelectStep;
+        step = lastStep;
       }
     }
   } else {
