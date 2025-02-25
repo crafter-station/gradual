@@ -21,6 +21,10 @@ import {
 } from "@/core/services/enrich-chunk.service";
 import { extractChunkTextsTask } from "@/core/services/extract-chunks-texts";
 import {
+  GenerateCourseSyllabusService,
+  GenerateCourseSyllabusServiceTask,
+} from "@/core/services/generate-course-syllabus.service";
+import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from "@/core/services/parse-source.service";
@@ -46,10 +50,7 @@ import {
   InsertUnitSchema,
 } from "@/db/schema";
 import { CHUNK_SIZE } from "@/lib/constants";
-import {
-  getGenerateCourseSyllabusPrompt,
-  getGenerateLessonPrompt,
-} from "@/lib/prompts";
+import { getGenerateLessonPrompt } from "@/lib/prompts";
 import { SyllabusSchema } from "@/lib/schemas";
 import { formatSyllabus } from "@/lib/utils";
 import { openai } from "@ai-sdk/openai";
@@ -150,21 +151,13 @@ export const CreateCourseTask = schemaTask({
 
     const contentSize = getContentSize(sourceContent.length);
 
-    const syllabusResult = await tasks.triggerAndWait<
-      typeof GenerateCourseSyllabusTask
-    >("generate-course-syllabus", {
-      documentSummary: sourceSummary,
-      documentChunksSummaries: enrichedChunks.map(
-        (chunk) => chunk.enrichedSummary
-      ),
-      contentSize,
-    });
-
-    if (!syllabusResult.ok) {
-      throw new Error("Failed to generate course syllabus");
-    }
-
-    const syllabus = syllabusResult.output;
+    const syllabus = await new GenerateCourseSyllabusServiceTask(
+      new GenerateCourseSyllabusService()
+    ).execute(
+      sourceSummary,
+      enrichedChunks.map((chunk) => chunk.enrichedSummary),
+      contentSize
+    );
 
     const syllabusEmbeddingsResult = await tasks.triggerAndWait<
       typeof GenerateSyllabusEmbeddingsTask
@@ -293,32 +286,6 @@ export const CreateCourseTask = schemaTask({
         },
       }))
     );
-  },
-});
-
-export const GenerateCourseSyllabusTask = schemaTask({
-  id: "generate-course-syllabus",
-  schema: z.object({
-    documentSummary: z.string(),
-    documentChunksSummaries: z.array(z.string()),
-    contentSize: z.enum(["small", "medium", "large"]),
-  }),
-  run: async (payload) => {
-    const syllabusResult = await generateObject({
-      model: openai("o3-mini"),
-      prompt: getGenerateCourseSyllabusPrompt({
-        documentSummary: payload.documentSummary,
-        documentChunksSummariesJoined:
-          payload.documentChunksSummaries.join("\n"),
-        contentSize: payload.contentSize,
-      }),
-      schema: SyllabusSchema,
-    });
-
-    return syllabusResult.object;
-  },
-  retry: {
-    maxAttempts: 3,
   },
 });
 
