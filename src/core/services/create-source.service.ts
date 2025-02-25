@@ -1,4 +1,5 @@
 import { schemaTask, tasks } from "@trigger.dev/sdk/v3";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { Source } from "../domain/source";
 import type { SourceRepo } from "../domain/source-repo";
@@ -25,7 +26,7 @@ export class CreateSourceService implements ICreateSourceService {
     const sourceEmbedding = await createSingleEmbedding(sourceSummary);
 
     const source = new Source(
-      "",
+      uuidv4(),
       "URL",
       url,
       userId,
@@ -34,8 +35,7 @@ export class CreateSourceService implements ICreateSourceService {
       chunksCount
     );
 
-    const id = await this.sourceRepo.store(source);
-    source.changeId(id);
+    await this.sourceRepo.store(source);
 
     return source;
   }

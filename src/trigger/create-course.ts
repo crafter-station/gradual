@@ -1,6 +1,11 @@
+import { ChunkRepo } from "@/core/domain/chunk-repo";
 import { Scrapper } from "@/core/domain/scrapper";
 import { SourceRepo } from "@/core/domain/source-repo";
 import { UserRepo } from "@/core/domain/user-repo";
+import {
+  CreateChunkServiceTask,
+  CreateChunksService,
+} from "@/core/services/create-chunks.service";
 import { createMultipleEmbeddings } from "@/core/services/create-embedding";
 import {
   CreateSourceService,
@@ -131,22 +136,17 @@ export const CreateCourseTask = schemaTask({
 
     const sourceId = source.id;
 
-    const storeChunksRun = await tasks.triggerAndWait<typeof StoreChunksTask>(
-      "store-chunks",
-      {
-        sourceId,
-        chunks: enrichedChunks.map((chunk) => ({
-          order: chunk.order,
-          rawContent: chunk.rawContent,
-          summary: chunk.enrichedSummary,
-          enrichedContent: chunk.enrichedContent,
-        })),
-      }
+    await new CreateChunkServiceTask(
+      new CreateChunksService(new ChunkRepo())
+    ).execute(
+      sourceId,
+      enrichedChunks.map((chunk) => ({
+        order: chunk.order,
+        rawContent: chunk.rawContent,
+        summary: chunk.enrichedSummary,
+        enrichedContent: chunk.enrichedContent,
+      }))
     );
-
-    if (!storeChunksRun.ok) {
-      throw new Error("Failed to store chunks");
-    }
 
     const contentSize = getContentSize(sourceContent.length);
 
@@ -291,37 +291,6 @@ export const CreateCourseTask = schemaTask({
           moduleTitle: modules.find((m) => m.order === lesson.moduleOrder)!
             .title,
         },
-      }))
-    );
-  },
-});
-
-export const StoreChunksTask = schemaTask({
-  id: "store-chunks",
-  schema: z.object({
-    sourceId: z.string(),
-    chunks: z.array(
-      z.object({
-        order: z.number(),
-        rawContent: z.string(),
-        summary: z.string(),
-        enrichedContent: z.string(),
-      })
-    ),
-  }),
-  run: async (payload) => {
-    const embeddingsResult = await createMultipleEmbeddings(
-      payload.chunks.map((chunk) => chunk.enrichedContent)
-    );
-
-    await db.insert(schema.chunks).values(
-      payload.chunks.map((chunk, index) => ({
-        order: chunk.order,
-        rawContent: chunk.rawContent,
-        enrichedContent: chunk.enrichedContent,
-        summary: chunk.summary,
-        embedding: embeddingsResult.embeddings[index],
-        sourceId: payload.sourceId,
       }))
     );
   },
