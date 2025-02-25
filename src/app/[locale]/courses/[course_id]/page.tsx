@@ -35,22 +35,22 @@ export default async function CoursePage({
     }),
   ]);
 
-  const modules = units.length
-    ? await db.query.module.findMany({
-        where: (module, { inArray }) =>
+  const sections = units.length
+    ? await db.query.section.findMany({
+        where: (section, { inArray }) =>
           inArray(
-            module.unitId,
+            section.unitId,
             units.map((unit) => unit.id),
           ),
       })
     : [];
 
-  const tasks = modules.length
+  const tasks = sections.length
     ? await db.query.task.findMany({
         where: (task, { inArray }) =>
           inArray(
-            task.moduleId,
-            modules.map((module) => module.id),
+            task.sectionId,
+            sections.map((section) => section.id),
           ),
       })
     : [];
@@ -60,11 +60,11 @@ export default async function CoursePage({
         ...course,
         units: units.map((unit) => ({
           ...unit,
-          modules: modules
-            .filter((module) => module.unitId === unit.id)
-            .map((module) => ({
-              ...module,
-              tasks: tasks.filter((task) => task.moduleId === module.id),
+          sections: sections
+            .filter((section) => section.unitId === unit.id)
+            .map((section) => ({
+              ...section,
+              tasks: tasks.filter((task) => task.sectionId === section.id),
             })),
         })),
       }
@@ -79,14 +79,14 @@ export default async function CoursePage({
   }
 
   const selectedTasks = courseWithRelations.units.flatMap((unit) =>
-    unit.modules.flatMap((module) =>
-      module.tasks.map((task) => ({
+    unit.sections.flatMap((section) =>
+      section.tasks.map((task) => ({
         ...task,
-        module: {
-          ...module,
+        section: {
+          ...section,
           unit: {
             ...unit,
-            modules: undefined,
+            sections: undefined,
           },
         },
       })),
@@ -94,17 +94,17 @@ export default async function CoursePage({
   );
 
   selectedTasks.sort((a, b) => {
-    const aUnitOrder = a.module.unit.order;
-    const bUnitOrder = b.module.unit.order;
-    const aModuleOrder = a.module.order;
-    const bModuleOrder = b.module.order;
+    const aUnitOrder = a.section.unit.order;
+    const bUnitOrder = b.section.unit.order;
+    const aSectionOrder = a.section.order;
+    const bSectionOrder = b.section.order;
     const aTaskOrder = a.order;
     const bTaskOrder = b.order;
 
     // Create a combined order number for easier comparison
     // Multiply by large numbers to ensure proper ordering
-    const aOrder = aUnitOrder * 10000 + aModuleOrder * 100 + aTaskOrder;
-    const bOrder = bUnitOrder * 10000 + bModuleOrder * 100 + bTaskOrder;
+    const aOrder = aUnitOrder * 10000 + aSectionOrder * 100 + aTaskOrder;
+    const bOrder = bUnitOrder * 10000 + bSectionOrder * 100 + bTaskOrder;
 
     return aOrder - bOrder;
   });

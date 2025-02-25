@@ -10,7 +10,7 @@ import {
   vector,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { module } from './module';
+import { section } from './section';
 import { step } from './step';
 
 export const taskTypeEnum = pgEnum('TASK_TYPE_ENUM', [
@@ -32,9 +32,9 @@ export const task = pgTable('tasks', {
   experiencePoints: integer('experience_points').notNull().default(10),
   stepsCount: integer('steps_count').notNull(),
 
-  moduleId: uuid('module_id')
+  sectionId: uuid('section_id')
     .notNull()
-    .references(() => module.id),
+    .references(() => section.id),
 
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
@@ -51,8 +51,8 @@ export type SelectTask = typeof task.$inferSelect;
 
 export const taskRelations = relations(task, ({ many, one }) => ({
   steps: many(step),
-  module: one(module, {
-    fields: [task.moduleId],
-    references: [module.id],
+  section: one(section, {
+    fields: [task.sectionId],
+    references: [section.id],
   }),
 }));

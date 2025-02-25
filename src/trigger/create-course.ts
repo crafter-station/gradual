@@ -3,8 +3,8 @@ import * as schema from '@/db/schema';
 import {
   type InsertCourse,
   InsertCourseSchema,
-  type InsertModule,
-  InsertModuleSchema,
+  type InsertSection,
+  InsertSectionSchema,
   type InsertTask,
   InsertTaskSchema,
   type InsertUnit,
@@ -222,7 +222,7 @@ export const CreateCourseTask = schemaTask({
     const {
       courseEmbedding,
       unitEmbeddings,
-      moduleEmbeddings,
+      sectionEmbeddings,
       lessonEmbeddings,
     } = syllabusEmbeddingsResult.output;
 
@@ -245,28 +245,29 @@ export const CreateCourseTask = schemaTask({
       }),
     );
 
-    const modules: (InsertModule & { id: string })[] = syllabus.units.flatMap(
+    const sections: (InsertSection & { id: string })[] = syllabus.units.flatMap(
       (unit) =>
-        unit.modules.map((module) => ({
+        unit.sections.map((section) => ({
           id: uuidv4(),
-          ...module,
+          ...section,
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
           unitId: units.find((u) => u.order === unit.order)!.id,
-          order: module.order,
+          order: section.order,
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          embedding: moduleEmbeddings.find(
-            (u) => u.moduleOrder === module.order && u.unitOrder === unit.order,
+          embedding: sectionEmbeddings.find(
+            (u) =>
+              u.sectionOrder === section.order && u.unitOrder === unit.order,
           )!.embedding,
         })),
     );
 
-    const getModuleId = (unitOrder: number, moduleOrder: number) =>
+    const getSectionId = (unitOrder: number, sectionOrder: number) =>
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      modules.find(
-        (m) =>
+      sections.find(
+        (s) =>
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          m.unitId === units.find((u) => u.order === unitOrder)!.id &&
-          m.order === moduleOrder,
+          s.unitId === units.find((u) => u.order === unitOrder)!.id &&
+          s.order === sectionOrder,
       )!.id;
 
     const getUnitId = (unitOrder: number) =>
@@ -275,14 +276,14 @@ export const CreateCourseTask = schemaTask({
 
     const getEmbedding = (
       unitOrder: number,
-      moduleOrder: number,
+      sectionOrder: number,
       lessonOrder: number,
     ) =>
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
       lessonEmbeddings.find(
         (l) =>
           l.lessonOrder === lessonOrder &&
-          l.moduleOrder === moduleOrder &&
+          l.sectionOrder === sectionOrder &&
           l.unitOrder === unitOrder,
       )!.embedding;
 
@@ -292,21 +293,21 @@ export const CreateCourseTask = schemaTask({
       unitId: string;
       courseId: string;
       unitOrder: number;
-      moduleOrder: number;
+      sectionOrder: number;
     })[] = syllabus.units.flatMap((unit) =>
-      unit.modules.flatMap((module) =>
-        module.lessons.map((lesson) => ({
+      unit.sections.flatMap((section) =>
+        section.lessons.map((lesson) => ({
           id: uuidv4(),
           ...lesson,
-          moduleId: getModuleId(unit.order, module.order),
+          sectionId: getSectionId(unit.order, section.order),
           order: lesson.order,
           type: 'LESSON',
           stepsCount: 0,
-          embedding: getEmbedding(unit.order, module.order, lesson.order),
+          embedding: getEmbedding(unit.order, section.order, lesson.order),
           unitId: getUnitId(unit.order),
           courseId: course.id,
           unitOrder: unit.order,
-          moduleOrder: module.order,
+          sectionOrder: section.order,
         })),
       ),
     );
@@ -314,17 +315,17 @@ export const CreateCourseTask = schemaTask({
     await tasks.triggerAndWait<typeof StoreSyllabusTask>('store-syllabus', {
       course,
       units,
-      modules,
+      sections,
       lessons,
       sourceId,
     });
 
-    const firstUnitFirstModuleLessons = lessons.filter(
-      (lesson) => lesson.unitOrder === 1 && lesson.moduleOrder === 1,
+    const firstUnitFirstSectionLessons = lessons.filter(
+      (lesson) => lesson.unitOrder === 1 && lesson.sectionOrder === 1,
     );
 
     await batch.triggerByTaskAndWait(
-      firstUnitFirstModuleLessons.map((lesson) => ({
+      firstUnitFirstSectionLessons.map((lesson) => ({
         task: GenerateLessonStepsTask,
         payload: {
           lesson: {
@@ -336,11 +337,11 @@ export const CreateCourseTask = schemaTask({
           syllabus,
           sourceId,
           unitOrder: lesson.unitOrder,
-          moduleOrder: lesson.moduleOrder,
+          sectionOrder: lesson.sectionOrder,
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
           unitTitle: units.find((u) => u.order === lesson.unitOrder)!.title,
           // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          moduleTitle: modules.find((m) => m.order === lesson.moduleOrder)!
+          sectionTitle: sections.find((s) => s.order === lesson.sectionOrder)!
             .title,
         },
       })),
@@ -651,22 +652,22 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
       unitOrder: unit.order,
     }));
 
-    const modules = payload.syllabus.units.flatMap((unit) =>
-      unit.modules.map((module) => ({
-        title: module.title,
-        description: module.description,
-        moduleOrder: module.order,
+    const sections = payload.syllabus.units.flatMap((unit) =>
+      unit.sections.map((section) => ({
+        title: section.title,
+        description: section.description,
+        sectionOrder: section.order,
         unitOrder: unit.order,
       })),
     );
 
     const lessons = payload.syllabus.units.flatMap((unit) =>
-      unit.modules.flatMap((module) =>
-        module.lessons.map((lesson) => ({
+      unit.sections.flatMap((section) =>
+        section.lessons.map((lesson) => ({
           title: lesson.title,
           description: lesson.description,
           lessonOrder: lesson.order,
-          moduleOrder: module.order,
+          sectionOrder: section.order,
           unitOrder: unit.order,
         })),
       ),
@@ -677,7 +678,7 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
       values: [
         `${payload.syllabus.title} ${payload.syllabus.description}`,
         ...units.map((unit) => `${unit.title} ${unit.description}`),
-        ...modules.map((module) => `${module.title} ${module.description}`),
+        ...sections.map((section) => `${section.title} ${section.description}`),
         ...lessons.map((lesson) => `${lesson.title} ${lesson.description}`),
       ],
     });
@@ -688,18 +689,18 @@ export const GenerateSyllabusEmbeddingsTask = schemaTask({
         embedding: courseEmbeddingResult.embeddings[1 + index],
         unitOrder: unit.unitOrder,
       })),
-      moduleEmbeddings: modules.map((module, index) => ({
+      sectionEmbeddings: sections.map((section, index) => ({
         embedding: courseEmbeddingResult.embeddings[1 + units.length + index],
-        moduleOrder: module.moduleOrder,
-        unitOrder: module.unitOrder,
+        sectionOrder: section.sectionOrder,
+        unitOrder: section.unitOrder,
       })),
       lessonEmbeddings: lessons.map((lesson, index) => ({
         embedding:
           courseEmbeddingResult.embeddings[
-            1 + units.length + modules.length + index
+            1 + units.length + sections.length + index
           ],
         lessonOrder: lesson.lessonOrder,
-        moduleOrder: lesson.moduleOrder,
+        sectionOrder: lesson.sectionOrder,
         unitOrder: lesson.unitOrder,
       })),
     };
@@ -711,14 +712,14 @@ export const StoreSyllabusTask = schemaTask({
   schema: z.object({
     course: InsertCourseSchema,
     units: z.array(InsertUnitSchema),
-    modules: z.array(InsertModuleSchema),
+    sections: z.array(InsertSectionSchema),
     lessons: z.array(InsertTaskSchema),
     sourceId: z.string(),
   }),
   run: async (payload) => {
     await db.insert(schema.course).values(payload.course);
     await db.insert(schema.unit).values(payload.units);
-    await db.insert(schema.module).values(payload.modules);
+    await db.insert(schema.section).values(payload.sections);
     await db.insert(schema.task).values(payload.lessons);
     await db
       .update(schema.source)
@@ -736,18 +737,18 @@ export const GenerateLessonStepsTask = schemaTask({
     syllabus: SyllabusSchema,
     sourceId: z.string(),
     unitOrder: z.number(),
-    moduleOrder: z.number(),
+    sectionOrder: z.number(),
     unitTitle: z.string(),
-    moduleTitle: z.string(),
+    sectionTitle: z.string(),
   }),
   run: async ({
     lesson,
     syllabus,
     sourceId,
     unitOrder,
-    moduleOrder,
+    sectionOrder,
     unitTitle,
-    moduleTitle,
+    sectionTitle,
   }) => {
     const [lessonEmbedding] = await db
       .select({ embedding: schema.task.embedding })
@@ -772,12 +773,12 @@ export const GenerateLessonStepsTask = schemaTask({
       prompt: getGenerateLessonPrompt({
         lesson: {
           ...lesson,
-          title: `${unitOrder}.${moduleOrder}.${lesson.order}. ${lesson.title}`,
+          title: `${unitOrder}.${sectionOrder}.${lesson.order}. ${lesson.title}`,
         },
         chunks: chunks.map((chunk) => chunk.enrichedContent),
         syllabus: formatSyllabus(syllabus),
         unitTitle: `${unitOrder}. ${unitTitle}`,
-        moduleTitle: `${unitOrder}.${moduleOrder}. ${moduleTitle}`,
+        sectionTitle: `${unitOrder}.${sectionOrder}. ${sectionTitle}`,
       }),
       schema: z.object({
         steps: z.array(schema.StepContentSchema),
@@ -825,7 +826,7 @@ export async function getSyllabus(courseId: string) {
           description: true,
         },
         with: {
-          modules: {
+          sections: {
             columns: {
               order: true,
               title: true,
@@ -859,11 +860,11 @@ export async function getSyllabus(courseId: string) {
       order: unit.order,
       title: unit.title,
       description: unit.description,
-      modules: unit.modules.map((module) => ({
-        order: module.order,
-        title: module.title,
-        description: module.description,
-        lessons: module.tasks.map((lesson) => ({
+      sections: unit.sections.map((section) => ({
+        order: section.order,
+        title: section.title,
+        description: section.description,
+        lessons: section.tasks.map((lesson) => ({
           id: lesson.id,
           order: lesson.order,
           title: lesson.title,
@@ -910,17 +911,17 @@ export const GenerateLessonStepsTaskById = schemaTask({
     }
 
     const currentUnit = syllabus.units.find((unit) =>
-      unit.modules.some((module) =>
-        module.lessons.some((lesson) => lesson.id === lessonId),
+      unit.sections.some((section) =>
+        section.lessons.some((lesson) => lesson.id === lessonId),
       ),
     );
 
-    const currentModule = currentUnit?.modules.find((module) =>
-      module.lessons.some((lesson) => lesson.id === lessonId),
+    const currentSection = currentUnit?.sections.find((section) =>
+      section.lessons.some((lesson) => lesson.id === lessonId),
     );
 
-    if (!currentUnit || !currentModule) {
-      throw new Error('Unit or module not found');
+    if (!currentUnit || !currentSection) {
+      throw new Error('Unit or section not found');
     }
 
     await tasks.triggerAndWait<typeof GenerateLessonStepsTask>(
@@ -930,8 +931,8 @@ export const GenerateLessonStepsTaskById = schemaTask({
         syllabus,
         sourceId: source.id,
         unitTitle: `${currentUnit.order}. ${currentUnit.title}`,
-        moduleTitle: `${currentUnit.order}.${currentModule.order}. ${currentModule.title}`,
-        moduleOrder: currentModule.order,
+        sectionTitle: `${currentUnit.order}.${currentSection.order}. ${currentSection.title}`,
+        sectionOrder: currentSection.order,
         unitOrder: currentUnit.order,
       },
     );

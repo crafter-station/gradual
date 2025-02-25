@@ -25,7 +25,7 @@ export function formatSyllabus(syllabus: {
   units: {
     order: number;
     title: string;
-    modules: {
+    sections: {
       order: number;
       title: string;
       lessons: {
@@ -40,11 +40,11 @@ export function formatSyllabus(syllabus: {
   for (const unit of syllabus.units) {
     output += `${unit.order}. ${unit.title}\n`;
 
-    for (const module of unit.modules) {
-      output += `   ${unit.order}.${module.order}. ${module.title}\n`;
+    for (const section of unit.sections) {
+      output += `   ${unit.order}.${section.order}. ${section.title}\n`;
 
-      for (const lesson of module.lessons) {
-        output += `      ${unit.order}.${module.order}.${lesson.order}. ${lesson.title}\n`;
+      for (const lesson of section.lessons) {
+        output += `      ${unit.order}.${section.order}.${lesson.order}. ${lesson.title}\n`;
       }
     }
   }

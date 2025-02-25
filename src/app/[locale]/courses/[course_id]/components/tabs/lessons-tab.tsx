@@ -152,7 +152,7 @@ export function LessonsTab({
                         : 'group-hover:text-primary',
                     )}
                   >
-                    {task.module.unit.order}.{task.module.order}.{task.order}{' '}
+                    {task.section.unit.order}.{task.section.order}.{task.order}{' '}
                     {task.title}
                   </h3>
                 </div>

@@ -19,7 +19,7 @@ interface Task {
   stepsCount: number;
 }
 
-interface Module {
+interface Section {
   id: string;
   title: string;
   order: number;
@@ -30,14 +30,16 @@ interface Unit {
   id: string;
   title: string;
   order: number;
-  modules: Module[];
+  sections: Section[];
 }
 
 interface UnitsWithConnectorProps {
   units: Unit[];
 }
 
-export function UnitsWithConnector({ units }: UnitsWithConnectorProps) {
+export function UnitsWithConnector({
+  units,
+}: Readonly<UnitsWithConnectorProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pathD, setPathD] = useState('');
 
@@ -147,11 +149,11 @@ export function UnitsWithConnector({ units }: UnitsWithConnectorProps) {
                     {unit.title}
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    {unit.modules.length} modules •{' '}
-                    {unit.modules.reduce(
-                      (acc, module) =>
+                    {unit.sections.length} sections •{' '}
+                    {unit.sections.reduce(
+                      (acc, section) =>
                         acc +
-                        module.tasks.reduce(
+                        section.tasks.reduce(
                           (sum, task) => sum + task.stepsCount,
                           0,
                         ),
@@ -168,34 +170,34 @@ export function UnitsWithConnector({ units }: UnitsWithConnectorProps) {
                   unit.order % 2 === 1 ? 'pl-16' : 'pr-16',
                 )}
               >
-                {unit.modules
+                {unit.sections
                   .toSorted((a, b) => a.order - b.order)
-                  .map((module) => (
+                  .map((section) => (
                     <div
-                      key={module.id}
+                      key={section.id}
                       className="group hover:-translate-y-0.5 relative transition-all duration-300"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary/5 to-[#BFE8D9] opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:to-[#122F2C]" />
 
                       <div className="relative flex items-center gap-4 border border-border/50 bg-card/50 p-4 backdrop-blur-xs transition-colors group-hover:shadow-lg">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary/10 font-mono text-primary text-sm">
-                          {unit.order}.{module.order}
+                          {unit.order}.{section.order}
                         </div>
 
                         <div className="flex flex-1 items-center justify-between gap-4">
                           <div className="space-y-1">
                             <span className="font-medium text-sm leading-none">
-                              {module.title}
+                              {section.title}
                             </span>
                             <div className="flex items-center gap-3 text-muted-foreground text-xs">
                               <div className="flex items-center gap-1">
                                 <BookOpenIcon className="h-3 w-3" />
-                                <span>{module.tasks.length} tasks</span>
+                                <span>{section.tasks.length} tasks</span>
                               </div>
                               <div className="flex items-center gap-1">
                                 <LayersIcon className="h-3 w-3" />
                                 <span>
-                                  {module.tasks.reduce(
+                                  {section.tasks.reduce(
                                     (sum, task) => sum + task.experiencePoints,
                                     0,
                                   )}{' '}
@@ -205,7 +207,7 @@ export function UnitsWithConnector({ units }: UnitsWithConnectorProps) {
                               <div className="flex items-center gap-1">
                                 <ClockIcon className="h-3 w-3" />
                                 <span>
-                                  {module.tasks.reduce(
+                                  {section.tasks.reduce(
                                     (sum, task) => sum + task.stepsCount,
                                     0,
                                   )}{' '}

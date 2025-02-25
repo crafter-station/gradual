@@ -13,8 +13,8 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { task } from './task';
 import { unit } from './unit';
 
-export const module = pgTable(
-  'module',
+export const section = pgTable(
+  'section',
   {
     id: uuid('id').primaryKey().defaultRandom(),
 
@@ -35,24 +35,24 @@ export const module = pgTable(
       .defaultNow(),
   },
   (table) => [
-    index('modules_unit_id_order_index').on(table.unitId, table.order),
-    index('modules_unit_id_index').on(table.unitId),
-    index('modules_embedding_index').using(
+    index('sections_unit_id_order_index').on(table.unitId, table.order),
+    index('sections_unit_id_index').on(table.unitId),
+    index('sections_embedding_index').using(
       'hnsw',
       table.embedding.op('vector_cosine_ops'),
     ),
   ],
 );
-export const InsertModuleSchema = createInsertSchema(module);
-export const SelectModuleSchema = createSelectSchema(module);
+export const InsertSectionSchema = createInsertSchema(section);
+export const SelectSectionSchema = createSelectSchema(section);
 
-export type SelectModule = typeof module.$inferSelect;
-export type InsertModule = typeof module.$inferInsert;
+export type SelectSection = typeof section.$inferSelect;
+export type InsertSection = typeof section.$inferInsert;
 
-export const moduleRelations = relations(module, ({ many, one }) => ({
+export const sectionRelations = relations(section, ({ many, one }) => ({
   tasks: many(task),
   unit: one(unit, {
-    fields: [module.unitId],
+    fields: [section.unitId],
     references: [unit.id],
   }),
 }));

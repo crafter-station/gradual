@@ -1,5 +1,6 @@
 import { db } from '@/db';
 import { type SelectStep, stepProgress, taskProgress } from '@/db/schema';
+import { sql } from 'drizzle-orm';
 
 export async function getTaskProgress(userId: string, taskId: string) {
   const progress = await db.query.taskProgress.findFirst({
@@ -156,3 +157,53 @@ export function calculateEarnedExperiencePoints(
 
   return earnedExperiencePoints;
 }
+
+export const getFullTask = db.query.task
+  .findFirst({
+    where: (task, { eq }) => eq(task.id, sql.placeholder('taskId')),
+    with: {
+      section: {
+        with: {
+          unit: true,
+        },
+      },
+    },
+  })
+  .prepare('getFullTask');
+
+export const getTask = db.query.task
+  .findFirst({
+    where: (task, { eq }) => eq(task.id, sql.placeholder('taskId')),
+  })
+  .prepare('getTask');
+
+export const getSection = db.query.section
+  .findFirst({
+    where: (section, { eq }) => eq(section.id, sql.placeholder('sectionId')),
+  })
+  .prepare('getSection');
+
+export const getUnit = db.query.unit
+  .findFirst({
+    where: (unit, { eq }) => eq(unit.id, sql.placeholder('unitId')),
+  })
+  .prepare('getUnit');
+
+export const getVisibleSteps = db.query.step
+  .findMany({
+    where: (step, { and, eq, lte }) =>
+      and(
+        eq(step.taskId, sql.placeholder('taskId')),
+        lte(step.order, sql.placeholder('lastStepOrder')),
+      ),
+    orderBy: (step, { asc }) => asc(step.order),
+  })
+  .prepare('getVisibleSteps');
+
+export const getTaskStepsProgress = db.query.stepProgress
+  .findMany({
+    where: (stepProgress, { eq }) =>
+      eq(stepProgress.taskProgressId, sql.placeholder('taskProgressId')),
+    orderBy: (stepProgress, { asc }) => asc(stepProgress.startedAt),
+  })
+  .prepare('getTaskStepsProgress');

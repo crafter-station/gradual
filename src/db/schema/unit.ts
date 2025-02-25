@@ -11,7 +11,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { course } from './course';
-import { module } from './module';
+import { section } from './section';
 
 export const unit = pgTable(
   'units',
@@ -50,7 +50,7 @@ export type SelectUnit = typeof unit.$inferSelect;
 export type InsertUnit = typeof unit.$inferInsert;
 
 export const unitsRelations = relations(unit, ({ many, one }) => ({
-  modules: many(module),
+  sections: many(section),
   course: one(course, {
     fields: [unit.courseId],
     references: [course.id],

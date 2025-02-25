@@ -3,7 +3,7 @@ export function getGenerateLessonPrompt({
   chunks,
   syllabus,
   unitTitle,
-  moduleTitle,
+  sectionTitle,
 }: {
   lesson: {
     description: string;
@@ -12,7 +12,7 @@ export function getGenerateLessonPrompt({
   chunks: string[];
   syllabus: string;
   unitTitle: string;
-  moduleTitle: string;
+  sectionTitle: string;
 }) {
   return `You are an expert instructional designer. Create a comprehensive lesson plan with multiple steps about "${lesson.title}".
 
@@ -28,9 +28,9 @@ export function getGenerateLessonPrompt({
       ${lesson.description}
     </description>
     <metadata>
-      <module-title>
-        ${moduleTitle}
-      </module-title>
+      <section-title>
+        ${sectionTitle}
+      </section-title>
       <unit-title>
         ${unitTitle}
       </unit-title>
@@ -41,7 +41,7 @@ export function getGenerateLessonPrompt({
   </chunks>
 </context>
 
-Important: Focus only on the current topic. Do not cover material from other modules in the syllabus:
+Important: Focus only on the current topic. Do not cover material from other sections in the syllabus:
 
 Required step count: 15-20 steps total
 
@@ -53,7 +53,7 @@ Guidelines:
 - Include code examples when relevant
 - For questions, provide meaningful explanations
 - Stay focused on the specific topic scope
-- Avoid covering material from other modules
+- Avoid covering material from other sections
 
 Each step must follow one of these formats:
 

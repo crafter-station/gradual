@@ -1,10 +1,10 @@
 import type {
-  module,
   SelectTask,
   SelectTaskProgress,
   StepContent,
   course,
   enrollment,
+  section,
   source,
   step,
   stepProgress,
@@ -17,7 +17,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 export type User = InferSelectModel<typeof user>;
 export type Course = InferSelectModel<typeof course>;
 export type Unit = InferSelectModel<typeof unit>;
-export type Module = InferSelectModel<typeof module>;
+export type Section = InferSelectModel<typeof section>;
 export type Task = SelectTask;
 export type Step = InferSelectModel<typeof step>;
 export type TaskProgress = SelectTaskProgress;
@@ -36,15 +36,15 @@ export type CourseWithRelations = Course & {
 };
 
 export type UnitWithRelations = Unit & {
-  modules: ModuleWithRelations[];
+  sections: SectionWithRelations[];
 };
 
-export type ModuleWithRelations = Module & {
+export type SectionWithRelations = Section & {
   tasks: TaskWithRelations[];
 };
 
 export type TaskWithRelations = Task & {
-  module: Module & {
+  section: Section & {
     unit: Unit;
   };
   steps?: Step[];
