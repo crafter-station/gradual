@@ -1,5 +1,5 @@
 {
-  "id": "9e9ab4c8-07da-44cc-94e9-b4902496764e",
+  "id": "ce92e1fb-b3cb-467b-b31f-f3fb63d8bb10",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -288,8 +288,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.module": {
-      "name": "module",
+    "public.section": {
+      "name": "section",
       "schema": "",
       "columns": {
         "id": {
@@ -345,8 +345,8 @@
         }
       },
       "indexes": {
-        "modules_unit_id_order_index": {
-          "name": "modules_unit_id_order_index",
+        "sections_unit_id_order_index": {
+          "name": "sections_unit_id_order_index",
           "columns": [
             {
               "expression": "unit_id",
@@ -366,8 +366,8 @@
           "method": "btree",
           "with": {}
         },
-        "modules_unit_id_index": {
-          "name": "modules_unit_id_index",
+        "sections_unit_id_index": {
+          "name": "sections_unit_id_index",
           "columns": [
             {
               "expression": "unit_id",
@@ -381,8 +381,8 @@
           "method": "btree",
           "with": {}
         },
-        "modules_embedding_index": {
-          "name": "modules_embedding_index",
+        "sections_embedding_index": {
+          "name": "sections_embedding_index",
           "columns": [
             {
               "expression": "embedding",
@@ -399,9 +399,9 @@
         }
       },
       "foreignKeys": {
-        "module_unit_id_units_id_fk": {
-          "name": "module_unit_id_units_id_fk",
-          "tableFrom": "module",
+        "section_unit_id_units_id_fk": {
+          "name": "section_unit_id_units_id_fk",
+          "tableFrom": "section",
           "tableTo": "units",
           "columnsFrom": ["unit_id"],
           "columnsTo": ["id"],
@@ -602,9 +602,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "selected_alternative_order": {
-          "name": "selected_alternative_order",
-          "type": "integer",
+        "state": {
+          "name": "state",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
@@ -707,6 +707,20 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {
@@ -910,8 +924,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "module_id": {
-          "name": "module_id",
+        "section_id": {
+          "name": "section_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -933,11 +947,11 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "tasks_module_id_module_id_fk": {
-          "name": "tasks_module_id_module_id_fk",
+        "tasks_section_id_section_id_fk": {
+          "name": "tasks_section_id_section_id_fk",
           "tableFrom": "tasks",
-          "tableTo": "module",
-          "columnsFrom": ["module_id"],
+          "tableTo": "section",
+          "columnsFrom": ["section_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
