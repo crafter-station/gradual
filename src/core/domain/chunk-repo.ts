@@ -1,10 +1,10 @@
-import { db } from "@/db";
-import * as schema from "@/db/schema";
-import type { Chunk } from "./chunk";
+import { db } from '@/db';
+import * as schema from '@/db/schema';
+import type { Chunk } from './chunk';
 
 export class ChunkRepo {
   async storeMany(chunks: Chunk[]) {
-    await db.insert(schema.chunks).values(
+    await db.insert(schema.chunk).values(
       chunks.map((chunk: Chunk) => ({
         id: chunk.id,
         order: chunk.order,
@@ -13,7 +13,7 @@ export class ChunkRepo {
         summary: chunk.summary,
         embedding: chunk.embedding,
         sourceId: chunk.sourceId,
-      }))
+      })),
     );
   }
 }

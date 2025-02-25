@@ -33,7 +33,7 @@ export const revalidate = 0;
 export default async function CoursesPage() {
   const t = await getI18n();
 
-  const courses = await db.query.courses.findMany({
+  const courses = await db.query.course.findMany({
     with: {
       units: true,
       sources: true,

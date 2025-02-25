@@ -5,7 +5,7 @@ import { UploadThingError } from 'uploadthing/server';
 const f = createUploadthing();
 
 const auth = async (req: Request) => {
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser.execute();
   return currentUser;
 };
 

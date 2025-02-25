@@ -8,7 +8,7 @@ export const SyllabusSchema = z.object({
       order: z.number(),
       title: z.string(),
       description: z.string(),
-      modules: z.array(
+      sections: z.array(
         z.object({
           order: z.number(),
           title: z.string(),

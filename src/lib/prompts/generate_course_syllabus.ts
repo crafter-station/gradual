@@ -10,7 +10,7 @@ const UNIT_RANGE_MAP = {
   large: '5-6',
 };
 
-const MODULE_RANGE_MAP = {
+const SECTION_RANGE_MAP = {
   small: '2-3',
   medium: '3-4',
   large: '4-5',
@@ -54,8 +54,8 @@ export function getGenerateCourseSyllabusPrompt({
        * Units progress from foundational to advanced concepts
        * Content is evenly distributed across units
        * Each unit builds upon knowledge from previous units
-    3. Within each unit, develop 2-4 focused modules
-    4. Within each module, create 3-5 specific lessons
+    3. Within each unit, develop 2-4 focused sections
+    4. Within each section, create 3-5 specific lessons
   </content_structure>
 
   <detailed_requirements>
@@ -84,17 +84,17 @@ export function getGenerateCourseSyllabusPrompt({
       * Describe the practical skills students will gain
       * Include the estimated time investment
     
-    Module Requirements:
-    - Must create ${MODULE_RANGE_MAP[contentSize]} modules per unit
-    - Ensure clear thematic connections between modules
-    - Each module description should:
+    Section Requirements:
+    - Must create ${SECTION_RANGE_MAP[contentSize]} sections per unit
+    - Ensure clear thematic connections between sections
+    - Each section description should:
       * Detail the specific concepts covered
       * Explain the practical applications
       * Include learning methodologies
       * Connect to both previous and upcoming content
     
     Lesson Requirements:
-    - Must create ${LESSON_RANGE_MAP[contentSize]} lessons per module
+    - Must create ${LESSON_RANGE_MAP[contentSize]} lessons per section
     - Lessons should be highly specific and actionable
     - Each lesson description should include:
       * Detailed learning objectives (3-5 sentences)
@@ -139,11 +139,11 @@ export function getGenerateCourseSyllabusPrompt({
           "order": 1,
           "title": "Fundamentals of Data Structures",
           "description": "[Comprehensive description of foundational concepts...]",
-          "modules": [
+          "sections": [
             {
               "order": 1,
               "title": "Arrays and Linked Lists",
-              "description": "[Detailed module description...]",
+              "description": "[Detailed section description...]",
               "lessons": [
                 {
                   "order": 1,
@@ -153,26 +153,26 @@ export function getGenerateCourseSyllabusPrompt({
                 // 2-4 more lessons...
               ]
             },
-            // 2-3 more modules...
+            // 2-3 more sections...
           ]
         },
         {
           "order": 2,
           "title": "Tree and Graph Structures",
           "description": "[...]",
-          "modules": [...] 
+          "sections": [...] 
         },
         {
           "order": 3,
           "title": "Algorithm Design Strategies",
           "description": "[...]",
-          "modules": [...]
+          "sections": [...]
         },
         {
           "order": 4,
           "title": "Advanced Applications and Optimization",
           "description": "[...]",
-          "modules": [...]
+          "sections": [...]
         }
       ]
     }
@@ -183,10 +183,10 @@ export function getGenerateCourseSyllabusPrompt({
     1. Exactly one title
     2. Between ${UNIT_RANGE_MAP[contentSize]} units
     3. Each unit must have:
-       - ${MODULE_RANGE_MAP[contentSize]} modules
+       - ${SECTION_RANGE_MAP[contentSize]} sections
        - A comprehensive description
        - Clear learning objectives
-    4. Each module must have:
+    4. Each section must have:
        - ${LESSON_RANGE_MAP[contentSize]} specific lessons
        - A detailed description
        - Clear learning outcomes
@@ -216,18 +216,18 @@ export function getGenerateCourseSyllabusPrompt({
          - Don't split closely related concepts across units
          - Don't introduce applications before core concepts are mastered
 
-    3. Module Planning (${MODULE_RANGE_MAP[contentSize]} modules per unit):
+    3. Section Planning (${SECTION_RANGE_MAP[contentSize]} sections per unit):
        * Break down each unit into coherent sub-topics
-       * Ensure modules within a unit are closely related
-       * Verify that modules follow a logical progression
+       * Ensure sections within a unit are closely related
+       * Verify that sections follow a logical progression
        * Common mistakes to avoid:
-         - Don't create modules that could be units
+         - Don't create sections that could be units
          - Don't separate strongly related concepts
          - Don't introduce concepts before prerequisites
 
-    4. Lesson Planning (${LESSON_RANGE_MAP[contentSize]} lessons per module):
+    4. Lesson Planning (${LESSON_RANGE_MAP[contentSize]} lessons per section):
        * Create specific, focused learning points
-       * Ensure lessons support the module's objectives
+       * Ensure lessons support the section's objectives
        * Maintain consistent depth across lessons
 
     5. Final Review Checklist:
@@ -241,10 +241,10 @@ export function getGenerateCourseSyllabusPrompt({
   <reflection_requirement>
     Before returning the syllabus:
     1. Review the entire structure for logical flow
-    2. Verify that each level (unit/module/lesson) is properly scoped
+    2. Verify that each level (unit/section/lesson) is properly scoped
     3. Confirm that applications follow their theoretical foundations
     4. Check that related concepts are grouped appropriately
-    5. Ensure no unit-level concepts are placed as modules
+    5. Ensure no unit-level concepts are placed as sections
     6. Validate that the progression supports effective learning
 
     If any issues are found, revise the structure before finalizing.
@@ -272,9 +272,9 @@ export function getGenerateCourseSyllabusPrompt({
   <example_poor_structure>
     Example of common mistakes to avoid:
     Unit 1: Introduction (Too broad, mixing basics with applications)
-      Module 1: Basic Concepts (Good)
-      Module 2: Applications (Should be a separate unit)
-      Module 3: Solving Methods (Should be a separate unit)
+      section 1: Basic Concepts (Good)
+      section 2: Applications (Should be a separate unit)
+      section 3: Solving Methods (Should be a separate unit)
       
     Instead, separate these into distinct units and develop each fully.
   </example_poor_structure>

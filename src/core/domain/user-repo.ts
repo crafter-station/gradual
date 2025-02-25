@@ -1,9 +1,9 @@
-import { User } from "@/core/domain/user";
-import { db } from "@/db";
+import { User } from '@/core/domain/user';
+import { db } from '@/db';
 
 export class UserRepo {
   async findFirst(): Promise<User | null> {
-    const user = await db.query.users.findFirst();
+    const user = await db.query.user.findFirst();
     if (!user) {
       return null;
     }

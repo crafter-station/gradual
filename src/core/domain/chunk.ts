@@ -1,4 +1,4 @@
-import type { Embedding } from "./embedding";
+import type { Embedding } from './embedding';
 
 export class Chunk {
   constructor(
@@ -8,6 +8,6 @@ export class Chunk {
     public readonly summary: string,
     public readonly rawContent: string,
     public readonly enrichedContent: string,
-    public readonly embedding: Embedding
+    public readonly embedding: Embedding,
   ) {}
 }

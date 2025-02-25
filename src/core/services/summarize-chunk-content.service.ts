@@ -1,13 +1,13 @@
-import { getSummarizeChunkPrompt } from "@/lib/prompts";
-import { openai } from "@ai-sdk/openai";
-import { batch, schemaTask, tasks } from "@trigger.dev/sdk/v3";
-import { generateText } from "ai";
-import { z } from "zod";
+import { getSummarizeChunkPrompt } from '@/lib/prompts';
+import { openai } from '@ai-sdk/openai';
+import { batch, schemaTask, tasks } from '@trigger.dev/sdk/v3';
+import { generateText } from 'ai';
+import { z } from 'zod';
 
 export interface ISummarizeChunkContentService {
   execute(
     rawContent: string,
-    order: number
+    order: number,
   ): Promise<{ order: number; summary: string }>;
 }
 
@@ -26,14 +26,14 @@ export class SummarizeChunkContentService
 {
   async execute(
     rawContent: string,
-    order: number
+    order: number,
   ): Promise<{ order: number; summary: string }> {
     const summary = await generateText({
-      model: openai("o3-mini"),
+      model: openai('gpt-4o-mini'),
       prompt: getSummarizeChunkPrompt({ chunk: rawContent }),
       experimental_telemetry: {
         isEnabled: true,
-        functionId: "summarize-chunk-content",
+        functionId: 'summarize-chunk-content',
       },
     });
 
@@ -51,10 +51,10 @@ export class SummarizeChunkContentServiceTask
 
   async execute(
     rawContent: string,
-    order: number
+    order: number,
   ): Promise<{ order: number; summary: string }> {
     const SummarizeChunkContentTask = schemaTask({
-      id: "summarize-chunk-content",
+      id: 'summarize-chunk-content',
       schema: z.object({
         rawContent: z.string(),
         order: z.number(),
@@ -66,13 +66,13 @@ export class SummarizeChunkContentServiceTask
 
     const enrichedSummary = await tasks.triggerAndWait<
       typeof SummarizeChunkContentTask
-    >("summarize-chunk-content", {
+    >('summarize-chunk-content', {
       order: order,
       rawContent: rawContent,
     });
 
     if (!enrichedSummary.ok) {
-      throw new Error("Failed to summarize chunk!");
+      throw new Error('Failed to summarize chunk!');
     }
 
     return enrichedSummary.output;
@@ -92,7 +92,7 @@ export class SumarizeChunksContentsServiceTask
     }[]
   > {
     const SummarizeChunkContentTask = schemaTask({
-      id: "summarize-chunk-content",
+      id: 'summarize-chunk-content',
       schema: z.object({
         rawContent: z.string(),
         order: z.number(),
@@ -106,7 +106,7 @@ export class SumarizeChunksContentsServiceTask
       chunks.map((chunk, index) => ({
         task: SummarizeChunkContentTask,
         payload: { rawContent: chunk, order: index },
-      }))
+      })),
     );
 
     const summarizedChunks: {

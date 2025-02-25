@@ -1,18 +1,11 @@
 import { db } from '@/db';
-import {
-  type SelectStep,
-  stepProgress,
-  steps,
-  taskProgress,
-} from '@/db/schema';
-import { and, asc, desc, eq } from 'drizzle-orm';
+import { type SelectStep, stepProgress, taskProgress } from '@/db/schema';
+import { sql } from 'drizzle-orm';
 
 export async function getTaskProgress(userId: string, taskId: string) {
   const progress = await db.query.taskProgress.findFirst({
-    where: and(
-      eq(taskProgress.userId, userId),
-      eq(taskProgress.taskId, taskId),
-    ),
+    where: (taskProgress, { and, eq }) =>
+      and(eq(taskProgress.userId, userId), eq(taskProgress.taskId, taskId)),
   });
 
   return progress;
@@ -40,11 +33,11 @@ export async function getOrCreateTaskProgress(
 }
 
 export async function getLastStep(taskId: string) {
-  const lastStep = await db.query.steps.findFirst({
-    where: eq(steps.taskId, taskId),
-    orderBy: [desc(steps.order)],
+  const lastStep = await db.query.step.findFirst({
+    where: (step, { eq }) => eq(step.taskId, taskId),
+    orderBy: (step, { desc }) => desc(step.order),
   });
-  return lastStep;
+  return lastStep as unknown as SelectStep | undefined;
 }
 
 export async function getCurrentStep(
@@ -53,31 +46,32 @@ export async function getCurrentStep(
 ) {
   let step: SelectStep | undefined;
   if (lastCompletedStepId) {
-    const lastCompletedStep = await db.query.steps.findFirst({
-      where: eq(steps.id, lastCompletedStepId),
+    const lastCompletedStep = await db.query.step.findFirst({
+      where: (step, { eq }) => eq(step.id, lastCompletedStepId),
     });
 
     // TODO: Handle this
     if (!lastCompletedStep) throw new Error('Last completed step not found');
 
-    step = (await db.query.steps.findFirst({
-      where: and(
-        eq(steps.order, lastCompletedStep.order + 1),
-        eq(steps.taskId, taskId),
-      ),
+    step = (await db.query.step.findFirst({
+      where: (step, { and, eq }) =>
+        and(
+          eq(step.order, lastCompletedStep.order + 1),
+          eq(step.taskId, taskId),
+        ),
     })) as SelectStep | undefined;
 
     if (!step) {
       const lastStep = await getLastStep(taskId);
 
       if (lastStep?.id === lastCompletedStep.id) {
-        step = lastStep as SelectStep;
+        step = lastStep;
       }
     }
   } else {
-    step = (await db.query.steps.findFirst({
-      where: eq(steps.taskId, taskId),
-      orderBy: [asc(steps.order)],
+    step = (await db.query.step.findFirst({
+      where: (step, { eq }) => eq(step.taskId, taskId),
+      orderBy: (step, { asc }) => asc(step.order),
     })) as SelectStep | undefined;
   }
   // TODO: Handle this
@@ -93,12 +87,13 @@ export async function getStepProgress(
   stepId: string,
 ) {
   const progress = await db.query.stepProgress.findFirst({
-    where: and(
-      eq(stepProgress.taskId, taskId),
-      eq(stepProgress.userId, userId),
-      eq(stepProgress.taskProgressId, taskProgressId),
-      eq(stepProgress.stepId, stepId),
-    ),
+    where: (stepProgress, { and, eq }) =>
+      and(
+        eq(stepProgress.taskId, taskId),
+        eq(stepProgress.userId, userId),
+        eq(stepProgress.taskProgressId, taskProgressId),
+        eq(stepProgress.stepId, stepId),
+      ),
   });
 
   return progress;
@@ -162,3 +157,53 @@ export function calculateEarnedExperiencePoints(
 
   return earnedExperiencePoints;
 }
+
+export const getFullTask = db.query.task
+  .findFirst({
+    where: (task, { eq }) => eq(task.id, sql.placeholder('taskId')),
+    with: {
+      section: {
+        with: {
+          unit: true,
+        },
+      },
+    },
+  })
+  .prepare('getFullTask');
+
+export const getTask = db.query.task
+  .findFirst({
+    where: (task, { eq }) => eq(task.id, sql.placeholder('taskId')),
+  })
+  .prepare('getTask');
+
+export const getSection = db.query.section
+  .findFirst({
+    where: (section, { eq }) => eq(section.id, sql.placeholder('sectionId')),
+  })
+  .prepare('getSection');
+
+export const getUnit = db.query.unit
+  .findFirst({
+    where: (unit, { eq }) => eq(unit.id, sql.placeholder('unitId')),
+  })
+  .prepare('getUnit');
+
+export const getVisibleSteps = db.query.step
+  .findMany({
+    where: (step, { and, eq, lte }) =>
+      and(
+        eq(step.taskId, sql.placeholder('taskId')),
+        lte(step.order, sql.placeholder('lastStepOrder')),
+      ),
+    orderBy: (step, { asc }) => asc(step.order),
+  })
+  .prepare('getVisibleSteps');
+
+export const getTaskStepsProgress = db.query.stepProgress
+  .findMany({
+    where: (stepProgress, { eq }) =>
+      eq(stepProgress.taskProgressId, sql.placeholder('taskProgressId')),
+    orderBy: (stepProgress, { asc }) => asc(stepProgress.startedAt),
+  })
+  .prepare('getTaskStepsProgress');
