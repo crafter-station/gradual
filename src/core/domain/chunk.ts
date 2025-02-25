@@ -1,4 +1,4 @@
-import type { Embedding } from "ai";
+import type { Embedding } from "./embedding";
 
 export class Chunk {
   constructor(
