@@ -1,4 +1,3 @@
-import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
 
 import * as schema from './schema';
@@ -10,8 +9,7 @@ declare global {
 }
 
 if (!global.db) {
-  const sql = neon(process.env.DATABASE_URL);
-  global.db = drizzle(sql, { schema });
+  global.db = drizzle(process.env.DATABASE_URL, { schema });
 }
 
 // biome-ignore lint/suspicious/noRedeclare: <explanation>
