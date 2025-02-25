@@ -25,20 +25,35 @@ type PageProps = {
 
 export const dynamic = 'force-dynamic';
 
+async function getTask(taskId: string) {
+  const task = await db.query.task.findFirst({
+    where: (task, { eq }) => eq(task.id, taskId),
+  });
+  if (!task) return null;
+  const module = await db.query.module.findFirst({
+    where: (module, { eq }) => eq(module.id, task?.moduleId),
+  });
+  if (!module) return null;
+  const unit = await db.query.unit.findFirst({
+    where: (unit, { eq }) => eq(unit.id, module?.unitId),
+  });
+  if (!unit) return null;
+  return {
+    ...task,
+    module: {
+      ...module,
+      unit,
+    },
+  };
+}
+
 export default async function TaskPage({ params }: Readonly<PageProps>) {
   const { task_id, course_id } = await params;
   const startedAt = new Date();
 
   const [currentUser, currentTask] = await Promise.all([
     db.query.user.findFirst(),
-    db.query.task.findFirst({
-      where: (task, { eq }) => eq(task.id, task_id),
-      with: {
-        module: {
-          with: { unit: true },
-        },
-      },
-    }),
+    getTask(task_id),
   ]);
 
   if (!currentUser) return notFound();
