@@ -6,5 +6,3 @@ export const QuoteStepContentSchema = z.object({
   body: z.string(),
   author: z.string(),
 });
-
-export type QuoteStepContent = z.infer<typeof QuoteStepContentSchema>;

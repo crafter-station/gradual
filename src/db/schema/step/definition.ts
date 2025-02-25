@@ -6,5 +6,3 @@ export const DefinitionStepContentSchema = z.object({
   term: z.string(),
   definition: z.string(),
 });
-
-export type DefinitionStepContent = z.infer<typeof DefinitionStepContentSchema>;

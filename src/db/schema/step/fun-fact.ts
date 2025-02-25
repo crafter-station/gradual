@@ -6,5 +6,3 @@ export const FunFactStepContentSchema = z.object({
   title: z.string(),
   body: z.string(),
 });
-
-export type FunFactStepContent = z.infer<typeof FunFactStepContentSchema>;

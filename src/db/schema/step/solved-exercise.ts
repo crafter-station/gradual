@@ -7,7 +7,3 @@ export const SolvedExerciseStepContentSchema = z.object({
   body: z.string(),
   solution: z.string(),
 });
-
-export type SolvedExerciseStepContent = z.infer<
-  typeof SolvedExerciseStepContentSchema
->;

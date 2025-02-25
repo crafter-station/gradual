@@ -6,5 +6,3 @@ export const AnalogyStepContentSchema = z.object({
   title: z.string(),
   body: z.string(),
 });
-
-export type AnalogyStepContent = z.infer<typeof AnalogyStepContentSchema>;

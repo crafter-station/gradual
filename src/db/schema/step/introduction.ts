@@ -7,7 +7,3 @@ export const IntroductionStepContentSchema = z.object({
   title: z.string(),
   body: z.string(),
 });
-
-export type IntroductionStepContent = z.infer<
-  typeof IntroductionStepContentSchema
->;

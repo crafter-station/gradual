@@ -6,5 +6,3 @@ export const TutorialStepContentSchema = z.object({
   title: z.string(),
   body: z.string(),
 });
-
-export type TutorialStepContent = z.infer<typeof TutorialStepContentSchema>;

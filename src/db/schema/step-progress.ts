@@ -1,12 +1,7 @@
 import { relations } from 'drizzle-orm';
-import {
-  boolean,
-  integer,
-  pgTable,
-  timestamp,
-  uuid,
-} from 'drizzle-orm/pg-core';
+import { boolean, jsonb, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { step } from './step';
+import type { StepProgressState } from './step/progress-state';
 import { task } from './task';
 import { taskProgress } from './task-progress';
 import { user } from './user';
@@ -30,7 +25,7 @@ export const stepProgress = pgTable('step_progress', {
     .notNull()
     .references(() => taskProgress.id),
 
-  selectedAlternativeOrder: integer('selected_alternative_order'),
+  state: jsonb('state').$type<StepProgressState>(),
   isCorrect: boolean('is_correct'),
 
   startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
