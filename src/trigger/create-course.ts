@@ -10,21 +10,14 @@ import {
   CreateSourceService,
   CreateSourceServiceTask,
 } from '@/core/services/create-source.service';
-import { EnrichChunkContentServiceTask } from '@/core/services/enrich-chunk-content.service';
-import {
-  EnrichChunkService,
-  EnrichChunksServiceTask,
-} from '@/core/services/enrich-chunk.service';
+import { EnrichChunksServiceTask } from '@/core/services/enrich-chunk.service';
 import { extractChunkTextsTask } from '@/core/services/extract-chunks-texts';
 import {
   GenerateCourseSyllabusService,
   GenerateCourseSyllabusServiceTask,
 } from '@/core/services/generate-course-syllabus.service';
 import { ParseSourceServiceTask } from '@/core/services/parse-source.service';
-import {
-  SumarizeChunksContentsServiceTask,
-  SummarizeChunkContentServiceTask,
-} from '@/core/services/summarize-chunk-content.service';
+import { SumarizeChunksContentsServiceTask } from '@/core/services/summarize-chunk-content.service';
 import { SummarizeSourceContentServiceTask } from '@/core/services/summarize-source-content.service';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
@@ -79,12 +72,7 @@ export const CreateCourseTask = schemaTask({
       SummarizeSourceContentServiceTask,
     ).execute(summarizedChunks.map((chunk) => chunk.summary));
 
-    const enrichedChunks = await new EnrichChunksServiceTask(
-      new EnrichChunkService(
-        service(SummarizeChunkContentServiceTask),
-        service(EnrichChunkContentServiceTask),
-      ),
-    ).execute(
+    const enrichedChunks = await service(EnrichChunksServiceTask).execute(
       summarizedChunks.map((chunk) => ({
         order: chunk.order,
         rawContent: chunk.rawContent,

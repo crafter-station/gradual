@@ -4,6 +4,10 @@ import {
   EnrichChunkContentServiceTask,
 } from './enrich-chunk-content.service';
 import {
+  EnrichChunkService,
+  EnrichChunksServiceTask,
+} from './enrich-chunk.service';
+import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from './parse-source.service';
@@ -33,6 +37,12 @@ const summarizeSourceContentServiceTask =
 
 const enrichChunkContentService = new EnrichChunkContentService();
 const enrichChunkContentServiceTask = new EnrichChunkContentServiceTask();
+
+const enrichChunkService = new EnrichChunkService(
+  summarizeChunkContentServiceTask,
+  enrichChunkContentServiceTask,
+);
+const enrichChunksServiceTask = new EnrichChunksServiceTask();
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
@@ -65,6 +75,10 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return enrichChunkContentService as T;
     case EnrichChunkContentServiceTask:
       return enrichChunkContentServiceTask as T;
+    case EnrichChunkService:
+      return enrichChunkService as T;
+    case EnrichChunksServiceTask:
+      return enrichChunksServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);

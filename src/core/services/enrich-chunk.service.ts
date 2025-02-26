@@ -1,7 +1,7 @@
-import { batch, schemaTask } from "@trigger.dev/sdk/v3";
-import { z } from "zod";
-import type { IEnrichChunkContentService } from "./enrich-chunk-content.service";
-import type { ISummarizeChunkContentService } from "./summarize-chunk-content.service";
+import { enrichChunkTask } from '@/trigger/enrich-chunk.task';
+import { batch } from '@trigger.dev/sdk/v3';
+import type { IEnrichChunkContentService } from './enrich-chunk-content.service';
+import type { ISummarizeChunkContentService } from './summarize-chunk-content.service';
 
 export interface IEnrichChunksService {
   execute(
@@ -12,7 +12,7 @@ export interface IEnrichChunksService {
       precedingChunkContent: string | null;
       succeedingChunkContent: string | null;
     }[],
-    chunkSize: number
+    chunkSize: number,
   ): Promise<
     {
       order: number;
@@ -26,7 +26,7 @@ export interface IEnrichChunksService {
 export class EnrichChunkService {
   constructor(
     private summarizeChunkContentService: ISummarizeChunkContentService,
-    private enrichChunkContentService: IEnrichChunkContentService
+    private enrichChunkContentService: IEnrichChunkContentService,
   ) {}
 
   async execute(
@@ -35,7 +35,7 @@ export class EnrichChunkService {
     sourceSummary: string,
     precedingChunkContent: string | null,
     succeedingChunkContent: string | null,
-    chunkSize: number
+    chunkSize: number,
   ): Promise<{
     order: number;
     enrichedContent: string;
@@ -46,12 +46,12 @@ export class EnrichChunkService {
       sourceSummary,
       precedingChunkContent,
       succeedingChunkContent,
-      chunkSize
+      chunkSize,
     );
 
     const { summary } = await this.summarizeChunkContentService.execute(
       enrichedContent,
-      order
+      order,
     );
 
     return {
@@ -63,8 +63,6 @@ export class EnrichChunkService {
 }
 
 export class EnrichChunksServiceTask implements IEnrichChunksService {
-  constructor(private service: EnrichChunkService) {}
-
   async execute(
     chunks: {
       order: number;
@@ -73,7 +71,7 @@ export class EnrichChunksServiceTask implements IEnrichChunksService {
       precedingChunkContent: string | null;
       succeedingChunkContent: string | null;
     }[],
-    chunkSize: number
+    chunkSize: number,
   ): Promise<
     {
       order: number;
@@ -82,27 +80,6 @@ export class EnrichChunksServiceTask implements IEnrichChunksService {
       rawContent: string;
     }[]
   > {
-    const EnrichChunkTask = schemaTask({
-      id: "enrich-chunk",
-      schema: z.object({
-        order: z.number(),
-        rawContent: z.string(),
-        sourceSummary: z.string(),
-        precedingChunkContent: z.string().nullable(),
-        succeedingChunkContent: z.string().nullable(),
-      }),
-      run: async (payload) => {
-        return await this.service.execute(
-          payload.order,
-          payload.rawContent,
-          payload.sourceSummary,
-          payload.precedingChunkContent,
-          payload.succeedingChunkContent,
-          chunkSize
-        );
-      },
-    });
-
     const enrichedChunks: {
       order: number;
       enrichedContent: string;
@@ -112,15 +89,16 @@ export class EnrichChunksServiceTask implements IEnrichChunksService {
 
     const { runs: enrichChunksRuns } = await batch.triggerByTaskAndWait(
       chunks.map((chunk) => ({
-        task: EnrichChunkTask,
+        task: enrichChunkTask,
         payload: {
           order: chunk.order,
           rawContent: chunk.rawContent,
           sourceSummary: chunk.sourceSummary,
           precedingChunkContent: chunk.precedingChunkContent,
           succeedingChunkContent: chunk.succeedingChunkContent,
+          chunkSize: chunkSize,
         },
-      }))
+      })),
     );
 
     for (const run of enrichChunksRuns) {
@@ -129,8 +107,7 @@ export class EnrichChunksServiceTask implements IEnrichChunksService {
           order: run.output.order,
           enrichedContent: run.output.enrichedContent,
           enrichedSummary: run.output.enrichedSummary,
-          rawContent: "",
-          // rawContent: summarizedChunks[run.output.order].rawContent,
+          rawContent: '',
         });
       }
     }
