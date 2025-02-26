@@ -1,9 +1,9 @@
-import { schemaTask, tasks } from "@trigger.dev/sdk/v3";
-import { z } from "zod";
+import { _extractChunkTextsTask } from '@/trigger/extract-chunks.task';
+import { tasks } from '@trigger.dev/sdk/v3';
 
 export const extractChunkTexts = (
   content: string,
-  chunkSize: number
+  chunkSize: number,
 ): string[] => {
   const chunks: string[] = [];
 
@@ -16,13 +16,13 @@ export const extractChunkTexts = (
 
     // Find the best split point near the middle
     const splitIndex = Math.floor(text.length / 2);
-    let leftEnd = text.lastIndexOf("\n", splitIndex);
-    let rightStart = text.indexOf("\n", splitIndex);
+    let leftEnd = text.lastIndexOf('\n', splitIndex);
+    let rightStart = text.indexOf('\n', splitIndex);
 
     // If no newlines found, fall back to splitting on spaces
     if (leftEnd === -1 && rightStart === -1) {
-      leftEnd = text.lastIndexOf(" ", splitIndex);
-      rightStart = text.indexOf(" ", splitIndex);
+      leftEnd = text.lastIndexOf(' ', splitIndex);
+      rightStart = text.indexOf(' ', splitIndex);
     }
 
     // If still no good split points, just split in the middle
@@ -47,27 +47,19 @@ export const extractChunkTexts = (
 
 export const extractChunkTextsTask = async (
   content: string,
-  chunkSize: number
+  chunkSize: number,
 ): Promise<string[]> => {
-  const ChunkenizeSourceContentTask = schemaTask({
-    id: "chunkenize-source-content",
-    schema: z.object({
-      content: z.string(),
-    }),
-    run: async (payload) => {
-      return extractChunkTexts(payload.content, chunkSize);
+  const run = await tasks.triggerAndWait<typeof _extractChunkTextsTask>(
+    _extractChunkTextsTask.id,
+    {
+      content: content,
+      chunkSize: chunkSize,
     },
-  });
+  );
 
-  const chunkenizeSourceContentRun = await tasks.triggerAndWait<
-    typeof ChunkenizeSourceContentTask
-  >("chunkenize-source-content", {
-    content: content,
-  });
-
-  if (!chunkenizeSourceContentRun.ok) {
-    throw new Error("Failed to chunk content");
+  if (!run.ok) {
+    throw new Error('Failed to chunk content');
   }
 
-  return chunkenizeSourceContentRun.output;
+  return run.output;
 };
