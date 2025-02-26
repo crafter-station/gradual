@@ -16,15 +16,28 @@ export class Scrapper {
       formats: ['markdown'],
       timeout: 100000,
     });
+    if (!scrapeResult.success) {
+      logger.error(`Error scraping ${url}`, {
+        scrapeResult,
+      });
+      throw new Error('Failed to scrape source');
+    }
+
+    if (!scrapeResult.markdown) {
+      logger.error(`No markdown content found for ${url}`, {
+        scrapeResult,
+      });
+      throw new Error('No markdown content found');
+    }
 
     logger.info('Scrape result', {
       success: scrapeResult.success,
-      markdown: scrapeResult.data?.markdown,
+      markdown: scrapeResult.markdown,
     });
 
     return {
       success: scrapeResult.success,
-      markdown: scrapeResult.data.markdown,
+      markdown: scrapeResult.markdown,
     };
   }
 }

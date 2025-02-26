@@ -1,6 +1,6 @@
 import { ChunkRepo } from '@/core/domain/chunk-repo';
-import { Scrapper } from '@/core/domain/scrapper';
 import { SourceRepo } from '@/core/domain/source-repo';
+import { service } from '@/core/services/container';
 import {
   CreateChunkServiceTask,
   CreateChunksService,
@@ -53,13 +53,11 @@ import { getGenerateLessonPrompt } from '@/lib/prompts';
 import { SyllabusSchema } from '@/lib/schemas';
 import { formatSyllabus } from '@/lib/utils';
 import { openai } from '@ai-sdk/openai';
-import { batch, logger, schemaTask, tasks } from '@trigger.dev/sdk/v3';
+import { batch, schemaTask, tasks } from '@trigger.dev/sdk/v3';
 import { generateObject } from 'ai';
 import { and, cosineDistance, desc, eq, gte, sql } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
-
-const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY as string);
 
 const CreateCourseTaskSchema = z.object({
   url: z.string().url(),
@@ -78,9 +76,9 @@ export const CreateCourseTask = schemaTask({
   id: 'create-course',
   schema: CreateCourseTaskSchema,
   run: async (payload) => {
-    const sourceContent = await new ParseSourceServiceTask(
-      new ParseSourceService(scrapper, logger),
-    ).execute(payload.url);
+    const sourceContent = await service(ParseSourceServiceTask).execute(
+      payload.url,
+    );
 
     const chunks = await extractChunkTextsTask(sourceContent, CHUNK_SIZE);
     let summarizedChunks = await new SumarizeChunksContentsServiceTask(
@@ -586,5 +584,15 @@ export const GenerateLessonStepsTaskById = schemaTask({
         unitOrder: currentUnit.order,
       },
     );
+  },
+});
+
+export const parseSourceTask = schemaTask({
+  id: 'parse-source',
+  schema: z.object({
+    url: z.string().url(),
+  }),
+  run: async (payload) => {
+    return await service(ParseSourceService).execute(payload.url);
   },
 });
