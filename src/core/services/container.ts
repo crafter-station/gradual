@@ -20,5 +20,5 @@ export function service<T>(Service: ServiceConstructor<T>): T {
     return parseSourceService as T;
   }
 
-  throw new Error(`Servicio no registrado para ${Service.name}`);
+  throw new Error(`Service not registered ${Service.name}`);
 }
