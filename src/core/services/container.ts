@@ -6,18 +6,19 @@ import {
 
 const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY as string);
 
-const baseParseSourceService = new ParseSourceService(scrapper);
-const parseSourceService = new ParseSourceServiceTask(baseParseSourceService);
+const parseSourceService = new ParseSourceService(scrapper);
+const parseSourceServiceTask = new ParseSourceServiceTask();
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
 
 export function service<T>(Service: ServiceConstructor<T>): T {
   if (Service === ParseSourceService) {
-    return baseParseSourceService as T;
+    return parseSourceService as T;
   }
 
   if (Service === ParseSourceServiceTask) {
-    return parseSourceService as T;
+    return parseSourceServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);

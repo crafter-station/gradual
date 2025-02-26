@@ -1,5 +1,5 @@
 import type { Scrapper } from '@/core/domain/scrapper';
-import { parseSourceTask } from '@/trigger/create-course';
+import { parseSourceTask } from '@/trigger/parse-source.task';
 import { logger, tasks } from '@trigger.dev/sdk/v3';
 
 export interface IParseSourceService {
@@ -35,8 +35,6 @@ export class ParseSourceService implements IParseSourceService {
 }
 
 export class ParseSourceServiceTask implements IParseSourceService {
-  constructor(private parseSourceService: ParseSourceService) {}
-
   async execute(url: string): Promise<string> {
     logger.info('Triggering parse source task', { url });
 

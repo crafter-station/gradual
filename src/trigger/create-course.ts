@@ -23,10 +23,7 @@ import {
   GenerateCourseSyllabusService,
   GenerateCourseSyllabusServiceTask,
 } from '@/core/services/generate-course-syllabus.service';
-import {
-  ParseSourceService,
-  ParseSourceServiceTask,
-} from '@/core/services/parse-source.service';
+import { ParseSourceServiceTask } from '@/core/services/parse-source.service';
 import {
   SumarizeChunksContentsServiceTask,
   SummarizeChunkContentService,
@@ -584,15 +581,5 @@ export const GenerateLessonStepsTaskById = schemaTask({
         unitOrder: currentUnit.order,
       },
     );
-  },
-});
-
-export const parseSourceTask = schemaTask({
-  id: 'parse-source',
-  schema: z.object({
-    url: z.string().url(),
-  }),
-  run: async (payload) => {
-    return await service(ParseSourceService).execute(payload.url);
   },
 });
