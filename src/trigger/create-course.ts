@@ -5,6 +5,7 @@ import { CreateSourceServiceTask } from '@/core/services/create-source.service';
 import { EnrichChunksServiceTask } from '@/core/services/enrich-chunk.service';
 import { extractChunkTextsTask } from '@/core/services/extract-chunks-texts';
 import { GenerateCourseSyllabusServiceTask } from '@/core/services/generate-course-syllabus.service';
+import { GenerateSyllabusEmbeddingsServiceTask } from '@/core/services/generate-syllabus-embeddings.service';
 import { ParseSourceServiceTask } from '@/core/services/parse-source.service';
 import { SumarizeChunksContentsServiceTask } from '@/core/services/summarize-chunk-content.service';
 import { SummarizeSourceContentServiceTask } from '@/core/services/summarize-source-content.service';
@@ -114,22 +115,12 @@ export const CreateCourseTask = schemaTask({
       contentSize,
     );
 
-    const syllabusEmbeddingsResult = await tasks.triggerAndWait<
-      typeof GenerateSyllabusEmbeddingsTask
-    >('generate-syllabus-embeddings', {
-      syllabus,
-    });
-
-    if (!syllabusEmbeddingsResult.ok) {
-      throw new Error('Failed to generate course syllabus embeddings');
-    }
-
     const {
       courseEmbedding,
       unitEmbeddings,
       sectionEmbeddings,
       lessonEmbeddings,
-    } = syllabusEmbeddingsResult.output;
+    } = await service(GenerateSyllabusEmbeddingsServiceTask).execute(syllabus);
 
     const course: InsertCourse & { id: string } = {
       id: uuidv4(),

@@ -22,6 +22,10 @@ import {
   GenerateCourseSyllabusServiceTask,
 } from './generate-course-syllabus.service';
 import {
+  GenerateSyllabusEmbeddingsService,
+  GenerateSyllabusEmbeddingsServiceTask,
+} from './generate-syllabus-embeddings.service';
+import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from './parse-source.service';
@@ -71,6 +75,11 @@ const generateCourseSyllabusService = new GenerateCourseSyllabusService();
 const generateCourseSyllabusServiceTask =
   new GenerateCourseSyllabusServiceTask();
 
+const generateSyllabusEmbeddingsService =
+  new GenerateSyllabusEmbeddingsService();
+const generateSyllabusEmbeddingsServiceTask =
+  new GenerateSyllabusEmbeddingsServiceTask();
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
 
@@ -118,6 +127,10 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return generateCourseSyllabusService as T;
     case GenerateCourseSyllabusServiceTask:
       return generateCourseSyllabusServiceTask as T;
+    case GenerateSyllabusEmbeddingsService:
+      return generateSyllabusEmbeddingsService as T;
+    case GenerateSyllabusEmbeddingsServiceTask:
+      return generateSyllabusEmbeddingsServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);
