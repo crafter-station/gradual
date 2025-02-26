@@ -10,10 +10,7 @@ import {
   CreateSourceService,
   CreateSourceServiceTask,
 } from '@/core/services/create-source.service';
-import {
-  EnrichChunkContentService,
-  EnrichChunkContentServiceTask,
-} from '@/core/services/enrich-chunk-content.service';
+import { EnrichChunkContentServiceTask } from '@/core/services/enrich-chunk-content.service';
 import {
   EnrichChunkService,
   EnrichChunksServiceTask,
@@ -85,7 +82,7 @@ export const CreateCourseTask = schemaTask({
     const enrichedChunks = await new EnrichChunksServiceTask(
       new EnrichChunkService(
         service(SummarizeChunkContentServiceTask),
-        new EnrichChunkContentServiceTask(new EnrichChunkContentService()),
+        service(EnrichChunkContentServiceTask),
       ),
     ).execute(
       summarizedChunks.map((chunk) => ({

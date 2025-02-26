@@ -1,5 +1,9 @@
 import { Scrapper } from '../domain/scrapper';
 import {
+  EnrichChunkContentService,
+  EnrichChunkContentServiceTask,
+} from './enrich-chunk-content.service';
+import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from './parse-source.service';
@@ -26,6 +30,9 @@ const summarizeChunksContentsServiceTask =
 const summarizeSourceContentService = new SummarizeSourceContentService();
 const summarizeSourceContentServiceTask =
   new SummarizeSourceContentServiceTask();
+
+const enrichChunkContentService = new EnrichChunkContentService();
+const enrichChunkContentServiceTask = new EnrichChunkContentServiceTask();
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
@@ -54,6 +61,10 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return summarizeSourceContentService as T;
     case SummarizeSourceContentServiceTask:
       return summarizeSourceContentServiceTask as T;
+    case EnrichChunkContentService:
+      return enrichChunkContentService as T;
+    case EnrichChunkContentServiceTask:
+      return enrichChunkContentServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);
