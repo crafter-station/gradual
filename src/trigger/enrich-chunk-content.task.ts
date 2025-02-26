@@ -13,7 +13,7 @@ export const enrichChunkContentTask = schemaTask({
     chunkSize: z.number(),
   }),
   run: async (payload) => {
-    return service(EnrichChunkContentService).execute(
+    return await service(EnrichChunkContentService).execute(
       payload.rawContent,
       payload.sourceSummary,
       payload.precedingChunkContent,

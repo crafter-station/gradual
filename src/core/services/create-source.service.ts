@@ -1,16 +1,16 @@
-import { schemaTask, tasks } from "@trigger.dev/sdk/v3";
-import { v4 as uuidv4 } from "uuid";
-import { z } from "zod";
-import { Source } from "../domain/source";
-import type { SourceRepo } from "../domain/source-repo";
-import { createSingleEmbedding } from "./create-embedding";
+import { storeSourceTask } from '@/trigger/create-source.task';
+import { tasks } from '@trigger.dev/sdk/v3';
+import { v4 as uuidv4 } from 'uuid';
+import { Source } from '../domain/source';
+import type { SourceRepo } from '../domain/source-repo';
+import { createSingleEmbedding } from './create-embedding';
 
 export interface ICreateSourceService {
   execute(
     url: string,
     userId: string,
     sourceSummary: string,
-    chunksCount: number
+    chunksCount: number,
   ): Promise<Source>;
 }
 
@@ -21,18 +21,18 @@ export class CreateSourceService implements ICreateSourceService {
     url: string,
     userId: string,
     sourceSummary: string,
-    chunksCount: number
+    chunksCount: number,
   ): Promise<Source> {
     const sourceEmbedding = await createSingleEmbedding(sourceSummary);
 
     const source = new Source(
       uuidv4(),
-      "URL",
+      'URL',
       url,
       userId,
       sourceSummary,
       sourceEmbedding.embedding,
-      chunksCount
+      chunksCount,
     );
 
     await this.sourceRepo.store(source);
@@ -42,47 +42,26 @@ export class CreateSourceService implements ICreateSourceService {
 }
 
 export class CreateSourceServiceTask implements ICreateSourceService {
-  constructor(private service: ICreateSourceService) {}
-
   async execute(
     url: string,
     userId: string,
     sourceSummary: string,
-    chunksCount: number
+    chunksCount: number,
   ): Promise<Source> {
-    const StoreSourceTask = schemaTask({
-      id: "store-source",
-      schema: z.object({
-        url: z.string(),
-        userId: z.string(),
-        sourceSummary: z.string(),
-        chunksCount: z.number(),
-      }),
-
-      run: async (payload) => {
-        return await this.service.execute(
-          payload.url,
-          payload.userId,
-          payload.sourceSummary,
-          payload.chunksCount
-        );
-      },
-    });
-
-    const storeSourceRun = await tasks.triggerAndWait<typeof StoreSourceTask>(
-      "store-source",
+    const run = await tasks.triggerAndWait<typeof storeSourceTask>(
+      storeSourceTask.id,
       {
         url: url,
         userId: userId,
         sourceSummary,
         chunksCount: chunksCount,
-      }
+      },
     );
 
-    if (!storeSourceRun.ok) {
-      throw new Error("Failed to store source");
+    if (!run.ok) {
+      throw new Error('Failed to store source');
     }
 
-    return storeSourceRun.output;
+    return run.output;
   }
 }

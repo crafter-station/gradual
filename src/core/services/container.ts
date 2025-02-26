@@ -1,4 +1,9 @@
 import { Scrapper } from '../domain/scrapper';
+import { SourceRepo } from '../domain/source-repo';
+import {
+  CreateSourceService,
+  CreateSourceServiceTask,
+} from './create-source.service';
 import {
   EnrichChunkContentService,
   EnrichChunkContentServiceTask,
@@ -23,6 +28,8 @@ import {
 
 const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY as string);
 
+const sourceRepo = new SourceRepo();
+
 const parseSourceService = new ParseSourceService(scrapper);
 const parseSourceServiceTask = new ParseSourceServiceTask();
 
@@ -43,6 +50,9 @@ const enrichChunkService = new EnrichChunkService(
   enrichChunkContentServiceTask,
 );
 const enrichChunksServiceTask = new EnrichChunksServiceTask();
+
+const createSourceService = new CreateSourceService(sourceRepo);
+const createSourceServiceTask = new CreateSourceServiceTask();
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
@@ -79,6 +89,10 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return enrichChunkService as T;
     case EnrichChunksServiceTask:
       return enrichChunksServiceTask as T;
+    case CreateSourceService:
+      return createSourceService as T;
+    case CreateSourceServiceTask:
+      return createSourceServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);
