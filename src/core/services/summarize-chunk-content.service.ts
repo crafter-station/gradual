@@ -1,8 +1,8 @@
 import { getSummarizeChunkPrompt } from '@/lib/prompts';
+import { summarizeChunkContentTask } from '@/trigger/summarize-chunk-content.task';
 import { openai } from '@ai-sdk/openai';
-import { batch, schemaTask, tasks } from '@trigger.dev/sdk/v3';
+import { batch, tasks } from '@trigger.dev/sdk/v3';
 import { generateText } from 'ai';
-import { z } from 'zod';
 
 export interface ISummarizeChunkContentService {
   execute(
@@ -47,43 +47,29 @@ export class SummarizeChunkContentService
 export class SummarizeChunkContentServiceTask
   implements ISummarizeChunkContentService
 {
-  constructor(private service: SummarizeChunkContentService) {}
-
   async execute(
     rawContent: string,
     order: number,
   ): Promise<{ order: number; summary: string }> {
-    const SummarizeChunkContentTask = schemaTask({
-      id: 'summarize-chunk-content',
-      schema: z.object({
-        rawContent: z.string(),
-        order: z.number(),
-      }),
-      run: async (payload) => {
-        return this.service.execute(payload.rawContent, payload.order);
+    const run = await tasks.triggerAndWait<typeof summarizeChunkContentTask>(
+      summarizeChunkContentTask.id,
+      {
+        order: order,
+        rawContent: rawContent,
       },
-    });
+    );
 
-    const enrichedSummary = await tasks.triggerAndWait<
-      typeof SummarizeChunkContentTask
-    >('summarize-chunk-content', {
-      order: order,
-      rawContent: rawContent,
-    });
-
-    if (!enrichedSummary.ok) {
+    if (!run.ok) {
       throw new Error('Failed to summarize chunk!');
     }
 
-    return enrichedSummary.output;
+    return run.output;
   }
 }
 
 export class SumarizeChunksContentsServiceTask
   implements ISumarizeChunksContentsService
 {
-  constructor(private service: SummarizeChunkContentService) {}
-
   async execute(chunks: string[]): Promise<
     {
       order: number;
@@ -91,20 +77,9 @@ export class SumarizeChunksContentsServiceTask
       rawContent: string;
     }[]
   > {
-    const SummarizeChunkContentTask = schemaTask({
-      id: 'summarize-chunk-content',
-      schema: z.object({
-        rawContent: z.string(),
-        order: z.number(),
-      }),
-      run: async (payload) => {
-        return this.service.execute(payload.rawContent, payload.order);
-      },
-    });
-
     const { runs } = await batch.triggerByTaskAndWait(
       chunks.map((chunk, index) => ({
-        task: SummarizeChunkContentTask,
+        task: summarizeChunkContentTask,
         payload: { rawContent: chunk, order: index },
       })),
     );

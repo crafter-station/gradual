@@ -26,7 +26,6 @@ import {
 import { ParseSourceServiceTask } from '@/core/services/parse-source.service';
 import {
   SumarizeChunksContentsServiceTask,
-  SummarizeChunkContentService,
   SummarizeChunkContentServiceTask,
 } from '@/core/services/summarize-chunk-content.service';
 import {
@@ -78,8 +77,8 @@ export const CreateCourseTask = schemaTask({
     );
 
     const chunks = await extractChunkTextsTask(sourceContent, CHUNK_SIZE);
-    let summarizedChunks = await new SumarizeChunksContentsServiceTask(
-      new SummarizeChunkContentService(),
+    let summarizedChunks = await service(
+      SumarizeChunksContentsServiceTask,
     ).execute(chunks);
 
     let sourceSummary = await new SummarizeSourceContentServiceTask(
@@ -88,9 +87,7 @@ export const CreateCourseTask = schemaTask({
 
     const enrichedChunks = await new EnrichChunksServiceTask(
       new EnrichChunkService(
-        new SummarizeChunkContentServiceTask(
-          new SummarizeChunkContentService(),
-        ),
+        service(SummarizeChunkContentServiceTask),
         new EnrichChunkContentServiceTask(new EnrichChunkContentService()),
       ),
     ).execute(
