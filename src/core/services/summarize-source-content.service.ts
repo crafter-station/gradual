@@ -1,8 +1,8 @@
-import { getSummarizeDocumentPrompt } from "@/lib/prompts";
-import { openai } from "@ai-sdk/openai";
-import { schemaTask, tasks } from "@trigger.dev/sdk/v3";
-import { generateText } from "ai";
-import { z } from "zod";
+import { getSummarizeDocumentPrompt } from '@/lib/prompts';
+import { summarizeSourceContentTask } from '@/trigger/summarize-source-content.task';
+import { openai } from '@ai-sdk/openai';
+import { tasks } from '@trigger.dev/sdk/v3';
+import { generateText } from 'ai';
 
 export interface ISummarizeSourceContentService {
   execute(chunkSummaries: string[]): Promise<string>;
@@ -13,13 +13,13 @@ export class SummarizeSourceContentService
 {
   async execute(chunkSummaries: string[]): Promise<string> {
     const documentSummary = await generateText({
-      model: openai("gpt-4o-mini"),
+      model: openai('gpt-4o-mini'),
       prompt: getSummarizeDocumentPrompt({
-        content: chunkSummaries.join("\n"),
+        content: chunkSummaries.join('\n'),
       }),
       experimental_telemetry: {
         isEnabled: true,
-        functionId: "summarize-source-content",
+        functionId: 'summarize-source-content',
       },
     });
 
@@ -30,29 +30,18 @@ export class SummarizeSourceContentService
 export class SummarizeSourceContentServiceTask
   implements ISummarizeSourceContentService
 {
-  constructor(private service: SummarizeSourceContentService) {}
-
   async execute(chunkSummaries: string[]): Promise<string> {
-    const SummarizeSourceContentTask = schemaTask({
-      id: "summarize-source-content",
-      schema: z.object({
-        chunkSummaries: z.array(z.string()),
-      }),
-      run: async (payload) => {
-        return this.service.execute(payload.chunkSummaries);
+    const run = await tasks.triggerAndWait<typeof summarizeSourceContentTask>(
+      summarizeSourceContentTask.id,
+      {
+        chunkSummaries: chunkSummaries,
       },
-    });
+    );
 
-    const summarizeSourceTask = await tasks.triggerAndWait<
-      typeof SummarizeSourceContentTask
-    >("summarize-source-content", {
-      chunkSummaries: chunkSummaries,
-    });
-
-    if (!summarizeSourceTask.ok) {
-      throw new Error("Failed to summarize source");
+    if (!run.ok) {
+      throw new Error('Failed to summarize source');
     }
 
-    return summarizeSourceTask.output;
+    return run.output;
   }
 }

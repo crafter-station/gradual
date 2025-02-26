@@ -28,10 +28,7 @@ import {
   SumarizeChunksContentsServiceTask,
   SummarizeChunkContentServiceTask,
 } from '@/core/services/summarize-chunk-content.service';
-import {
-  SummarizeSourceContentService,
-  SummarizeSourceContentServiceTask,
-} from '@/core/services/summarize-source-content.service';
+import { SummarizeSourceContentServiceTask } from '@/core/services/summarize-source-content.service';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import {
@@ -81,8 +78,8 @@ export const CreateCourseTask = schemaTask({
       SumarizeChunksContentsServiceTask,
     ).execute(chunks);
 
-    let sourceSummary = await new SummarizeSourceContentServiceTask(
-      new SummarizeSourceContentService(),
+    let sourceSummary = await service(
+      SummarizeSourceContentServiceTask,
     ).execute(summarizedChunks.map((chunk) => chunk.summary));
 
     const enrichedChunks = await new EnrichChunksServiceTask(
@@ -112,9 +109,9 @@ export const CreateCourseTask = schemaTask({
     summarizedChunks = [];
 
     // enriched source summary
-    sourceSummary = await new SummarizeSourceContentServiceTask(
-      new SummarizeSourceContentService(),
-    ).execute(enrichedChunks.map((chunk) => chunk.enrichedSummary));
+    sourceSummary = await service(SummarizeSourceContentServiceTask).execute(
+      enrichedChunks.map((chunk) => chunk.enrichedSummary),
+    );
 
     const source = await new CreateSourceServiceTask(
       new CreateSourceService(new SourceRepo()),
