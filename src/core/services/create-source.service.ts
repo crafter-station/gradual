@@ -1,4 +1,4 @@
-import { storeSourceTask } from '@/trigger/create-source.task';
+import { storeSourceTask } from '@/trigger/store-source.task';
 import { tasks } from '@trigger.dev/sdk/v3';
 import { v4 as uuidv4 } from 'uuid';
 import { Source } from '../domain/source';
