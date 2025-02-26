@@ -1,10 +1,18 @@
 import { ChunkRepo } from '../domain/chunk-repo';
+import { CourseRepo } from '../domain/course-repo';
 import { Scrapper } from '../domain/scrapper';
+import { SectionRepo } from '../domain/section-repo';
 import { SourceRepo } from '../domain/source-repo';
+import { TaskRepo } from '../domain/task-repo';
+import { UnitRepo } from '../domain/unit-repo';
 import {
   CreateChunksService,
   CreateChunksServiceTask,
 } from './create-chunks.service';
+import {
+  CreateCourseService,
+  CreateCourseServiceTask,
+} from './create-course.service';
 import {
   CreateSourceService,
   CreateSourceServiceTask,
@@ -41,6 +49,10 @@ import {
 
 const scrapper = new Scrapper(process.env.FIRECRAWL_API_KEY as string);
 
+const courseRepo = new CourseRepo();
+const unitRepo = new UnitRepo();
+const sectionRepo = new SectionRepo();
+const taskRepo = new TaskRepo();
 const sourceRepo = new SourceRepo();
 const chunkRepo = new ChunkRepo();
 
@@ -79,6 +91,15 @@ const generateSyllabusEmbeddingsService =
   new GenerateSyllabusEmbeddingsService();
 const generateSyllabusEmbeddingsServiceTask =
   new GenerateSyllabusEmbeddingsServiceTask();
+
+const createCourseService = new CreateCourseService(
+  courseRepo,
+  unitRepo,
+  sectionRepo,
+  taskRepo,
+  sourceRepo,
+);
+const createCourseServiceTask = new CreateCourseServiceTask();
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
@@ -131,6 +152,10 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return generateSyllabusEmbeddingsService as T;
     case GenerateSyllabusEmbeddingsServiceTask:
       return generateSyllabusEmbeddingsServiceTask as T;
+    case CreateCourseService:
+      return createCourseService as T;
+    case CreateCourseServiceTask:
+      return createCourseServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);

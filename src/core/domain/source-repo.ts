@@ -1,5 +1,6 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
+import { eq } from 'drizzle-orm';
 import type { Source } from './source';
 
 export class SourceRepo {
@@ -13,5 +14,14 @@ export class SourceRepo {
       embedding: source.embedding,
       chunksCount: source.chunksCount,
     });
+  }
+
+  async updateCourseId(id: string, courseId: string): Promise<void> {
+    await db
+      .update(schema.source)
+      .set({
+        courseId: courseId,
+      })
+      .where(eq(schema.source.id, id));
   }
 }
