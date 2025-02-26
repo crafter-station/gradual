@@ -1,9 +1,5 @@
-import { ChunkRepo } from '@/core/domain/chunk-repo';
 import { service } from '@/core/services/container';
-import {
-  CreateChunkServiceTask,
-  CreateChunksService,
-} from '@/core/services/create-chunks.service';
+import { CreateChunksServiceTask } from '@/core/services/create-chunks.service';
 import { createMultipleEmbeddings } from '@/core/services/create-embedding';
 import { CreateSourceServiceTask } from '@/core/services/create-source.service';
 import { EnrichChunksServiceTask } from '@/core/services/enrich-chunk.service';
@@ -103,9 +99,7 @@ export const CreateCourseTask = schemaTask({
 
     const sourceId = source.id;
 
-    await new CreateChunkServiceTask(
-      new CreateChunksService(new ChunkRepo()),
-    ).execute(
+    await service(CreateChunksServiceTask).execute(
       sourceId,
       enrichedChunks.map((chunk) => ({
         order: chunk.order,
