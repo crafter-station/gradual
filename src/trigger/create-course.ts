@@ -4,10 +4,7 @@ import { createMultipleEmbeddings } from '@/core/services/create-embedding';
 import { CreateSourceServiceTask } from '@/core/services/create-source.service';
 import { EnrichChunksServiceTask } from '@/core/services/enrich-chunk.service';
 import { extractChunkTextsTask } from '@/core/services/extract-chunks-texts';
-import {
-  GenerateCourseSyllabusService,
-  GenerateCourseSyllabusServiceTask,
-} from '@/core/services/generate-course-syllabus.service';
+import { GenerateCourseSyllabusServiceTask } from '@/core/services/generate-course-syllabus.service';
 import { ParseSourceServiceTask } from '@/core/services/parse-source.service';
 import { SumarizeChunksContentsServiceTask } from '@/core/services/summarize-chunk-content.service';
 import { SummarizeSourceContentServiceTask } from '@/core/services/summarize-source-content.service';
@@ -111,9 +108,7 @@ export const CreateCourseTask = schemaTask({
 
     const contentSize = getContentSize(sourceContent.length);
 
-    const syllabus = await new GenerateCourseSyllabusServiceTask(
-      new GenerateCourseSyllabusService(),
-    ).execute(
+    const syllabus = await service(GenerateCourseSyllabusServiceTask).execute(
       sourceSummary,
       enrichedChunks.map((chunk) => chunk.enrichedSummary),
       contentSize,

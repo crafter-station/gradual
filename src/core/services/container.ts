@@ -18,6 +18,10 @@ import {
   EnrichChunksServiceTask,
 } from './enrich-chunk.service';
 import {
+  GenerateCourseSyllabusService,
+  GenerateCourseSyllabusServiceTask,
+} from './generate-course-syllabus.service';
+import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from './parse-source.service';
@@ -63,6 +67,10 @@ const createSourceServiceTask = new CreateSourceServiceTask();
 const createChunksService = new CreateChunksService(chunkRepo);
 const createChunksServiceTask = new CreateChunksServiceTask();
 
+const generateCourseSyllabusService = new GenerateCourseSyllabusService();
+const generateCourseSyllabusServiceTask =
+  new GenerateCourseSyllabusServiceTask();
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
 
@@ -106,6 +114,10 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return createChunksService as T;
     case CreateChunksServiceTask:
       return createChunksServiceTask as T;
+    case GenerateCourseSyllabusService:
+      return generateCourseSyllabusService as T;
+    case GenerateCourseSyllabusServiceTask:
+      return generateCourseSyllabusServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);

@@ -1,9 +1,9 @@
 import { getGenerateCourseSyllabusPrompt } from '@/lib/prompts';
 import { SyllabusSchema } from '@/lib/schemas';
+import { generateCourseSyllabusTask } from '@/trigger/generate-course-syllabus.task';
 import { openai } from '@ai-sdk/openai';
-import { schemaTask, tasks } from '@trigger.dev/sdk/v3';
+import { tasks } from '@trigger.dev/sdk/v3';
 import { generateObject } from 'ai';
-import { z } from 'zod';
 
 export interface GenerateCourseSyllabusServiceResp {
   title: string;
@@ -54,44 +54,24 @@ export class GenerateCourseSyllabusService
 export class GenerateCourseSyllabusServiceTask
   implements IGenerateCourseSyllabusService
 {
-  constructor(private service: IGenerateCourseSyllabusService) {}
-
   async execute(
     documentSummary: string,
     documentChunksSummaries: string[],
     contentSize: 'small' | 'medium' | 'large',
   ): Promise<GenerateCourseSyllabusServiceResp> {
-    const GenerateCourseSyllabusTask = schemaTask({
-      id: 'generate-course-syllabus',
-      schema: z.object({
-        documentSummary: z.string(),
-        documentChunksSummaries: z.array(z.string()),
-        contentSize: z.enum(['small', 'medium', 'large']),
-      }),
-      run: async (payload) => {
-        return await this.service.execute(
-          payload.documentSummary,
-          payload.documentChunksSummaries,
-          payload.contentSize,
-        );
+    const run = await tasks.triggerAndWait<typeof generateCourseSyllabusTask>(
+      generateCourseSyllabusTask.id,
+      {
+        documentSummary: documentSummary,
+        documentChunksSummaries: documentChunksSummaries,
+        contentSize,
       },
-      retry: {
-        maxAttempts: 3,
-      },
-    });
+    );
 
-    const syllabusResult = await tasks.triggerAndWait<
-      typeof GenerateCourseSyllabusTask
-    >('generate-course-syllabus', {
-      documentSummary: documentSummary,
-      documentChunksSummaries: documentChunksSummaries,
-      contentSize,
-    });
-
-    if (!syllabusResult.ok) {
+    if (!run.ok) {
       throw new Error('Failed to generate course syllabus');
     }
 
-    return syllabusResult.output;
+    return run.output;
   }
 }
