@@ -1,4 +1,4 @@
-import { GenerateLessonStepsTaskById } from '@/trigger/create-course';
+import { GenerateLessonStepsTaskById } from '@/trigger/example-2';
 
 await GenerateLessonStepsTaskById.trigger({
   lessonId: '4385ac58-b288-45c5-8550-01452d631e56',
