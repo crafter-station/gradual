@@ -38,7 +38,7 @@ export class SummarizeChunkContentService
 
     return {
       order: order,
-      summary: summary.text,
+      summary,
     };
   }
 }
