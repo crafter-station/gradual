@@ -1,5 +1,9 @@
+import type { Course } from '@/core/domain/course';
+import type { Section } from '@/core/domain/section';
+import type { Task } from '@/core/domain/task';
+import type { Unit } from '@/core/domain/unit';
 import { service } from '@/core/services/container';
-import { CreateCourseService } from '@/core/services/create-course.service';
+import { StoreCourseService } from '@/core/services/store-course.service';
 import { schemaTask } from '@trigger.dev/sdk/v3';
 import { z } from 'zod';
 
@@ -35,40 +39,18 @@ const SyllabusSchema = z.object({
 export const storeSyllabusTask = schemaTask({
   id: 'store-syllabus',
   schema: z.object({
-    syllabus: SyllabusSchema,
-    courseEmbedding: EmbeddingSchema,
-    unitEmbeddings: z.array(
-      z.object({
-        embedding: EmbeddingSchema,
-        unitOrder: z.number(),
-      }),
-    ),
-    sectionEmbeddings: z.array(
-      z.object({
-        embedding: EmbeddingSchema,
-        sectionOrder: z.number(),
-        unitOrder: z.number(),
-      }),
-    ),
-    lessonEmbeddings: z.array(
-      z.object({
-        embedding: EmbeddingSchema,
-        lessonOrder: z.number(),
-        sectionOrder: z.number(),
-        unitOrder: z.number(),
-      }),
-    ),
-    userId: z.string(),
+    course: z.any(),
+    units: z.array(z.any()),
+    sections: z.array(z.any()),
+    tasks: z.array(z.any()),
     sourceId: z.string(),
   }),
   run: async (payload) => {
-    return await service(CreateCourseService).execute(
-      payload.syllabus,
-      payload.courseEmbedding,
-      payload.unitEmbeddings,
-      payload.sectionEmbeddings,
-      payload.lessonEmbeddings,
-      payload.userId,
+    return await service(StoreCourseService).execute(
+      payload.course as Course,
+      payload.units as Unit[],
+      payload.sections as Section[],
+      payload.tasks as Task[],
       payload.sourceId,
     );
   },

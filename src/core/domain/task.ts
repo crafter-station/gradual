@@ -1,3 +1,4 @@
+import type { Embedding } from './embedding';
 import type { Section } from './section';
 import type { Unit } from './unit';
 
@@ -7,7 +8,7 @@ export class Task {
     public readonly type: 'LESSON' | 'QUIZ' | 'MULTISTEP',
     public readonly title: string,
     public readonly description: string,
-    public readonly embedding: number[],
+    public readonly embedding: Embedding,
     public readonly order: number,
     public readonly stepsCount: number,
     public readonly sectionId: string,

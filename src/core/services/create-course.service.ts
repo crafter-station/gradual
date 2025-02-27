@@ -1,16 +1,9 @@
-import { storeSyllabusTask } from '@/trigger/store-syllabus.task';
-import { tasks } from '@trigger.dev/sdk/v3';
 import { v4 as uuidv4 } from 'uuid';
 import { Course } from '../domain/course';
-import type { CourseRepo } from '../domain/course-repo';
 import type { Embedding } from '../domain/embedding';
 import { Section } from '../domain/section';
-import type { SectionRepo } from '../domain/section-repo';
-import type { SourceRepo } from '../domain/source-repo';
 import { Task } from '../domain/task';
-import type { TaskRepo } from '../domain/task-repo';
 import { Unit } from '../domain/unit';
-import type { UnitRepo } from '../domain/unit-repo';
 
 export interface Syllabus {
   title: string;
@@ -28,44 +21,7 @@ export interface Syllabus {
   }[];
 }
 
-export interface ICreateCourseService {
-  execute(
-    syllabus: Syllabus,
-    courseEmbedding: Embedding,
-    unitEmbeddings: {
-      embedding: Embedding;
-      unitOrder: number;
-    }[],
-    sectionEmbeddings: {
-      embedding: Embedding;
-      sectionOrder: number;
-      unitOrder: number;
-    }[],
-    lessonEmbeddings: {
-      embedding: Embedding;
-      lessonOrder: number;
-      sectionOrder: number;
-      unitOrder: number;
-    }[],
-    userId: string,
-    sourceId: string,
-  ): Promise<{
-    course: Course;
-    units: Unit[];
-    sections: Section[];
-    lessons: Task[];
-  }>;
-}
-
-export class CreateCourseService implements ICreateCourseService {
-  constructor(
-    private courseRepo: CourseRepo,
-    private unitRepo: UnitRepo,
-    private sectionRepo: SectionRepo,
-    private taskRepo: TaskRepo,
-    private sourceRepo: SourceRepo,
-  ) {}
-
+export class CreateCourseService {
   async execute(
     syllabus: Syllabus,
     courseEmbedding: Embedding,
@@ -165,65 +121,11 @@ export class CreateCourseService implements ICreateCourseService {
       ),
     );
 
-    await this.courseRepo.store(course);
-    await this.unitRepo.storeMany(units);
-    await this.sectionRepo.storeMany(sections);
-    await this.taskRepo.storeMany(tasks);
-    await this.sourceRepo.updateCourseId(sourceId, course.id);
-
     return {
       course,
       units,
       sections,
       lessons: tasks,
     };
-  }
-}
-
-export class CreateCourseServiceTask implements ICreateCourseService {
-  async execute(
-    syllabus: Syllabus,
-    courseEmbedding: Embedding,
-    unitEmbeddings: {
-      embedding: Embedding;
-      unitOrder: number;
-    }[],
-    sectionEmbeddings: {
-      embedding: Embedding;
-      sectionOrder: number;
-      unitOrder: number;
-    }[],
-    lessonEmbeddings: {
-      embedding: Embedding;
-      lessonOrder: number;
-      sectionOrder: number;
-      unitOrder: number;
-    }[],
-    userId: string,
-    sourceId: string,
-  ): Promise<{
-    course: Course;
-    units: Unit[];
-    sections: Section[];
-    lessons: Task[];
-  }> {
-    const run = await tasks.triggerAndWait<typeof storeSyllabusTask>(
-      storeSyllabusTask.id,
-      {
-        syllabus,
-        courseEmbedding,
-        unitEmbeddings,
-        sectionEmbeddings,
-        lessonEmbeddings,
-        userId,
-        sourceId,
-      },
-    );
-
-    if (!run.ok) {
-      throw new Error('Failed to store course, units, sections and lessons');
-    }
-
-    return run.output;
   }
 }

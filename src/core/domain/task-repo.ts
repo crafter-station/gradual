@@ -1,5 +1,7 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import type { Embedding } from './embedding';
 import type { Task } from './task';
 
 export class TaskRepo {
@@ -16,5 +18,23 @@ export class TaskRepo {
         sectionId: task.sectionId,
       })),
     );
+  }
+
+  async findEmbedding(taskId: string): Promise<Embedding> {
+    const [record] = await db
+      .select({ embedding: schema.task.embedding })
+      .from(schema.task)
+      .where(eq(schema.task.id, taskId));
+
+    return record.embedding;
+  }
+
+  async updateStepsCount(taskId: string, stepsCount: number): Promise<void> {
+    await db
+      .update(schema.task)
+      .set({
+        stepsCount: stepsCount,
+      })
+      .where(eq(schema.task.id, taskId));
   }
 }

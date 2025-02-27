@@ -3,16 +3,14 @@ import { CourseRepo } from '../domain/course-repo';
 import { Scrapper } from '../domain/scrapper';
 import { SectionRepo } from '../domain/section-repo';
 import { SourceRepo } from '../domain/source-repo';
+import { StepRepo } from '../domain/step-repo';
 import { TaskRepo } from '../domain/task-repo';
 import { UnitRepo } from '../domain/unit-repo';
 import {
   CreateChunksService,
   CreateChunksServiceTask,
 } from './create-chunks.service';
-import {
-  CreateCourseService,
-  CreateCourseServiceTask,
-} from './create-course.service';
+import { CreateCourseService } from './create-course.service';
 import {
   CreateSourceService,
   CreateSourceServiceTask,
@@ -30,6 +28,10 @@ import {
   GenerateCourseSyllabusServiceTask,
 } from './generate-course-syllabus.service';
 import {
+  GenerateLessonStepsService,
+  GenerateLessonsStepsServiceTask,
+} from './generate-lessons-steps.service';
+import {
   GenerateSyllabusEmbeddingsService,
   GenerateSyllabusEmbeddingsServiceTask,
 } from './generate-syllabus-embeddings.service';
@@ -37,6 +39,10 @@ import {
   ParseSourceService,
   ParseSourceServiceTask,
 } from './parse-source.service';
+import {
+  StoreCourseService,
+  StoreCourseServiceTask,
+} from './store-course.service';
 import {
   SumarizeChunksContentsServiceTask,
   SummarizeChunkContentService,
@@ -55,6 +61,7 @@ const sectionRepo = new SectionRepo();
 const taskRepo = new TaskRepo();
 const sourceRepo = new SourceRepo();
 const chunkRepo = new ChunkRepo();
+const stepRepo = new StepRepo();
 
 const parseSourceService = new ParseSourceService(scrapper);
 const parseSourceServiceTask = new ParseSourceServiceTask();
@@ -92,14 +99,23 @@ const generateSyllabusEmbeddingsService =
 const generateSyllabusEmbeddingsServiceTask =
   new GenerateSyllabusEmbeddingsServiceTask();
 
-const createCourseService = new CreateCourseService(
+const createCourseService = new CreateCourseService();
+
+const storeCourseService = new StoreCourseService(
   courseRepo,
   unitRepo,
   sectionRepo,
   taskRepo,
   sourceRepo,
 );
-const createCourseServiceTask = new CreateCourseServiceTask();
+const storeCourseServiceTask = new StoreCourseServiceTask();
+
+const generateLessonStepsService = new GenerateLessonStepsService(
+  taskRepo,
+  chunkRepo,
+  stepRepo,
+);
+const generateLessonsStepsServiceTask = new GenerateLessonsStepsServiceTask();
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type ServiceConstructor<T> = new (...args: any[]) => T;
@@ -154,8 +170,14 @@ export function service<T>(Service: ServiceConstructor<T>): T {
       return generateSyllabusEmbeddingsServiceTask as T;
     case CreateCourseService:
       return createCourseService as T;
-    case CreateCourseServiceTask:
-      return createCourseServiceTask as T;
+    case GenerateLessonStepsService:
+      return generateLessonStepsService as T;
+    case GenerateLessonsStepsServiceTask:
+      return generateLessonsStepsServiceTask as T;
+    case StoreCourseService:
+      return storeCourseService as T;
+    case StoreCourseServiceTask:
+      return storeCourseServiceTask as T;
   }
 
   throw new Error(`Service not registered ${Service.name}`);
