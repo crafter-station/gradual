@@ -1,9 +1,8 @@
 import { getGenerateCourseSyllabusPrompt } from '@/lib/prompts';
 import { SyllabusSchema } from '@/lib/schemas';
 import { generateCourseSyllabusTask } from '@/trigger/generate-course-syllabus.task';
-import { openai } from '@ai-sdk/openai';
 import { tasks } from '@trigger.dev/sdk/v3';
-import { generateObject } from 'ai';
+import { OpenAIGenerator } from '../domain/aigen';
 
 export interface GenerateCourseSyllabusServiceResp {
   title: string;
@@ -37,17 +36,21 @@ export class GenerateCourseSyllabusService
     documentChunksSummaries: string[],
     contentSize: 'small' | 'medium' | 'large',
   ): Promise<GenerateCourseSyllabusServiceResp> {
-    const syllabusResult = await generateObject({
-      model: openai('o3-mini'),
+    const syllabusResult = await new OpenAIGenerator().generateObject({
+      model: 'o3-mini',
       prompt: getGenerateCourseSyllabusPrompt({
         documentSummary: documentSummary,
         documentChunksSummariesJoined: documentChunksSummaries.join('\n'),
         contentSize: contentSize,
       }),
       schema: SyllabusSchema,
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'generate-course-syllabus',
+      },
     });
 
-    return syllabusResult.object;
+    return syllabusResult;
   }
 }
 

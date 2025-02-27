@@ -1,8 +1,7 @@
 import { getSummarizeChunkPrompt } from '@/lib/prompts';
 import { summarizeChunkContentTask } from '@/trigger/summarize-chunk-content.task';
-import { openai } from '@ai-sdk/openai';
 import { batch, tasks } from '@trigger.dev/sdk/v3';
-import { generateText } from 'ai';
+import { OpenAIGenerator } from '../domain/aigen';
 
 export interface ISummarizeChunkContentService {
   execute(
@@ -28,12 +27,12 @@ export class SummarizeChunkContentService
     rawContent: string,
     order: number,
   ): Promise<{ order: number; summary: string }> {
-    const summary = await generateText({
-      model: openai('gpt-4o-mini'),
+    const summary = await new OpenAIGenerator().generateText({
+      model: 'gpt-4o-mini',
       prompt: getSummarizeChunkPrompt({ chunk: rawContent }),
       experimental_telemetry: {
         isEnabled: true,
-        functionId: 'summarize-chunk-content',
+        functionId: 'summarize-chunk-prompt',
       },
     });
 

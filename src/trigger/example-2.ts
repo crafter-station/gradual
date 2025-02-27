@@ -1,12 +1,11 @@
+import { OpenAIGenerator } from '@/core/domain/aigen';
 import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { InsertTaskSchema } from '@/db/schema';
 import { getGenerateLessonPrompt } from '@/lib/prompts';
 import { SyllabusSchema } from '@/lib/schemas';
 import { formatSyllabus } from '@/lib/utils';
-import { openai } from '@ai-sdk/openai';
 import { schemaTask, tasks } from '@trigger.dev/sdk/v3';
-import { generateObject } from 'ai';
 import { and, cosineDistance, desc, eq, gte, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
@@ -48,8 +47,8 @@ export const GenerateLessonStepsTask = schemaTask({
       .orderBy(desc(similarity))
       .limit(5);
 
-    const stepsResult = await generateObject({
-      model: openai('o3-mini'),
+    const stepsResult = await new OpenAIGenerator().generateObject({
+      model: 'o3-mini',
       prompt: getGenerateLessonPrompt({
         lesson: {
           ...lesson,
@@ -63,9 +62,13 @@ export const GenerateLessonStepsTask = schemaTask({
       schema: z.object({
         steps: z.array(schema.StepContentSchema),
       }),
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'genrate-lesson-prompt',
+      },
     });
 
-    const steps = stepsResult.object.steps;
+    const steps = stepsResult.steps;
 
     await db
       .update(schema.task)

@@ -1,8 +1,7 @@
 import { getEnrichChunkPrompt } from '@/lib/prompts';
 import { enrichChunkContentTask } from '@/trigger/enrich-chunk-content.task';
-import { openai } from '@ai-sdk/openai';
 import { tasks } from '@trigger.dev/sdk/v3';
-import { generateText } from 'ai';
+import { OpenAIGenerator } from '../domain/aigen';
 
 export interface IEnrichChunkContentService {
   execute(
@@ -22,8 +21,8 @@ export class EnrichChunkContentService implements IEnrichChunkContentService {
     succeedingChunkContent: string | null,
     chunkSize: number,
   ): Promise<{ enrichedContent: string }> {
-    const enrichedContent = await generateText({
-      model: openai('gpt-4o-mini'),
+    const enrichedContent = await new OpenAIGenerator().generateText({
+      model: 'gpt-4o-mini',
       prompt: getEnrichChunkPrompt({
         chunk: rawContent,
         sourceSummary: sourceSummary,
@@ -31,10 +30,14 @@ export class EnrichChunkContentService implements IEnrichChunkContentService {
         succeedingChunkContent: succeedingChunkContent,
         chunkSize: chunkSize,
       }),
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'enrich-chunk-prompt',
+      },
     });
 
     return {
-      enrichedContent: enrichedContent.text,
+      enrichedContent: enrichedContent,
     };
   }
 }

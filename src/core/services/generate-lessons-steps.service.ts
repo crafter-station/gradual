@@ -2,11 +2,10 @@ import * as schema from '@/db/schema';
 import { getGenerateLessonPrompt } from '@/lib/prompts';
 import { formatSyllabus } from '@/lib/utils';
 import { generateLessonStepsTask } from '@/trigger/generate-lesson-step.task';
-import { openai } from '@ai-sdk/openai';
 import { batch } from '@trigger.dev/sdk/v3';
-import { generateObject } from 'ai';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
+import { OpenAIGenerator } from '../domain/aigen';
 import type { ChunkRepo } from '../domain/chunk-repo';
 import { Step } from '../domain/step';
 import type { StepRepo } from '../domain/step-repo';
@@ -61,8 +60,8 @@ export class GenerateLessonStepsService {
       MAX_SIMILAR_CHUNKS,
     );
 
-    const result = await generateObject({
-      model: openai('o3-mini'),
+    const result = await new OpenAIGenerator().generateObject({
+      model: 'o3-mini',
       prompt: getGenerateLessonPrompt({
         lesson: {
           description: lesson.description,
@@ -76,9 +75,13 @@ export class GenerateLessonStepsService {
       schema: z.object({
         steps: z.array(schema.StepContentSchema),
       }),
+      experimental_telemetry: {
+        isEnabled: true,
+        functionId: 'generate-lessons-steps',
+      },
     });
 
-    const steps = result.object.steps.map((step, index) => {
+    const steps = result.steps.map((step, index) => {
       return new Step(uuidv4(), index, step, step.type, lesson.id);
     });
 

@@ -1,8 +1,7 @@
 import { getSummarizeDocumentPrompt } from '@/lib/prompts';
 import { summarizeSourceContentTask } from '@/trigger/summarize-source-content.task';
-import { openai } from '@ai-sdk/openai';
 import { tasks } from '@trigger.dev/sdk/v3';
-import { generateText } from 'ai';
+import { OpenAIGenerator } from '../domain/aigen';
 
 export interface ISummarizeSourceContentService {
   execute(chunkSummaries: string[]): Promise<string>;
@@ -12,8 +11,8 @@ export class SummarizeSourceContentService
   implements ISummarizeSourceContentService
 {
   async execute(chunkSummaries: string[]): Promise<string> {
-    const documentSummary = await generateText({
-      model: openai('gpt-4o-mini'),
+    const documentSummary = await new OpenAIGenerator().generateText({
+      model: 'gpt-4o-mini',
       prompt: getSummarizeDocumentPrompt({
         content: chunkSummaries.join('\n'),
       }),
@@ -23,7 +22,7 @@ export class SummarizeSourceContentService
       },
     });
 
-    return documentSummary.text;
+    return documentSummary;
   }
 }
 
