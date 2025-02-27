@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getI18n } from '@/locales/server';
 import { ArrowRightIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export default async function Home() {
   const t = await getI18n();
@@ -160,10 +161,13 @@ export default async function Home() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="group h-12 min-w-[140px] gap-2"
+                        className="group h-12 min-w-[140px]"
+                        asChild
                       >
-                        {t('landing.waitlist.joinButton')}
-                        <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        <Link href="/courses">
+                          {t('landing.waitlist.joinButton')}
+                          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        </Link>
                       </Button>
                     </div>
                   </form>
@@ -176,7 +180,7 @@ export default async function Home() {
 
       {/* Legal Links Footer */}
       <footer className="relative z-10 pb-8">
-        <div className="container flex justify-center">
+        <div className="flex w-full justify-center">
           <div className="flex items-center gap-8 text-muted-foreground text-sm">
             <a
               href="https://docs.google.com/document/d/1kOZ_caLqJvJDXPQlEduQfuKQnJCYlCdxRtZs8emLJW4"
