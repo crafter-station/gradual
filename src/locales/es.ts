@@ -35,8 +35,6 @@ export default {
     notFound: 'Curso no encontrado',
     about: {
       title: 'Sobre este curso',
-      description:
-        'Domina los fundamentos de la gestión de bases de datos y SQL con proyectos prácticos y escenarios del mundo real. Perfecto para principiantes y desarrolladores intermedios que buscan fortalecer sus habilidades en datos.',
     },
     features: {
       beginner: {
@@ -89,6 +87,7 @@ export default {
       description:
         'Domina los fundamentos a través de rutas de aprendizaje estructuradas',
       download: 'Descargar PDF',
+      viewSource: 'Ver Fuente',
     },
     flashcards: {
       title: 'Tarjetas de Memoria',
@@ -100,7 +99,7 @@ export default {
       filters: {
         all: 'Todas las Tarjetas',
         bookmarked: 'Marcadas',
-        mastered: 'Mastered',
+        mastered: 'Dominadas',
         learning: 'Aprendiendo',
       },
     },
@@ -109,6 +108,11 @@ export default {
       description: 'Revisa y administra tus notas del curso',
       export: 'Exportar',
       create: 'Nueva Nota',
+      sections: {
+        lecture: 'Notas de Clase',
+        tasks: 'Tareas de Estudio',
+      },
+      dueDate: 'Vence el {date}',
       new: 'Nueva Nota',
       edit: 'Editar Nota',
       editDescription: 'Escribe tus pensamientos y observaciones',
@@ -121,12 +125,31 @@ export default {
       aiAssistant: 'Asistente AI',
       aiSuggestions: 'Sugerencias de Escritura',
       lastSaved: 'Última guardada a las {time}',
+      emptyContent: 'Comienza a escribir o elige una plantilla...',
+      search: 'Buscar notas...',
       filters: {
         all: 'Todas las Notas',
         'ai-generated': 'Generadas por IA',
         'my-notes': 'Mis Notas',
       },
       selectNote: 'Selecciona una nota para ver o editar',
+      editor: {
+        placeholder: 'Escribe o usa "/" para comandos...',
+        aiSuggestion: 'Obtener sugerencias de IA',
+        save: 'Guardar cambios',
+        cancel: 'Cancelar',
+        delete: 'Eliminar nota',
+        addTag: 'Agregar etiqueta...',
+        autoTag: 'Auto-etiquetar',
+        lastEdited: 'Última edición {{time}}',
+      },
+      actions: {
+        new: 'Nueva Nota',
+        edit: 'Editar',
+        save: 'Guardar',
+        delete: 'Eliminar',
+        share: 'Compartir',
+      },
     },
   },
   landing: {
@@ -137,10 +160,24 @@ export default {
     },
     hero: {
       description:
-        'Una plataforma de aprendizaje que descompone temas complejos en pasos digeribles. Aprende a tu propio ritmo con nuestro sistema de aprendizaje adaptativo.',
+        'Una plataforma de aprendizaje adaptativa que descompone temas complejos en pasos digeribles. Aprende lo que necesitas, cuando lo necesitas.',
       startButton: 'Comenzar a Aprender',
       methodologyButton: 'Nuestro Método',
       methodologyHint: 'Descubre cómo funciona nuestro sistema',
+    },
+    stats: {
+      learners: {
+        label: 'Adoptadores Tempranos',
+        description: 'Comunidad en crecimiento',
+      },
+      courses: {
+        label: 'Cursos Beta',
+        description: 'En desarrollo',
+      },
+      success: {
+        label: 'Tasa de Finalización',
+        description: 'Usuarios beta',
+      },
     },
     waitlist: {
       title: 'Únete a la Lista de Espera',
@@ -148,10 +185,41 @@ export default {
         'Sé de los primeros en experimentar la plataforma de aprendizaje adaptativa de Gradual.',
       namePlaceholder: 'Tu nombre',
       emailPlaceholder: 'Tu email',
-      joinButton: 'Unirse',
+      joinButton: 'Unirse a la Lista',
     },
     learnMore: {
       text: 'Conoce nuestra metodología',
+    },
+  },
+  createCourse: {
+    title: 'Crear Nuevo Curso',
+    subtitle: 'Agregar un nuevo curso a Gradual',
+    form: {
+      tabs: {
+        label: 'Fuente',
+        file: {
+          title: 'PDF',
+          label: 'Seleccionar archivo',
+        },
+        url: {
+          title: 'URL',
+          label: 'Ingresar URL',
+          placeholder: 'https://ejemplo.com/curso',
+        },
+      },
+      buttonLabel: {
+        loading: 'Cargando...',
+        default: 'Iniciar Creación del Curso',
+      },
+      success: {
+        title: 'Creación del Curso Iniciada',
+        description:
+          'Tu curso está siendo creado... Estará listo en 10 minutos máximo',
+      },
+      error: {
+        title: 'Error',
+        description: 'Error al crear el curso',
+      },
     },
   },
 } as const;
