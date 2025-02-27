@@ -5,7 +5,7 @@ import { schemaTask } from '@trigger.dev/sdk/v3';
 import { z } from 'zod';
 
 export const generateLessonStepsTask = schemaTask({
-  id: 'generate-lesson-steps',
+  id: 'generate-lesson-steps-task',
   schema: z.object({
     lesson: z.object({
       id: z.string(),
