@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.12",
+    "@clerk/nextjs": "^6.12.1",
     "@faker-js/faker": "^9.4.0",
     "@mendable/firecrawl-js": "^1.17.0",
     "@midudev/tailwind-animations": "0.1.0",

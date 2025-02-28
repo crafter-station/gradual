@@ -1,10 +1,20 @@
 import { GradualLogo } from '@/components/gradual-logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { getI18n } from '@/locales/server';
+import { getI18n, getStaticParams } from '@/locales/server';
 import { ArrowRightIcon } from 'lucide-react';
+import { setStaticParamsLocale } from 'next-international/server';
 
-export default async function Home() {
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
+export default async function Home({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const t = await getI18n();
 
   return (
