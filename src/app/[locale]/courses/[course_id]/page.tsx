@@ -1,140 +1,156 @@
-import { db } from '@/db';
-import { taskProgress } from '@/db/schema';
-import { getCurrentUser } from '@/db/utils';
-import { getI18n } from '@/locales/server';
-import { and, eq, inArray } from 'drizzle-orm';
+import { getCourse, getCourses } from '@/db/utils';
+import { getI18n, getStaticParams } from '@/locales/server';
+import {
+  CheckIcon,
+  CircleIcon,
+  ClockIcon,
+  FileTextIcon,
+  GraduationCapIcon,
+} from 'lucide-react';
+import { setStaticParamsLocale } from 'next-international/server';
+import { notFound } from 'next/navigation';
+import type { ReactNode } from 'react';
 
-import type { CourseWithRelations } from '@/db/types';
-import { CourseHeader } from './components/course-header';
-import { CourseHero } from './components/course-hero';
-import { CourseTabs } from './components/course-tabs';
+interface FeatureItemProps {
+  icon: ReactNode;
+  title: string;
+  description: string;
+}
 
-export const metadata = {
-  title: 'Course',
-};
+interface PrerequisiteItemProps {
+  text: string;
+}
 
-export default async function CoursePage({
+export async function generateStaticParams() {
+  const courses = await getCourses.execute();
+  const locales = getStaticParams();
+
+  return locales.flatMap((locale) =>
+    courses.map((course) => ({
+      ...locale,
+      course_id: course.id,
+    })),
+  );
+}
+
+export default async function OverviewPage({
   params,
 }: Readonly<{
-  params: Promise<{ course_id: string }>;
+  params: Promise<{
+    course_id: string;
+    locale: string;
+  }>;
 }>) {
-  const { course_id: courseId } = await params;
-  const t = await getI18n();
-  const currentUser = await getCurrentUser.execute();
+  const { course_id: courseId, locale } = await params;
+  setStaticParamsLocale(locale);
+  const [course] = await getCourse.execute({ courseId });
 
-  const [course, units] = await Promise.all([
-    db.query.course.findFirst({
-      where: (course, { eq }) => eq(course.id, courseId),
-      with: {
-        sources: true,
-      },
-    }),
-    db.query.unit.findMany({
-      where: (unit, { eq }) => eq(unit.courseId, courseId),
-      orderBy: (unit, { asc }) => asc(unit.order),
-    }),
-  ]);
-
-  const sections = units.length
-    ? await db.query.section.findMany({
-        where: (section, { inArray }) =>
-          inArray(
-            section.unitId,
-            units.map((unit) => unit.id),
-          ),
-      })
-    : [];
-
-  const tasks = sections.length
-    ? await db.query.task.findMany({
-        where: (task, { inArray }) =>
-          inArray(
-            task.sectionId,
-            sections.map((section) => section.id),
-          ),
-      })
-    : [];
-
-  const courseWithRelations = course
-    ? {
-        ...course,
-        units: units.map((unit) => ({
-          ...unit,
-          sections: sections
-            .filter((section) => section.unitId === unit.id)
-            .map((section) => ({
-              ...section,
-              tasks: tasks.filter((task) => task.sectionId === section.id),
-            })),
-        })),
-      }
-    : null;
-
-  if (!courseWithRelations) {
-    return (
-      <div className="flex h-full items-center justify-center text-muted-foreground">
-        {t('course.notFound')}
-      </div>
-    );
+  if (!course) {
+    notFound();
   }
 
-  const selectedTasks = courseWithRelations.units.flatMap((unit) =>
-    unit.sections.flatMap((section) =>
-      section.tasks.map((task) => ({
-        ...task,
-        section: {
-          ...section,
-          unit: {
-            ...unit,
-            sections: undefined,
-          },
-        },
-      })),
-    ),
-  );
+  console.log(course);
 
-  selectedTasks.sort((a, b) => {
-    const aUnitOrder = a.section.unit.order;
-    const bUnitOrder = b.section.unit.order;
-    const aSectionOrder = a.section.order;
-    const bSectionOrder = b.section.order;
-    const aTaskOrder = a.order;
-    const bTaskOrder = b.order;
+  const t = await getI18n();
 
-    // Create a combined order number for easier comparison
-    // Multiply by large numbers to ensure proper ordering
-    const aOrder = aUnitOrder * 10000 + aSectionOrder * 100 + aTaskOrder;
-    const bOrder = bUnitOrder * 10000 + bSectionOrder * 100 + bTaskOrder;
+  const features: FeatureItemProps[] = [
+    {
+      icon: <GraduationCapIcon className="h-5 w-5" />,
+      title: t('course.features.beginner.title'),
+      description: t('course.features.beginner.description'),
+    },
+    {
+      icon: <ClockIcon className="h-5 w-5" />,
+      title: t('course.features.duration.title'),
+      description: t('course.features.duration.description'),
+    },
+    {
+      icon: <FileTextIcon className="h-5 w-5" />,
+      title: t('course.features.certificate.title'),
+      description: t('course.features.certificate.description'),
+    },
+  ];
 
-    return aOrder - bOrder;
-  });
+  const learningPoints = [
+    'Database design fundamentals',
+    'SQL query optimization',
+    'Data modeling best practices',
+    'Security and access control',
+    'Performance tuning techniques',
+  ].map((item) => t(`course.learningPoints.${item}` as keyof typeof t));
 
-  const selectedTasksProgresses = currentUser
-    ? await db.query.taskProgress.findMany({
-        where: and(
-          eq(taskProgress.userId, currentUser.id),
-          inArray(
-            taskProgress.taskId,
-            selectedTasks.map((task) => task.id),
-          ),
-        ),
-      })
-    : [];
+  const prerequisites = [
+    'Basic computer literacy',
+    'Understanding of basic programming concepts',
+  ].map((item) => t(`course.prerequisites.${item}` as keyof typeof t));
 
   return (
-    <div className="flex h-full flex-col">
-      <CourseHeader course={courseWithRelations as CourseWithRelations} t={t} />
+    <div className="grid gap-6 md:grid-cols-2">
+      <div>
+        <h3 className="font-semibold text-lg">{t('course.about.title')}</h3>
+        <p className="mt-2 text-muted-foreground">{course.description}</p>
 
-      <div className="flex-1 overflow-auto">
-        <CourseHero course={courseWithRelations as CourseWithRelations} t={t} />
+        <div className="mt-6 grid gap-4">
+          {features.map((feature) => (
+            <FeatureItem
+              key={feature.title}
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+            />
+          ))}
+        </div>
+      </div>
 
-        <CourseTabs
-          course={courseWithRelations as CourseWithRelations}
-          selectedTasks={selectedTasks}
-          selectedTasksProgresses={selectedTasksProgresses}
-          t={t}
-        />
+      <div className="space-y-6">
+        <div>
+          <h3 className="font-semibold text-lg">
+            {t('course.learningPoints.title')}
+          </h3>
+          <ul className="mt-2 grid gap-2">
+            {learningPoints.map((item) => (
+              <li key={item} className="flex items-center gap-2">
+                <CheckIcon className="h-4 w-4 text-primary" />
+                <span className="text-muted-foreground">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="font-semibold text-lg">
+            {t('course.prerequisites.title')}
+          </h3>
+          <ul className="mt-2 grid gap-2">
+            {prerequisites.map((text) => (
+              <PrerequisiteItem key={text} text={text} />
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
+  );
+}
+
+function FeatureItem({ icon, title, description }: Readonly<FeatureItemProps>) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        {icon}
+      </div>
+      <div>
+        <div className="font-medium">{title}</div>
+        <div className="text-muted-foreground text-sm">{description}</div>
+      </div>
+    </div>
+  );
+}
+
+function PrerequisiteItem({ text }: Readonly<PrerequisiteItemProps>) {
+  return (
+    <li className="flex items-center gap-2">
+      <CircleIcon className="h-4 w-4 text-muted-foreground" />
+      <span className="text-muted-foreground">{text}</span>
+    </li>
   );
 }

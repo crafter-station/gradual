@@ -1,6 +1,5 @@
-import { type NeonQueryFunction, neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
-
+import { Pool } from '@neondatabase/serverless';
+import { type NeonDatabase, drizzle } from 'drizzle-orm/neon-serverless';
 import * as schema from './schema';
 
 if (!process.env.DATABASE_URL) {
@@ -8,16 +7,12 @@ if (!process.env.DATABASE_URL) {
 }
 
 declare global {
-  var sql: NeonQueryFunction<false, false> | undefined;
-  var db: ReturnType<typeof drizzle<typeof schema>> | undefined;
+  var db: NeonDatabase<typeof schema> | undefined;
 }
 
 if (!global.db) {
-  if (!global.sql) {
-    global.sql = neon(process.env.DATABASE_URL);
-  }
-
-  global.db = drizzle({ client: global.sql, schema });
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  global.db = drizzle(pool, { schema });
 }
 
 // biome-ignore lint/suspicious/noRedeclare: <explanation>
