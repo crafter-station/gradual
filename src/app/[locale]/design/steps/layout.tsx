@@ -1,7 +1,7 @@
 import { StepTypes } from '@/db/schema';
 import { StepButton } from './step-button';
 
-export const revalidate = 0;
+export const revalidate = 3600;
 
 export default function StepsLayout({
   children,
