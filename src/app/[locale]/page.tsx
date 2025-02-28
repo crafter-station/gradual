@@ -151,11 +151,13 @@ export default async function Home() {
                         type="text"
                         placeholder={t('landing.waitlist.namePlaceholder')}
                         className="h-12"
+                        onChange={() => {}}
                       />
                       <Input
                         type="email"
                         placeholder={t('landing.waitlist.emailPlaceholder')}
                         className="h-12"
+                        onChange={() => {}}
                       />
                       <Button
                         type="submit"
