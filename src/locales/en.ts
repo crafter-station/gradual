@@ -3,7 +3,7 @@ export default {
     navigation: 'Navigation',
     home: 'Home',
     courses: 'Courses',
-    upload: 'Create New Course',
+    upload: 'New Course',
     stats: 'Stats',
   },
   hello: 'Hello',
@@ -191,7 +191,7 @@ export default {
     },
   },
   createCourse: {
-    title: 'Create New Course',
+    title: 'New Course',
     subtitle: 'Add a new course to Gradual',
     form: {
       tabs: {

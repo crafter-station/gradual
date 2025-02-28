@@ -6,6 +6,7 @@
       "dependencies": {
         "@ai-sdk/openai": "^1.1.12",
         "@faker-js/faker": "^9.4.0",
+        "@formkit/drag-and-drop": "^0.4.1",
         "@mendable/firecrawl-js": "^1.17.0",
         "@midudev/tailwind-animations": "0.1.0",
         "@neondatabase/serverless": "^0.10.4",
@@ -26,6 +27,7 @@
         "@supabase/ssr": "^0.5.2",
         "@tailwindcss/postcss": "^4.0.4",
         "@trigger.dev/sdk": "^3.3.16",
+        "@types/prismjs": "^1.26.5",
         "@uploadthing/react": "^7.3.0",
         "ai": "^4.1.41",
         "class-variance-authority": "^0.7.1",
@@ -43,6 +45,7 @@
         "pg": "^8.13.3",
         "postcss": "^8.5.1",
         "postgres": "^3.4.5",
+        "prismjs": "^1.29.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "react-markdown": "^9.0.3",
@@ -230,6 +233,8 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.2", "", { "dependencies": { "@floating-ui/dom": "^1.0.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-06okr5cgPzMNBy+Ycse2A6udMi4bqwW/zgBF/rwjcNqWkyr82Mcg8b0vjX8OJpZFy/FKjJmw6wV7t44kK6kW7A=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.9", "", {}, "sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg=="],
+
+    "@formkit/drag-and-drop": ["@formkit/drag-and-drop@0.4.1", "", {}, "sha512-p7wEpk26tgBeSNKZIAGwx8udh/f+duIwQAb22xXJ5sPPQsZ60m5RKOylxhe4rT66RYrm44t1fH/XOvekJTWXdw=="],
 
     "@google-cloud/precise-date": ["@google-cloud/precise-date@4.0.0", "", {}, "sha512-1TUx3KdaU3cN7nfCdNf+UVqA/PSX29Cjcox3fZZBtINlRrXVTmUkQnCKv2MbBUbCopbK4olAT1IHl76uZyCiVA=="],
 
@@ -1450,6 +1455,8 @@
     "postgres-range": ["postgres-range@1.1.4", "", {}, "sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w=="],
 
     "prelude-ls": ["prelude-ls@1.2.1", "", {}, "sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g=="],
+
+    "prismjs": ["prismjs@1.29.0", "", {}, "sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q=="],
 
     "prop-types": ["prop-types@15.8.1", "", { "dependencies": { "loose-envify": "^1.4.0", "object-assign": "^4.1.1", "react-is": "^16.13.1" } }, "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="],
 

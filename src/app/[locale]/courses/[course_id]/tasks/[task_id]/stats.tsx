@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Sparkles, Target, Zap } from 'lucide-react';
+import { ChevronRight, Sparkles, Target, Timer } from 'lucide-react';
 
 interface StatsCardProps {
   xp: number;
@@ -21,7 +21,7 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
     precision === 1 ? 'Flawless!' : precision > 0.9 ? 'Amazing!' : 'Great!';
 
   return (
-    <div className="mx-auto w-full max-w-md animate-fade-up space-y-8">
+    <div className="mx-auto w-full max-w-2xl animate-fade-up space-y-8">
       {/* Celebration Header */}
       <div className="relative flex flex-col items-center text-center">
         <div className="relative">
@@ -32,7 +32,7 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <title>Cat</title>
+            <title>Celebration Icon</title>
             <g className="animate-bounce-slow">
               <rect
                 x="24"
@@ -76,10 +76,12 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
           </div>
         </div>
 
-        <h1 className="mb-2 bg-gradient-to-r from-flexoki-yellow to-flexoki-purple bg-clip-text font-bold text-2xl text-transparent">
-          {isPerfect ? '🎯 Perfect Score!' : '🌟 Lesson Complete!'}
+        <h1 className="mb-2 font-bold text-3xl tracking-tight">
+          <span className="bg-gradient-to-r from-flexoki-yellow via-flexoki-purple to-flexoki-blue bg-clip-text text-transparent">
+            {isPerfect ? '🎯 Perfect Score!' : '🌟 Lesson Complete!'}
+          </span>
         </h1>
-        <p className="text-muted-foreground">
+        <p className="text-base text-muted-foreground">
           {isPerfect
             ? "You're absolutely crushing it!"
             : "You're doing fantastic!"}
@@ -89,15 +91,15 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
       {/* Stats Grid */}
       <div className="grid grid-cols-3 gap-4">
         {/* XP Card */}
-        <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-b from-flexoki-yellow/5 to-transparent p-4 transition-all hover:scale-105">
-          <div className="absolute inset-0 bg-gradient-to-r from-flexoki-yellow/0 via-flexoki-yellow/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        <div className="group relative overflow-hidden rounded-2xl border border-flexoki-yellow/20 bg-gradient-to-b from-flexoki-yellow/[0.03] to-transparent p-6 transition-all hover:scale-[1.02] hover:border-flexoki-yellow/30">
+          <div className="absolute inset-0 bg-gradient-to-r from-flexoki-yellow/0 via-flexoki-yellow/[0.03] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
           <div className="relative space-y-2">
             <div className="font-medium text-muted-foreground text-sm">
               EARNED XP
             </div>
             <div className="flex items-baseline gap-1.5">
-              <Sparkles className="h-4 w-4 animate-pulse text-flexoki-yellow" />
-              <span className="font-bold text-2xl text-flexoki-yellow">
+              <Sparkles className="h-5 w-5 animate-pulse text-flexoki-yellow" />
+              <span className="font-bold text-3xl text-flexoki-yellow">
                 {xp}
               </span>
             </div>
@@ -105,15 +107,15 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
         </div>
 
         {/* Time Card */}
-        <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-b from-flexoki-blue/5 to-transparent p-4 transition-all hover:scale-105">
-          <div className="absolute inset-0 bg-gradient-to-r from-flexoki-blue/0 via-flexoki-blue/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        <div className="group relative overflow-hidden rounded-2xl border border-flexoki-blue/20 bg-gradient-to-b from-flexoki-blue/[0.03] to-transparent p-6 transition-all hover:scale-[1.02] hover:border-flexoki-blue/30">
+          <div className="absolute inset-0 bg-gradient-to-r from-flexoki-blue/0 via-flexoki-blue/[0.03] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
           <div className="relative space-y-2">
             <div className="font-medium text-muted-foreground text-sm">
               {speedRating}
             </div>
             <div className="flex items-baseline gap-1.5">
-              <Zap className="h-4 w-4 animate-pulse text-flexoki-blue" />
-              <span className="font-bold text-2xl text-flexoki-blue">
+              <Timer className="h-5 w-5 animate-pulse text-flexoki-blue" />
+              <span className="font-bold text-3xl text-flexoki-blue">
                 {formatTime(time)}
               </span>
             </div>
@@ -121,15 +123,15 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
         </div>
 
         {/* Precision Card */}
-        <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-b from-flexoki-green/5 to-transparent p-4 transition-all hover:scale-105">
-          <div className="absolute inset-0 bg-gradient-to-r from-flexoki-green/0 via-flexoki-green/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+        <div className="group relative overflow-hidden rounded-2xl border border-flexoki-green/20 bg-gradient-to-b from-flexoki-green/[0.03] to-transparent p-6 transition-all hover:scale-[1.02] hover:border-flexoki-green/30">
+          <div className="absolute inset-0 bg-gradient-to-r from-flexoki-green/0 via-flexoki-green/[0.03] to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
           <div className="relative space-y-2">
             <div className="font-medium text-muted-foreground text-sm">
               {precisionRating}
             </div>
             <div className="flex items-baseline gap-1.5">
-              <Target className="h-4 w-4 animate-pulse text-flexoki-green" />
-              <span className="font-bold text-2xl text-flexoki-green">
+              <Target className="h-5 w-5 animate-pulse text-flexoki-green" />
+              <span className="font-bold text-3xl text-flexoki-green">
                 {Math.round(precision * 100)}%
               </span>
             </div>
@@ -139,12 +141,11 @@ export default function StatsCard({ xp, time, precision }: StatsCardProps) {
 
       {/* Continue Button */}
       <Button
-        className="group relative w-full overflow-hidden bg-flexoki-blue text-white hover:bg-flexoki-blue/90"
+        className="group relative w-full overflow-hidden bg-[length:200%_100%] bg-gradient-to-r from-flexoki-blue via-flexoki-purple to-flexoki-blue text-white transition-all duration-500 hover:bg-[center_right_1rem] hover:shadow-flexoki-blue/20 hover:shadow-lg"
         size="lg"
       >
-        <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-[100%]" />
         Continue
-        <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        <ChevronRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
       </Button>
     </div>
   );

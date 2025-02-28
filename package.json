@@ -13,6 +13,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.1.12",
     "@faker-js/faker": "^9.4.0",
+    "@formkit/drag-and-drop": "^0.4.1",
     "@mendable/firecrawl-js": "^1.17.0",
     "@midudev/tailwind-animations": "0.1.0",
     "@neondatabase/serverless": "^0.10.4",
@@ -33,6 +34,7 @@
     "@supabase/ssr": "^0.5.2",
     "@tailwindcss/postcss": "^4.0.4",
     "@trigger.dev/sdk": "^3.3.16",
+    "@types/prismjs": "^1.26.5",
     "@uploadthing/react": "^7.3.0",
     "ai": "^4.1.41",
     "class-variance-authority": "^0.7.1",
@@ -50,6 +52,7 @@
     "pg": "^8.13.3",
     "postcss": "^8.5.1",
     "postgres": "^3.4.5",
+    "prismjs": "^1.29.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^9.0.3",
