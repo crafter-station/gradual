@@ -10,9 +10,6 @@ import remarkMath from 'remark-math';
 interface ActiveSolvedExerciseStepProps {
   content: StepContent & {
     type: 'SOLVED_EXERCISE';
-    title: string;
-    body: string;
-    solution: string;
   };
 }
 

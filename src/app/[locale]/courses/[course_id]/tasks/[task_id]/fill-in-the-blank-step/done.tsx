@@ -9,13 +9,9 @@ interface DoneFillInTheBlankStepProps {
   totalSteps: number;
   progressState: StepProgressState & {
     type: 'FILL_IN_THE_BLANK';
-    filledBlanks: string[];
   };
   content: StepContent & {
     type: 'FILL_IN_THE_BLANK';
-    body: string;
-    blanks: string[];
-    distractors: string[];
   };
 }
 

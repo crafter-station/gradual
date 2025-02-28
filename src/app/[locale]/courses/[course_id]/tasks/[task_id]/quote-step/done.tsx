@@ -5,8 +5,6 @@ import { CheckCircle2Icon, QuoteIcon } from 'lucide-react';
 interface DoneQuoteStepProps {
   content: StepContent & {
     type: 'QUOTE';
-    body: string;
-    author: string;
   };
 }
 

@@ -1,19 +1,19 @@
 import { StepCard } from '@/components/step-card';
 import type { StepContent } from '@/db/schema/step';
-import { CheckCircle2Icon, Lightbulb } from 'lucide-react';
+import { CheckCircle2Icon, StarIcon } from 'lucide-react';
 
-interface DoneFunFactStepProps {
+interface DoneAnalogyStepProps {
   content: StepContent & {
-    type: 'FUN_FACT';
+    type: 'ANALOGY';
   };
 }
 
-export const DoneFunFactStep = ({ content }: DoneFunFactStepProps) => {
+export const DoneAnalogyStep = ({ content }: DoneAnalogyStepProps) => {
   return (
-    <StepCard stepType="Fun Fact" isDone isCorrect>
+    <StepCard stepType="Analogy" isDone isCorrect>
       <div className="relative space-y-8">
         <div className="mx-auto max-w-[700px]">
-          {/* Fun Fact Card */}
+          {/* Analogy Card */}
           <div className="relative">
             {/* Background decoration */}
             <div className="-top-12 -left-12 absolute h-24 w-24 rounded-full bg-gradient-to-br from-flexoki-green/20 via-flexoki-blue/10 to-transparent blur-2xl" />
@@ -26,7 +26,7 @@ export const DoneFunFactStep = ({ content }: DoneFunFactStepProps) => {
                 <div className="relative">
                   <div className="-inset-1 absolute animate-pulse rounded-full bg-flexoki-green/20 blur-md" />
                   <div className="relative rounded-full border border-flexoki-green/20 bg-flexoki-green/5 p-3">
-                    <Lightbulb className="h-6 w-6 text-flexoki-green" />
+                    <StarIcon className="h-6 w-6 text-flexoki-blue" />
                   </div>
                 </div>
               </div>

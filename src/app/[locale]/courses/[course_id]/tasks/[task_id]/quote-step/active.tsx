@@ -5,8 +5,6 @@ import { QuoteIcon } from 'lucide-react';
 interface ActiveQuoteStepProps {
   content: StepContent & {
     type: 'QUOTE';
-    body: string;
-    author: string;
   };
 }
 

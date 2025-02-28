@@ -7,6 +7,7 @@ import { type SelectStep, taskProgress } from '@/db/schema';
 import { getCurrentUser } from '@/db/utils';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
+import { z } from 'zod';
 import { ActiveBinaryStep } from './binary-step/active';
 import { DoneBinaryStep } from './binary-step/done';
 import { ActiveDefinitionStep } from './definition-step/active';
@@ -46,7 +47,7 @@ import { DoneTutorialStep } from './tutorial-step/done';
 
 type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
-  searchParams: { step?: string };
+  searchParams: Promise<{ step?: string }>;
 };
 
 export default async function TaskPage({
@@ -55,7 +56,9 @@ export default async function TaskPage({
 }: Readonly<PageProps>) {
   const params_ = await params;
   const { task_id, course_id } = params_;
-  console.log('TaskPage', { task_id, course_id });
+  const searchParams_ = await searchParams;
+  const stepIndexParsed = z.coerce.number().safeParse(searchParams_.step);
+  const currentStepIndex = stepIndexParsed.success ? stepIndexParsed.data : 0;
 
   const startedAt = new Date();
 
@@ -100,7 +103,6 @@ export default async function TaskPage({
     }),
   ]);
 
-  const currentStepIndex = Number.parseInt(searchParams?.step ?? '0');
   const currentVisibleStep =
     visibleSteps[currentStepIndex] ?? visibleSteps.slice(-1)[0];
   const currentVisibleStepProgress = stepsProgress?.find(

@@ -1,19 +1,19 @@
 import { StepCard } from '@/components/step-card';
 import type { StepContent } from '@/db/schema/step';
-import { Lightbulb } from 'lucide-react';
+import { StarIcon } from 'lucide-react';
 
-interface ActiveFunFactStepProps {
+interface ActiveAnalogyStepProps {
   content: StepContent & {
-    type: 'FUN_FACT';
+    type: 'ANALOGY';
   };
 }
 
-export const ActiveFunFactStep = ({ content }: ActiveFunFactStepProps) => {
+export const ActiveAnalogyStep = ({ content }: ActiveAnalogyStepProps) => {
   return (
-    <StepCard stepType="Fun Fact">
+    <StepCard stepType="Analogy">
       <div className="relative space-y-8">
         <div className="mx-auto max-w-[700px]">
-          {/* Fun Fact Card */}
+          {/* Analogy Card */}
           <div className="relative">
             {/* Background decoration */}
             <div className="-top-12 -left-12 absolute h-24 w-24 rounded-full bg-gradient-to-br from-flexoki-yellow/20 via-flexoki-orange/10 to-transparent blur-2xl" />
@@ -26,7 +26,7 @@ export const ActiveFunFactStep = ({ content }: ActiveFunFactStepProps) => {
                 <div className="relative">
                   <div className="-inset-1 absolute animate-pulse rounded-full bg-flexoki-yellow/20 blur-md" />
                   <div className="relative rounded-full border border-flexoki-yellow/20 bg-flexoki-yellow/5 p-3">
-                    <Lightbulb className="h-6 w-6 text-flexoki-yellow" />
+                    <StarIcon className="h-6 w-6 text-flexoki-orange" />
                   </div>
                 </div>
               </div>

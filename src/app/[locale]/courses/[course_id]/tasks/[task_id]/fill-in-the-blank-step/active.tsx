@@ -12,9 +12,6 @@ interface ActiveFillInTheBlankStepProps {
   totalSteps: number;
   content: StepContent & {
     type: 'FILL_IN_THE_BLANK';
-    body: string;
-    blanks: string[];
-    distractors: string[];
   };
 }
 

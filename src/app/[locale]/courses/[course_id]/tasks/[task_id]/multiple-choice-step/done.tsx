@@ -8,14 +8,9 @@ interface DoneMultipleChoiceStepProps {
   id: string;
   content: StepContent & {
     type: 'MULTIPLE_CHOICE';
-    questionBody: string;
-    correctAlternatives: string[];
-    distractors: string[];
-    explanation: string;
   };
   progressState: StepProgressState & {
     type: 'MULTIPLE_CHOICE';
-    selectedAlternatives: string[];
   };
 }
 
