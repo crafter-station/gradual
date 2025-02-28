@@ -25,3 +25,9 @@ bun dev
 ```bash
 bun x trigger.dev dev
 ```
+
+3. Run migrations (only in a new database)
+
+```bash
+bun x drizzle-kit migrate
+```
