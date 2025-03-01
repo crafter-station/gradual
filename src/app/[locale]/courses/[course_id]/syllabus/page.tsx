@@ -1,11 +1,25 @@
+import { buttonVariants } from '@/components/ui/button';
 import { UnitsWithConnector } from '@/components/units-with-connector';
-import { getFullCourse } from '@/db/utils';
-import { getI18n } from '@/locales/server';
+import { getCourses, getFullCourse } from '@/db/utils';
+import { cn } from '@/lib/utils';
+import { getI18n, getStaticParams } from '@/locales/server';
+import { FileTextIcon } from 'lucide-react';
 import { setStaticParamsLocale } from 'next-international/server';
 import { notFound } from 'next/navigation';
-import { ViewSourceButton } from '../components/tabs/view-source-button';
 
 export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const courses = await getCourses.execute();
+  const locales = getStaticParams();
+
+  return locales.flatMap((locale) =>
+    courses.map((course) => ({
+      ...locale,
+      course_id: course.id,
+    })),
+  );
+}
 
 export default async function SyllabusPage({
   params,
@@ -28,7 +42,7 @@ export default async function SyllabusPage({
 
   return (
     <div className="w-full">
-      <div className="mb-8 flex items-center justify-between px-6">
+      <div className="mb-8 flex items-center justify-between">
         <div className="space-y-1">
           <h2 className="animate-fade-up font-semibold text-2xl">
             {t('course.syllabus.title')}
@@ -38,7 +52,15 @@ export default async function SyllabusPage({
           </p>
         </div>
         {course.sources[0] && (
-          <ViewSourceButton sourceUrl={course.sources[0].filePath} />
+          <a
+            href={course.sources[0].filePath}
+            target="_blank"
+            rel="noreferrer"
+            className={cn(buttonVariants({ variant: 'default' }))}
+          >
+            <FileTextIcon className="h-5 w-4" />
+            {t('course.syllabus.viewSource')}
+          </a>
         )}
       </div>
 

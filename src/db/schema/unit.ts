@@ -23,6 +23,9 @@ export const unit = pgTable(
     description: text('description').notNull(),
     embedding: vector('embedding', { dimensions: 1536 }).notNull(),
 
+    sectionCount: integer('section_count').notNull().default(0),
+    taskCount: integer('task_count').notNull().default(0),
+
     courseId: uuid('course_id')
       .notNull()
       .references(() => course.id),

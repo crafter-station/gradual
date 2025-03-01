@@ -53,8 +53,7 @@ export default {
       },
     },
     stats: {
-      topics: '{count} Temas',
-      sections: '{count} Secciones',
+      units: '{count} Unidades',
       continue: {
         title: 'Continuar Aprendiendo',
         subtitle: 'Continúa donde lo dejaste',

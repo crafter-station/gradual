@@ -51,8 +51,7 @@ export default {
       },
     },
     stats: {
-      topics: '{count} Topics',
-      sections: '{count} Sections',
+      units: '{count} Units',
       continue: {
         title: 'Continue Learning',
         subtitle: 'Pick up where you left off',
