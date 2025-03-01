@@ -122,6 +122,7 @@ export default async function TasksPage({
       <div className="flex items-center gap-2">
         {sectionOrder > 1 ? (
           <Link
+            prefetch
             href={`/courses/${course_id}/tasks/${unitOrder}/${sectionOrder - 1}`}
             className={buttonVariants({ variant: 'outline' })}
           >
@@ -131,6 +132,7 @@ export default async function TasksPage({
         ) : (
           unitOrder > 1 && (
             <Link
+              prefetch
               href={`/courses/${course_id}/tasks/${unitOrder - 1}/1`}
               className={buttonVariants({ variant: 'outline' })}
             >
@@ -141,6 +143,7 @@ export default async function TasksPage({
         )}
         {sectionOrder < unitSectionCount ? (
           <Link
+            prefetch
             href={`/courses/${course_id}/tasks/${unitOrder}/${sectionOrder + 1}`}
             className={buttonVariants({ variant: 'outline' })}
           >
@@ -150,6 +153,7 @@ export default async function TasksPage({
         ) : (
           unitOrder < courseUnitCount && (
             <Link
+              prefetch
               href={`/courses/${course_id}/tasks/${unitOrder + 1}/1`}
               className={buttonVariants({ variant: 'outline' })}
             >
