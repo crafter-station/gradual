@@ -10,7 +10,6 @@ import { FlashcardsTab } from './tabs/flashcards-tab';
 import { LessonsTab } from './tabs/lessons-tab';
 import { NotesTab } from './tabs/notes-tab';
 import { OverviewTab } from './tabs/overview-tab';
-import { SyllabusTab } from './tabs/syllabus-tab';
 
 interface CourseTabsProps {
   course: CourseWithRelations;
@@ -72,10 +71,6 @@ export function CourseTabs({
 
           <TabsContent value="overview" className="py-6">
             <OverviewTab t={t} course={course} />
-          </TabsContent>
-
-          <TabsContent value="syllabus" className="py-6">
-            <SyllabusTab course={course} t={t} />
           </TabsContent>
 
           <TabsContent value="lessons" className="py-6">

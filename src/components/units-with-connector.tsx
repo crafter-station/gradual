@@ -12,7 +12,6 @@ import { useEffect, useRef, useState } from 'react';
 interface Task {
   id: string;
   title: string;
-  description: string;
   order: number;
   type: 'LESSON' | 'QUIZ' | 'MULTISTEP';
   experiencePoints: number;

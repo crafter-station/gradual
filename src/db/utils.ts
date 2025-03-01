@@ -12,7 +12,11 @@ export const getCourses = db
   .prepare('getCourses');
 
 export const getCourse = db
-  .select()
+  .select({
+    id: schema.course.id,
+    title: schema.course.title,
+    description: schema.course.description,
+  })
   .from(schema.course)
   .where(eq(schema.course.id, sql.placeholder('courseId')))
   .limit(1)

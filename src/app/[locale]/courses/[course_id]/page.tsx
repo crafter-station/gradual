@@ -49,8 +49,6 @@ export default async function OverviewPage({
     notFound();
   }
 
-  console.log(course);
-
   const t = await getI18n();
 
   const features: FeatureItemProps[] = [
