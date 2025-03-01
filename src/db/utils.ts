@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 
 export const getCurrentUser = db.query.user
   .findFirst()
@@ -16,6 +16,7 @@ export const getCourse = db
     id: schema.course.id,
     title: schema.course.title,
     description: schema.course.description,
+    unitCount: schema.course.unitCount,
   })
   .from(schema.course)
   .where(eq(schema.course.id, sql.placeholder('courseId')))
@@ -68,3 +69,69 @@ export const getFullCourse = db.query.course
     },
   })
   .prepare('getCourseWithSyllabus');
+
+export const getTaskProgress = db
+  .select({
+    stepsCompletedCount: schema.taskProgress.stepsCompletedCount,
+    earnedExperiencePoints: schema.taskProgress.earnedExperiencePoints,
+  })
+  .from(schema.taskProgress)
+  .where(
+    and(
+      eq(schema.taskProgress.userId, sql.placeholder('userId')),
+      eq(schema.taskProgress.taskId, sql.placeholder('taskId')),
+    ),
+  )
+  .limit(1)
+  .prepare('getTaskProgress');
+
+export const getTasksOfUnitAndSection = db
+  .select({
+    id: schema.task.id,
+    type: schema.task.type,
+    order: schema.task.order,
+    title: schema.task.title,
+    description: schema.task.description,
+    stepsCount: schema.task.stepsCount,
+    experiencePoints: schema.task.experiencePoints,
+  })
+  .from(schema.task)
+  .innerJoin(schema.section, eq(schema.task.sectionId, schema.section.id))
+  .innerJoin(schema.unit, eq(schema.section.unitId, schema.unit.id))
+  .where(
+    and(
+      eq(schema.unit.courseId, sql.placeholder('courseId')),
+      eq(schema.unit.order, sql.placeholder('unitOrder')),
+      eq(schema.section.order, sql.placeholder('sectionOrder')),
+    ),
+  )
+  .orderBy(asc(schema.task.order))
+  .prepare('getTasksOfUnitAndSection');
+
+export const getUnitAndSection = db
+  .select({
+    courseUnitCount: schema.course.unitCount,
+
+    unitTitle: schema.unit.title,
+    unitDescription: schema.unit.description,
+    unitSectionCount: schema.unit.sectionCount,
+
+    sectionTitle: schema.section.title,
+    sectionDescription: schema.section.description,
+  })
+  .from(schema.unit)
+  .innerJoin(schema.course, eq(schema.unit.courseId, schema.course.id))
+  .leftJoin(
+    schema.section,
+    and(
+      eq(schema.section.unitId, schema.unit.id),
+      eq(schema.section.order, sql.placeholder('sectionOrder')),
+    ),
+  )
+  .where(
+    and(
+      eq(schema.course.id, sql.placeholder('courseId')),
+      eq(schema.unit.order, sql.placeholder('unitOrder')),
+    ),
+  )
+  .prepare('getUnitAndSection');

@@ -34,7 +34,6 @@ type PageProps = {
 export default async function TaskPage({ params }: Readonly<PageProps>) {
   const params_ = await params;
   const { task_id, course_id } = params_;
-  console.log('TaskPage', { task_id, course_id });
 
   const startedAt = new Date();
 

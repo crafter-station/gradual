@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 export const Tabs = ({ courseId }: Readonly<{ courseId: string }>) => {
   const pathname = usePathname();
 
-  const tabs = ['Syllabus', 'Lessons', 'Resources'];
+  const tabs = ['Syllabus', 'Tasks', 'Resources'];
 
   const isActive = (tab: string) => {
     return pathname.includes(tab.toLowerCase());
