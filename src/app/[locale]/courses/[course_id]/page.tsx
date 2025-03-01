@@ -33,6 +33,8 @@ export async function generateStaticParams() {
   );
 }
 
+export const revalidate = 3600;
+
 export default async function OverviewPage({
   params,
 }: Readonly<{

@@ -1,16 +1,11 @@
 import { UnitsWithConnector } from '@/components/units-with-connector';
-import type { CourseWithRelations } from '@/db/types';
 import { getFullCourse } from '@/db/utils';
 import { getI18n } from '@/locales/server';
-import type { TFunction } from '@/locales/types';
 import { setStaticParamsLocale } from 'next-international/server';
 import { notFound } from 'next/navigation';
 import { ViewSourceButton } from '../components/tabs/view-source-button';
 
-interface SyllabusTabProps {
-  course: CourseWithRelations;
-  t: TFunction;
-}
+export const revalidate = 3600;
 
 export default async function SyllabusPage({
   params,
