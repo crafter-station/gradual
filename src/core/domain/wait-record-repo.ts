@@ -37,4 +37,8 @@ export class WaitRecordRepo {
         new WaitRecord(r.id, r.name, r.email, r.status, new Date(r.createdAt)),
     );
   }
+
+  async updateStatus(id: string, status: WaitRecordStatus): Promise<void> {
+    await db.update(waitlist).set({ status }).where(eq(waitlist.id, id));
+  }
 }

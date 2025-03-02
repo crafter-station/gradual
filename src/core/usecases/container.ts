@@ -15,6 +15,7 @@ import { SummarizeSourceContentServiceTask } from '@/core/services/summarize-sou
 import { CreateCourseUseCase } from '@/core/usecases/create-course.usecase';
 import { JoinWaitlistUseCase } from './join-waitlist.usecase';
 import { ListPendingWaitlistUseCase } from './list-pending-waitlist.usecase';
+import { UpdateWaitlistStatusUseCase } from './update-waitlist-status.usecase';
 
 const waitRecordRepo = new WaitRecordRepo();
 const mailSender = new ResendMailSender(process.env.RESEND_API_KEY as string);
@@ -37,6 +38,10 @@ const joinWaitlistUseCase = new JoinWaitlistUseCase(waitRecordRepo, mailSender);
 const listPendingWaitlistUseCase = new ListPendingWaitlistUseCase(
   waitRecordRepo,
 );
+const updateWaitlistStatusUseCase = new UpdateWaitlistStatusUseCase(
+  mailSender,
+  waitRecordRepo,
+);
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type UseCaseConstructor<T> = new (...args: any[]) => T;
@@ -49,6 +54,8 @@ export function useCase<T>(uc: UseCaseConstructor<T>): T {
       return joinWaitlistUseCase as T;
     case ListPendingWaitlistUseCase:
       return listPendingWaitlistUseCase as T;
+    case UpdateWaitlistStatusUseCase:
+      return updateWaitlistStatusUseCase as T;
   }
 
   throw new Error(`UseCase not registered ${uc.name}`);
