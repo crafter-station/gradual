@@ -9,3 +9,4 @@ export * from './task-progress';
 export * from './task';
 export * from './unit';
 export * from './user';
+export * from './waitlist';
