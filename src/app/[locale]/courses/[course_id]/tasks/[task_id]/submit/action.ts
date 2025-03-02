@@ -2,13 +2,12 @@
 
 import { db } from '@/db';
 import { type SelectStep, stepProgress, taskProgress } from '@/db/schema';
+import * as schema from '@/db/schema';
 import type { StepProgressState } from '@/db/schema/step/progress-state';
-import { getCurrentUser } from '@/db/utils';
-import { eq } from 'drizzle-orm';
+import { currentUser } from '@clerk/nextjs/server';
+import { and, desc, eq } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import { getCurrentStep, getStepProgress, getTaskProgress } from '../helpers';
-
 export type SubmitStepForm = {
   taskId: string;
   courseId: string;
@@ -19,9 +18,15 @@ export async function submitStepAction(formData: FormData) {
 
   try {
     const date = new Date();
-    const currentUser = await getCurrentUser.execute();
-    if (!currentUser) {
+    const user = await currentUser();
+    if (!user) {
       throw new Error('User not found');
+    }
+
+    const userId = user.privateMetadata.userId as string | undefined;
+
+    if (!userId) {
+      throw new Error('User ID not found');
     }
 
     const { taskId, courseId } = z
@@ -31,23 +36,17 @@ export async function submitStepAction(formData: FormData) {
       })
       .parse(form);
 
-    const currentTaskProgress = await getTaskProgress(currentUser.id, taskId);
-
-    if (!currentTaskProgress) {
-      throw new Error('Task progress not found');
-    }
-
-    const currentStep = await getCurrentStep(
-      taskId,
-      currentTaskProgress.lastCompletedStepId,
-    );
-
-    const currentStepProgress = await getStepProgress(
-      currentUser.id,
-      taskId,
-      currentTaskProgress.id,
-      currentStep.id,
-    );
+    const [currentStepProgress] = await db
+      .select()
+      .from(schema.stepProgress)
+      .where(
+        and(
+          eq(schema.stepProgress.taskId, taskId),
+          eq(schema.stepProgress.userId, userId),
+        ),
+      )
+      .orderBy(desc(schema.stepProgress.startedAt))
+      .limit(1);
 
     if (!currentStepProgress) {
       throw new Error('Step progress not found');
@@ -57,7 +56,17 @@ export async function submitStepAction(formData: FormData) {
       throw new Error('Step already completed');
     }
 
-    const { isCorrect, state } = getData(currentStep, formData);
+    const [currentStep] = await db
+      .select()
+      .from(schema.step)
+      .where(eq(schema.step.id, currentStepProgress.stepId))
+      .limit(1);
+
+    if (!currentStep) {
+      throw new Error('Step not found');
+    }
+
+    const { isCorrect, state } = getData(currentStep as SelectStep, formData);
 
     await db
       .update(stepProgress)
@@ -71,10 +80,9 @@ export async function submitStepAction(formData: FormData) {
     await db
       .update(taskProgress)
       .set({
-        lastCompletedStepId: currentStep.id,
-        stepsCompletedCount: currentTaskProgress.stepsCompletedCount + 1,
+        stepsCompletedCount: currentStep.order,
       })
-      .where(eq(taskProgress.id, currentTaskProgress.id));
+      .where(eq(taskProgress.id, currentStepProgress.taskProgressId));
 
     revalidatePath(`/courses/${courseId}/tasks/${taskId}`);
   } catch (error) {

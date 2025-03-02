@@ -1,7 +1,8 @@
 'use server';
-import { getCurrentUser } from '@/db/utils';
+
 import type { ActionState } from '@/lib/utils';
 import type { CreateCourseTask } from '@/trigger/create-course';
+import { currentUser } from '@clerk/nextjs/server';
 import { tasks } from '@trigger.dev/sdk/v3';
 import { z } from 'zod';
 
@@ -20,9 +21,15 @@ export async function createCourse(
   };
 
   try {
-    const user = await getCurrentUser.execute();
+    const user = await currentUser();
     if (!user) {
       throw new Error('User not found');
+    }
+
+    const userId = user.privateMetadata.userId as string | undefined;
+
+    if (!userId) {
+      throw new Error('User ID not found');
     }
 
     const form = z.object({
@@ -37,7 +44,7 @@ export async function createCourse(
 
     await tasks.trigger<typeof CreateCourseTask>('create-course', {
       url: parsed.data.url,
-      userId: user.id,
+      userId,
     });
 
     return { success: true };

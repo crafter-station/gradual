@@ -108,7 +108,6 @@ export class CreateCourseUseCase {
         sectionEmbeddings,
         lessonEmbeddings,
         payload.userId,
-        sourceId,
       );
 
     await this.storeCourseService.execute(

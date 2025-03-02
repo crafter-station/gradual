@@ -1,5 +1,5 @@
 {
-  "id": "ce92e1fb-b3cb-467b-b31f-f3fb63d8bb10",
+  "id": "e5ae08b1-6170-4e5b-ba10-8b844f06cc96",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -162,6 +162,24 @@
           "primaryKey": false,
           "notNull": true
         },
+        "unit_count": {
+          "name": "unit_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "section_count": {
+          "name": "section_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "task_count": {
+          "name": "task_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
         "is_public": {
           "name": "is_public",
           "type": "boolean",
@@ -209,10 +227,10 @@
         }
       },
       "foreignKeys": {
-        "course_creator_id_users_id_fk": {
-          "name": "course_creator_id_users_id_fk",
+        "course_creator_id_user_id_fk": {
+          "name": "course_creator_id_user_id_fk",
           "tableFrom": "course",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": ["creator_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -225,8 +243,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.enrollments": {
-      "name": "enrollments",
+    "public.enrollment": {
+      "name": "enrollment",
       "schema": "",
       "columns": {
         "id": {
@@ -248,6 +266,27 @@
           "primaryKey": false,
           "notNull": true
         },
+        "completed_units": {
+          "name": "completed_units",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "completed_sections": {
+          "name": "completed_sections",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "completed_tasks": {
+          "name": "completed_tasks",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "started_at": {
           "name": "started_at",
           "type": "timestamp with time zone",
@@ -263,18 +302,18 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "enrollments_user_id_users_id_fk": {
-          "name": "enrollments_user_id_users_id_fk",
-          "tableFrom": "enrollments",
-          "tableTo": "users",
+        "enrollment_user_id_user_id_fk": {
+          "name": "enrollment_user_id_user_id_fk",
+          "tableFrom": "enrollment",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "enrollments_course_id_course_id_fk": {
-          "name": "enrollments_course_id_course_id_fk",
-          "tableFrom": "enrollments",
+        "enrollment_course_id_course_id_fk": {
+          "name": "enrollment_course_id_course_id_fk",
+          "tableFrom": "enrollment",
           "tableTo": "course",
           "columnsFrom": ["course_id"],
           "columnsTo": ["id"],
@@ -320,6 +359,12 @@
         "embedding": {
           "name": "embedding",
           "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "task_count": {
+          "name": "task_count",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -399,10 +444,10 @@
         }
       },
       "foreignKeys": {
-        "section_unit_id_units_id_fk": {
-          "name": "section_unit_id_units_id_fk",
+        "section_unit_id_unit_id_fk": {
+          "name": "section_unit_id_unit_id_fk",
           "tableFrom": "section",
-          "tableTo": "units",
+          "tableTo": "unit",
           "columnsFrom": ["unit_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -542,10 +587,10 @@
         }
       },
       "foreignKeys": {
-        "source_creator_id_users_id_fk": {
-          "name": "source_creator_id_users_id_fk",
+        "source_creator_id_user_id_fk": {
+          "name": "source_creator_id_user_id_fk",
           "tableFrom": "source",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": ["creator_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -629,10 +674,10 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "step_progress_user_id_users_id_fk": {
-          "name": "step_progress_user_id_users_id_fk",
+        "step_progress_user_id_user_id_fk": {
+          "name": "step_progress_user_id_user_id_fk",
           "tableFrom": "step_progress",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -647,10 +692,10 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "step_progress_task_id_tasks_id_fk": {
-          "name": "step_progress_task_id_tasks_id_fk",
+        "step_progress_task_id_task_id_fk": {
+          "name": "step_progress_task_id_task_id_fk",
           "tableFrom": "step_progress",
-          "tableTo": "tasks",
+          "tableTo": "task",
           "columnsFrom": ["task_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -762,10 +807,10 @@
         }
       },
       "foreignKeys": {
-        "step_task_id_tasks_id_fk": {
-          "name": "step_task_id_tasks_id_fk",
+        "step_task_id_task_id_fk": {
+          "name": "step_task_id_task_id_fk",
           "tableFrom": "step",
-          "tableTo": "tasks",
+          "tableTo": "task",
           "columnsFrom": ["task_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
@@ -801,12 +846,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "last_completed_step_id": {
-          "name": "last_completed_step_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
         "steps_completed_count": {
           "name": "steps_completed_count",
           "type": "integer",
@@ -835,29 +874,20 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "task_progress_task_id_tasks_id_fk": {
-          "name": "task_progress_task_id_tasks_id_fk",
+        "task_progress_task_id_task_id_fk": {
+          "name": "task_progress_task_id_task_id_fk",
           "tableFrom": "task_progress",
-          "tableTo": "tasks",
+          "tableTo": "task",
           "columnsFrom": ["task_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "task_progress_user_id_users_id_fk": {
-          "name": "task_progress_user_id_users_id_fk",
+        "task_progress_user_id_user_id_fk": {
+          "name": "task_progress_user_id_user_id_fk",
           "tableFrom": "task_progress",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "task_progress_last_completed_step_id_step_id_fk": {
-          "name": "task_progress_last_completed_step_id_step_id_fk",
-          "tableFrom": "task_progress",
-          "tableTo": "step",
-          "columnsFrom": ["last_completed_step_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -869,8 +899,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.tasks": {
-      "name": "tasks",
+    "public.task": {
+      "name": "task",
       "schema": "",
       "columns": {
         "id": {
@@ -916,16 +946,23 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "default": 10
+          "default": 0
         },
         "steps_count": {
           "name": "steps_count",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": 0
         },
         "section_id": {
           "name": "section_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "course_id": {
+          "name": "course_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -947,11 +984,20 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "tasks_section_id_section_id_fk": {
-          "name": "tasks_section_id_section_id_fk",
-          "tableFrom": "tasks",
+        "task_section_id_section_id_fk": {
+          "name": "task_section_id_section_id_fk",
+          "tableFrom": "task",
           "tableTo": "section",
           "columnsFrom": ["section_id"],
+          "columnsTo": ["id"],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "task_course_id_course_id_fk": {
+          "name": "task_course_id_course_id_fk",
+          "tableFrom": "task",
+          "tableTo": "course",
+          "columnsFrom": ["course_id"],
           "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -963,8 +1009,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.units": {
-      "name": "units",
+    "public.unit": {
+      "name": "unit",
       "schema": "",
       "columns": {
         "id": {
@@ -995,6 +1041,18 @@
         "embedding": {
           "name": "embedding",
           "type": "vector(1536)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "section_count": {
+          "name": "section_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "task_count": {
+          "name": "task_count",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -1074,9 +1132,9 @@
         }
       },
       "foreignKeys": {
-        "units_course_id_course_id_fk": {
-          "name": "units_course_id_course_id_fk",
-          "tableFrom": "units",
+        "unit_course_id_course_id_fk": {
+          "name": "unit_course_id_course_id_fk",
+          "tableFrom": "unit",
           "tableTo": "course",
           "columnsFrom": ["course_id"],
           "columnsTo": ["id"],
@@ -1090,8 +1148,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users": {
-      "name": "users",
+    "public.user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {
@@ -1100,6 +1158,12 @@
           "primaryKey": true,
           "notNull": true,
           "default": "gen_random_uuid()"
+        },
+        "clerk_id": {
+          "name": "clerk_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
         },
         "fullname": {
           "name": "fullname",
@@ -1123,7 +1187,13 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "user_clerk_id_unique": {
+          "name": "user_clerk_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["clerk_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

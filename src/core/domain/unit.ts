@@ -8,5 +8,7 @@ export class Unit {
     public readonly description: string,
     public readonly embedding: Embedding,
     public readonly courseId: string,
+    public readonly sectionCount: number,
+    public readonly taskCount: number,
   ) {}
 }

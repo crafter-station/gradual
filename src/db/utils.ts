@@ -2,9 +2,11 @@ import { db } from '@/db';
 import * as schema from '@/db/schema';
 import { and, asc, eq, sql } from 'drizzle-orm';
 
-export const getCurrentUser = db.query.user
-  .findFirst()
-  .prepare('getCurrentUser');
+export const getFirstUser = db
+  .select({ id: schema.user.id })
+  .from(schema.user)
+  .limit(1)
+  .prepare('getFirstUser');
 
 export const getCourses = db
   .select({ id: schema.course.id })
@@ -94,6 +96,7 @@ export const getTasksOfUnitAndSection = db
     description: schema.task.description,
     stepsCount: schema.task.stepsCount,
     experiencePoints: schema.task.experiencePoints,
+    courseId: schema.task.courseId,
   })
   .from(schema.task)
   .innerJoin(schema.section, eq(schema.task.sectionId, schema.section.id))

@@ -2,8 +2,9 @@ import { Badge, type BadgeProps } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import type { SelectTask, SelectTaskProgress } from '@/db/schema';
-import { getCurrentUser, getTaskProgress } from '@/db/utils';
+import { getTaskProgress } from '@/db/utils';
 import { cn } from '@/lib/utils';
+import { currentUser } from '@clerk/nextjs/server';
 import { CheckCircle2Icon, ChevronRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import { TaskProgress } from './task-progress';
@@ -17,21 +18,22 @@ export async function TaskCard({
   task,
   unitOrder,
   sectionOrder,
-  courseId,
 }: Readonly<{
   task: Omit<SelectTask, 'embedding' | 'sectionId' | 'createdAt' | 'updatedAt'>;
   unitOrder: number;
   sectionOrder: number;
-  courseId: string;
 }>) {
-  const currentUser = await getCurrentUser.execute();
-  let progress: PickTaskProgress | null = null;
+  const user = await currentUser();
+  let progress: PickTaskProgress | undefined;
 
-  if (currentUser) {
-    [progress] = await getTaskProgress.execute({
-      userId: currentUser.id,
-      taskId: task.id,
-    });
+  if (user) {
+    const userId = user.privateMetadata.userId as string | undefined;
+    if (userId) {
+      [progress] = await getTaskProgress.execute({
+        userId,
+        taskId: task.id,
+      });
+    }
   }
 
   return (
@@ -40,7 +42,6 @@ export async function TaskCard({
       progress={progress}
       unitOrder={unitOrder}
       sectionOrder={sectionOrder}
-      courseId={courseId}
     />
   );
 }
@@ -50,13 +51,11 @@ export function TaskCardXD({
   progress,
   unitOrder,
   sectionOrder,
-  courseId,
 }: Readonly<{
   task: Omit<SelectTask, 'embedding' | 'sectionId' | 'createdAt' | 'updatedAt'>;
-  progress: PickTaskProgress | null;
+  progress: PickTaskProgress | undefined;
   unitOrder: number;
   sectionOrder: number;
-  courseId: string;
 }>) {
   const isCompleted = progress?.stepsCompletedCount === task.stepsCount;
   const themeStyles = getThemeStyles(task.type);
@@ -152,7 +151,7 @@ export function TaskCardXD({
         )}
 
         <Link
-          href={`/courses/${courseId}/tasks/${task.id}`}
+          href={`/courses/${task.courseId}/tasks/${task.id}`}
           className={cn(
             buttonVariants({ variant: 'outline' }),
             'w-full transition-all duration-300',

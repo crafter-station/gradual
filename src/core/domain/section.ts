@@ -8,5 +8,6 @@ export class Section {
     public readonly description: string,
     public readonly embedding: Embedding,
     public readonly unitId: string,
+    public readonly taskCount: number,
   ) {}
 }

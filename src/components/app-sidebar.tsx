@@ -1,12 +1,5 @@
 'use client';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -18,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { usePathname } from 'next/navigation';
 
@@ -26,14 +20,12 @@ import {
   FlagIcon,
   GraduationCapIcon,
   HomeIcon,
-  LogOutIcon,
-  SettingsIcon,
   StarIcon,
   UploadIcon,
-  UserIcon,
 } from 'lucide-react';
 
 import { useI18n } from '@/locales/client';
+import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
 
 const navData = [
   {
@@ -101,64 +93,17 @@ function NavMain({ items }: Readonly<{ items: typeof navData }>) {
 }
 
 function UserNav() {
-  const handleSignOut = () => {
-    console.log('sign out');
-  };
+  const { isSignedIn } = useAuth();
+  const { state } = useSidebar();
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              asChild
-              tooltip={'John Doe'}
-              className="!px-1 group-data-[collapsible=icon]:!p-1"
-            >
-              <div className="flex cursor-pointer items-center gap-2 p-2">
-                <UserIcon className="h-6 w-6" />
-                <span className="origin-left transition-all duration-300 group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
-                  John Doe
-                </span>
-              </div>
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-56"
-            align="start"
-            alignOffset={11}
-            sideOffset={8}
-          >
-            <div className="flex items-center gap-2 p-2">
-              <div className="flex flex-col space-y-1 leading-none">
-                <p className="font-medium">John Doe</p>
-                <p className="text-muted-foreground text-sm">
-                  john.doe@example.com
-                </p>
-              </div>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <a
-                href="/settings"
-                className="flex cursor-pointer items-center gap-2"
-              >
-                <SettingsIcon className="h-4 w-4" />
-                <span>Settings</span>
-              </a>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="hover:!text-destructive flex cursor-pointer items-center gap-2 text-destructive"
-              onSelect={(event) => {
-                event.preventDefault();
-                handleSignOut();
-              }}
-            >
-              <LogOutIcon className="h-4 w-4" />
-              <span>Sign Out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isSignedIn ? (
+          <UserButton showName={state === 'expanded'} />
+        ) : (
+          <SignInButton />
+        )}
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton asChild tooltip="Help">

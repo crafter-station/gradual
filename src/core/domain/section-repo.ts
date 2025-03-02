@@ -12,6 +12,7 @@ export class SectionRepo {
         description: section.description,
         embedding: section.embedding,
         unitId: section.unitId,
+        taskCount: section.taskCount,
       })),
     );
   }

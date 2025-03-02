@@ -1,7 +1,5 @@
 import { relations } from 'drizzle-orm';
 import { integer, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
-
-import { step } from './step';
 import { stepProgress } from './step-progress';
 import { task } from './task';
 import { user } from './user';
@@ -16,7 +14,6 @@ export const taskProgress = pgTable('task_progress', {
     .notNull()
     .references(() => user.id),
 
-  lastCompletedStepId: uuid('last_completed_step_id').references(() => step.id),
   stepsCompletedCount: integer('steps_completed_count').notNull().default(0),
 
   earnedExperiencePoints: integer('earned_experience_points'),
@@ -32,10 +29,6 @@ export const taskProgressRelations = relations(
     task: one(task, {
       fields: [taskProgress.taskId],
       references: [task.id],
-    }),
-    lastCompletedStep: one(step, {
-      fields: [taskProgress.lastCompletedStepId],
-      references: [step.id],
     }),
     user: one(user, {
       fields: [taskProgress.userId],
