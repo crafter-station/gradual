@@ -1,5 +1,8 @@
 import type { MailSender } from '@/core/domain/mail-sender';
-import { WaitRecord } from '@/core/domain/wait-record';
+import {
+  PENDING_WAIT_RECORD_STATUS,
+  WaitRecord,
+} from '@/core/domain/wait-record';
 import type { WaitRecordRepo } from '@/core/domain/wait-record-repo';
 import { welcomeEmail } from '@/emails/helpers/waitlist-emails';
 import { EMAIL_SENDER } from '@/lib/constants';
@@ -22,7 +25,15 @@ export class JoinWaitlistUseCase {
     if (existsByEmail)
       return { success: false, error: 'Email already registered' };
 
-    await this.waitRecordRepo.store(new WaitRecord(uuidv4(), name, email));
+    await this.waitRecordRepo.store(
+      new WaitRecord(
+        uuidv4(),
+        name,
+        email,
+        PENDING_WAIT_RECORD_STATUS,
+        new Date(),
+      ),
+    );
 
     const emailTemplate = welcomeEmail(name);
 

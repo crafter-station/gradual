@@ -1,3 +1,5 @@
+import { useCase } from '@/core/usecases/container';
+import { ListPendingWaitlistUseCase } from '@/core/usecases/list-pending-waitlist.usecase';
 import { db } from '@/db';
 import { waitlist } from '@/db/schema';
 import { acceptedEmail, rejectedEmail } from '@/emails/helpers/waitlist-emails';
@@ -8,13 +10,7 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function getWaitlistUser() {
-  const users = await db
-    .select()
-    .from(waitlist)
-    .where(eq(waitlist.status, 'PENDING'))
-    .orderBy(waitlist.createdAt);
-
-  return users;
+  return await useCase(ListPendingWaitlistUseCase).execute();
 }
 
 export async function updateWaitlistUserStatus(

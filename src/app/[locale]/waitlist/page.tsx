@@ -32,13 +32,13 @@ export default async function WaitlistPage() {
               <CardContent className="flex flex-col gap-4">
                 <p className="text-muted-foreground text-xs">
                   {t('waitlist.requested')}{' '}
-                  {new Date(user.createdAt).toLocaleDateString('en-US', {
+                  {user.createdAt.toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
                   {' · '}
-                  {new Date(user.createdAt).toLocaleTimeString('en-US', {
+                  {user.createdAt.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
