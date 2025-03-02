@@ -10,6 +10,9 @@ export class CourseRepo {
       description: course.description,
       creatorId: course.creatorId,
       embedding: course.embedding,
+      unitCount: course.unitCount,
+      sectionCount: course.sectionCount,
+      taskCount: course.taskCount,
     });
   }
 }

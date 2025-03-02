@@ -1,3 +1,4 @@
+import { TaskCard, TaskCardXD } from '@/components/task-card';
 import { buttonVariants } from '@/components/ui/button';
 import {
   getCourses,
@@ -9,7 +10,6 @@ import { ArrowRightIcon } from 'lucide-react';
 import { setStaticParamsLocale } from 'next-international/server';
 import Link from 'next/link';
 import React from 'react';
-import { TaskCard, TaskCardXD } from './task-card';
 
 export const experimental_ppr = true;
 export const revalidate = 3600;
@@ -85,17 +85,15 @@ export default async function TasksPage({
               fallback={
                 <TaskCardXD
                   task={task}
-                  courseId={course_id}
                   unitOrder={1}
                   sectionOrder={1}
-                  progress={null}
+                  progress={undefined}
                 />
               }
               key={task.id}
             >
               <TaskCard
                 key={task.id}
-                courseId={course_id}
                 task={task}
                 unitOrder={1}
                 sectionOrder={1}
@@ -107,7 +105,7 @@ export default async function TasksPage({
       <div className="flex items-center gap-2">
         <Link
           prefetch
-          href={`/courses/${course_id}/tasks/1/2`}
+          href={`/courses/${course_id}/tasks/u/1/s/2`}
           className={buttonVariants({ variant: 'outline' })}
         >
           <ArrowRightIcon className="h-4 w-4" />

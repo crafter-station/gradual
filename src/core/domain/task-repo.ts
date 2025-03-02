@@ -16,6 +16,7 @@ export class TaskRepo {
         order: task.order,
         stepsCount: task.stepsCount,
         sectionId: task.sectionId,
+        courseId: task.courseId,
       })),
     );
   }

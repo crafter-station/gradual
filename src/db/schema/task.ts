@@ -10,6 +10,7 @@ import {
   vector,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { course } from './course';
 import { section } from './section';
 import { step } from './step';
 
@@ -19,7 +20,7 @@ export const taskTypeEnum = pgEnum('TASK_TYPE_ENUM', [
   'MULTISTEP',
 ]);
 
-export const task = pgTable('tasks', {
+export const task = pgTable('task', {
   id: uuid('id').primaryKey().defaultRandom(),
 
   order: integer('order').notNull(),
@@ -29,12 +30,16 @@ export const task = pgTable('tasks', {
 
   type: taskTypeEnum('type').notNull(),
 
-  experiencePoints: integer('experience_points').notNull().default(10),
-  stepsCount: integer('steps_count').notNull(),
+  experiencePoints: integer('experience_points').notNull().default(0),
+  stepsCount: integer('steps_count').notNull().default(0),
 
   sectionId: uuid('section_id')
     .notNull()
     .references(() => section.id),
+
+  courseId: uuid('course_id')
+    .notNull()
+    .references(() => course.id),
 
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()

@@ -1,3 +1,4 @@
+import { TaskCard, TaskCardXD } from '@/components/task-card';
 import { buttonVariants } from '@/components/ui/button';
 import {
   getCourses,
@@ -10,7 +11,6 @@ import { setStaticParamsLocale } from 'next-international/server';
 import Link from 'next/link';
 import React from 'react';
 import { z } from 'zod';
-import { TaskCard, TaskCardXD } from '../../task-card';
 
 export const experimental_ppr = true;
 export const revalidate = 3600;
@@ -100,17 +100,15 @@ export default async function TasksPage({
               fallback={
                 <TaskCardXD
                   task={task}
-                  courseId={course_id}
                   unitOrder={unitOrder}
                   sectionOrder={sectionOrder}
-                  progress={null}
+                  progress={undefined}
                 />
               }
               key={task.id}
             >
               <TaskCard
                 key={task.id}
-                courseId={course_id}
                 task={task}
                 unitOrder={unitOrder}
                 sectionOrder={sectionOrder}
@@ -123,7 +121,7 @@ export default async function TasksPage({
         {sectionOrder > 1 ? (
           <Link
             prefetch
-            href={`/courses/${course_id}/tasks/${unitOrder}/${sectionOrder - 1}`}
+            href={`/courses/${course_id}/tasks/u/${unitOrder}/s/${sectionOrder - 1}`}
             className={buttonVariants({ variant: 'outline' })}
           >
             <ArrowLeftIcon className="h-4 w-4" />
@@ -133,7 +131,7 @@ export default async function TasksPage({
           unitOrder > 1 && (
             <Link
               prefetch
-              href={`/courses/${course_id}/tasks/${unitOrder - 1}/1`}
+              href={`/courses/${course_id}/tasks/u/${unitOrder - 1}/s/1`}
               className={buttonVariants({ variant: 'outline' })}
             >
               <ArrowLeftIcon className="h-4 w-4" />
@@ -144,7 +142,7 @@ export default async function TasksPage({
         {sectionOrder < unitSectionCount ? (
           <Link
             prefetch
-            href={`/courses/${course_id}/tasks/${unitOrder}/${sectionOrder + 1}`}
+            href={`/courses/${course_id}/tasks/u/${unitOrder}/s/${sectionOrder + 1}`}
             className={buttonVariants({ variant: 'outline' })}
           >
             <ArrowRightIcon className="h-4 w-4" />
@@ -154,7 +152,7 @@ export default async function TasksPage({
           unitOrder < courseUnitCount && (
             <Link
               prefetch
-              href={`/courses/${course_id}/tasks/${unitOrder + 1}/1`}
+              href={`/courses/${course_id}/tasks/u/${unitOrder + 1}/s/1`}
               className={buttonVariants({ variant: 'outline' })}
             >
               <ArrowRightIcon className="h-4 w-4" />

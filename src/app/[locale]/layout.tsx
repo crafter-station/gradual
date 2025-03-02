@@ -9,7 +9,7 @@ import { extractRouterConfig } from 'uploadthing/server';
 import { gradualFileRouter } from '../api/uploadthing/core';
 
 const heebo = Heebo({
-  variable: '--font-heebo',
+  variable: '--font-heebo-sans',
   subsets: ['latin'],
   weight: ['400', '500', '700'],
 });
