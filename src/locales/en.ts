@@ -221,4 +221,12 @@ export default {
       },
     },
   },
+  waitlist: {
+    title: 'Join the Waitlist',
+    empty: 'No waitlist users found',
+    requested: 'Requested',
+    acceptButton: 'Accept',
+    rejectButton: 'Reject',
+    joinToast: 'You have joined the waitlist',
+  },
 } as const;
