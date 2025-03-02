@@ -17,6 +17,13 @@ export default clerkMiddleware(async (auth, request) => {
     return NextResponse.next();
   }
 
+  if (
+    request.nextUrl.pathname.split('/tasks/').length > 1 &&
+    request.nextUrl.pathname.split('/tasks/')[1].length === 36
+  ) {
+    await auth.protect();
+  }
+
   return I18nMiddleware(request);
 });
 
