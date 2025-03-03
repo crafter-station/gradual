@@ -1,5 +1,6 @@
 import { db } from '@/db';
-import { type SelectStep, stepProgress, taskProgress } from '@/db/schema';
+import { type SelectStep, taskProgress } from '@/db/schema';
+import * as schema from '@/db/schema';
 import { sql } from 'drizzle-orm';
 
 export async function getTaskProgress(userId: string, taskId: string) {
@@ -112,7 +113,7 @@ export async function getOrCreateStepProgress(
 
   if (!progress) {
     [progress] = await db
-      .insert(stepProgress)
+      .insert(schema.stepProgress)
       .values({
         taskId: taskId,
         userId: userId,

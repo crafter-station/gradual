@@ -1,23 +1,22 @@
 'use server';
 
 import { db } from '@/db';
-import { type SelectStep, stepProgress, taskProgress } from '@/db/schema';
+import type { SelectStep, StepProgressState } from '@/db/schema';
 import * as schema from '@/db/schema';
-import type { StepProgressState } from '@/db/schema/step/progress-state';
 import { currentUser } from '@clerk/nextjs/server';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+
 export type SubmitStepForm = {
   taskId: string;
-  courseId: string;
 };
 
 export async function submitStepAction(formData: FormData) {
   const form = Object.fromEntries(formData) as unknown as SubmitStepForm;
 
   try {
-    const date = new Date();
+    const now = new Date();
     const user = await currentUser();
     if (!user) {
       throw new Error('User not found');
@@ -29,12 +28,17 @@ export async function submitStepAction(formData: FormData) {
       throw new Error('User ID not found');
     }
 
-    const { taskId, courseId } = z
-      .object({
-        taskId: z.string().uuid(),
-        courseId: z.string().uuid(),
-      })
-      .parse(form);
+    const taskId = z.string().uuid().parse(form.taskId);
+
+    const [task] = await db
+      .select()
+      .from(schema.task)
+      .where(eq(schema.task.id, taskId))
+      .limit(1);
+
+    if (!task) {
+      throw new Error('Task not found');
+    }
 
     const [currentStepProgress] = await db
       .select()
@@ -69,22 +73,43 @@ export async function submitStepAction(formData: FormData) {
     const { isCorrect, state } = getData(currentStep as SelectStep, formData);
 
     await db
-      .update(stepProgress)
+      .update(schema.stepProgress)
       .set({
-        completedAt: date,
+        completedAt: now,
         isCorrect,
         state,
       })
-      .where(eq(stepProgress.id, currentStepProgress.id));
+      .where(eq(schema.stepProgress.id, currentStepProgress.id));
+
+    if (task.stepsCount === currentStep.order) {
+      await db
+        .update(schema.enrollment)
+        .set({ completedTasks: sql`${schema.enrollment.completedTasks} + 1` })
+        .where(
+          and(
+            eq(schema.enrollment.userId, userId),
+            eq(schema.enrollment.courseId, task.courseId),
+          ),
+        );
+    }
 
     await db
-      .update(taskProgress)
+      .update(schema.taskProgress)
       .set({
         stepsCompletedCount: currentStep.order,
+        incorrectStepsCount:
+          isCorrect === false
+            ? sql`${schema.taskProgress.incorrectStepsCount} + 1`
+            : undefined,
+        completedAt: task.stepsCount === currentStep.order ? now : undefined,
+        earnedExperiencePoints:
+          task.stepsCount === currentStep.order
+            ? sql`GREATEST(${task.experiencePoints} - ${schema.taskProgress.incorrectStepsCount} * 2 - ${isCorrect === false ? 2 : 0}, 0)`
+            : undefined,
       })
-      .where(eq(taskProgress.id, currentStepProgress.taskProgressId));
+      .where(eq(schema.taskProgress.id, currentStepProgress.taskProgressId));
 
-    revalidatePath(`/courses/${courseId}/tasks/${taskId}`);
+    revalidatePath(`/courses/${task.courseId}/tasks/${taskId}`);
   } catch (error) {
     console.log(error);
   }

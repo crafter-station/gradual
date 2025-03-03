@@ -1,5 +1,5 @@
 {
-  "id": "e5ae08b1-6170-4e5b-ba10-8b844f06cc96",
+  "id": "1da41468-e776-468a-846a-94e73409f222",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -300,7 +300,29 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "enrollment_user_id_course_id_index": {
+          "name": "enrollment_user_id_course_id_index",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "course_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "enrollment_user_id_user_id_fk": {
           "name": "enrollment_user_id_user_id_fk",
@@ -322,7 +344,13 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "enrollment_user_id_course_id_unique": {
+          "name": "enrollment_user_id_course_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id", "course_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -672,7 +700,56 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "user_id_step_id_index": {
+          "name": "user_id_step_id_index",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "step_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "user_id_task_id_step_id_index": {
+          "name": "user_id_task_id_step_id_index",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "task_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "step_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "step_progress_user_id_user_id_fk": {
           "name": "step_progress_user_id_user_id_fk",
@@ -712,7 +789,18 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "user_id_step_id_unique": {
+          "name": "user_id_step_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id", "step_id"]
+        },
+        "user_id_task_id_step_id_unique": {
+          "name": "user_id_task_id_step_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id", "task_id", "step_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -853,6 +941,13 @@
           "notNull": true,
           "default": 0
         },
+        "incorrect_steps_count": {
+          "name": "incorrect_steps_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
         "earned_experience_points": {
           "name": "earned_experience_points",
           "type": "integer",
@@ -872,7 +967,29 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "user_id_task_id_index": {
+          "name": "user_id_task_id_index",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "task_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "task_progress_task_id_task_id_fk": {
           "name": "task_progress_task_id_task_id_fk",
@@ -894,7 +1011,13 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "user_id_task_id_unique": {
+          "name": "user_id_task_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id", "task_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

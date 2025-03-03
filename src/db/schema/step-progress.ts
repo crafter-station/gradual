@@ -1,36 +1,62 @@
 import { relations } from 'drizzle-orm';
-import { boolean, jsonb, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  jsonb,
+  pgTable,
+  timestamp,
+  unique,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { step } from './step';
 import type { StepProgressState } from './step/progress-state';
 import { task } from './task';
 import { taskProgress } from './task-progress';
 import { user } from './user';
 
-export const stepProgress = pgTable('step_progress', {
-  id: uuid('id').primaryKey().defaultRandom(),
+export const stepProgress = pgTable(
+  'step_progress',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
 
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => user.id),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => user.id),
 
-  stepId: uuid('step_id')
-    .notNull()
-    .references(() => step.id),
+    stepId: uuid('step_id')
+      .notNull()
+      .references(() => step.id),
 
-  taskId: uuid('task_id')
-    .notNull()
-    .references(() => task.id),
+    taskId: uuid('task_id')
+      .notNull()
+      .references(() => task.id),
 
-  taskProgressId: uuid('task_progress_id')
-    .notNull()
-    .references(() => taskProgress.id),
+    taskProgressId: uuid('task_progress_id')
+      .notNull()
+      .references(() => taskProgress.id),
 
-  state: jsonb('state').$type<StepProgressState>(),
-  isCorrect: boolean('is_correct'),
+    state: jsonb('state').$type<StepProgressState>(),
+    isCorrect: boolean('is_correct'),
 
-  startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
-  completedAt: timestamp('completed_at', { withTimezone: true }),
-});
+    startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
+    completedAt: timestamp('completed_at', { withTimezone: true }),
+  },
+  (table) => [
+    uniqueIndex('user_id_step_id_index').on(table.userId, table.stepId),
+    unique('user_id_step_id_unique').on(table.userId, table.stepId),
+
+    uniqueIndex('user_id_task_id_step_id_index').on(
+      table.userId,
+      table.taskId,
+      table.stepId,
+    ),
+    unique('user_id_task_id_step_id_unique').on(
+      table.userId,
+      table.taskId,
+      table.stepId,
+    ),
+  ],
+);
 
 export type SelectStepProgress = typeof stepProgress.$inferSelect;
 

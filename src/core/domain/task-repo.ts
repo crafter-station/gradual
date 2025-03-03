@@ -17,6 +17,8 @@ export class TaskRepo {
         stepsCount: task.stepsCount,
         sectionId: task.sectionId,
         courseId: task.courseId,
+        // 10 XP for lesson tasks for now
+        experiencePoints: 10,
       })),
     );
   }

@@ -262,17 +262,20 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
     lastVisibleStepProgress.completedAt &&
     lastVisibleStep.order === task.stepsCount
   ) {
+    if (!currentTaskProgress.completedAt) {
+      throw new Error('Current task progress not found');
+    }
+
     stats = {
-      incorrectQuestionsCount: steps.filter(
-        (step) =>
-          step.type === 'QUESTION' &&
-          stepProgress?.find((progress) => progress.stepId === step.id)
-            ?.isCorrect === false,
-      ).length,
+      incorrectQuestionsCount: currentTaskProgress.incorrectStepsCount ?? 0,
       time:
-        lastVisibleStepProgress.completedAt.getTime() -
-        lastVisibleStepProgress.startedAt.getTime(),
-      questionsCount: steps.filter((step) => step.type === 'QUESTION').length,
+        currentTaskProgress.completedAt.getTime() -
+        currentTaskProgress.startedAt.getTime(),
+      questionsCount: steps.filter((step) =>
+        ['QUESTION', 'FILL_IN_THE_BLANK', 'MULTIPLE_CHOICE', 'BINARY'].includes(
+          step.type,
+        ),
+      ).length,
     };
   }
 

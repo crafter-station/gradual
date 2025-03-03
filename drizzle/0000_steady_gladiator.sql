@@ -36,7 +36,8 @@ CREATE TABLE "enrollment" (
 	"completed_sections" integer DEFAULT 0 NOT NULL,
 	"completed_tasks" integer DEFAULT 0 NOT NULL,
 	"started_at" timestamp with time zone NOT NULL,
-	"finished_at" timestamp with time zone
+	"finished_at" timestamp with time zone,
+	CONSTRAINT "enrollment_user_id_course_id_unique" UNIQUE("user_id","course_id")
 );
 --> statement-breakpoint
 CREATE TABLE "section" (
@@ -72,7 +73,9 @@ CREATE TABLE "step_progress" (
 	"state" jsonb,
 	"is_correct" boolean,
 	"started_at" timestamp with time zone NOT NULL,
-	"completed_at" timestamp with time zone
+	"completed_at" timestamp with time zone,
+	CONSTRAINT "user_id_step_id_unique" UNIQUE("user_id","step_id"),
+	CONSTRAINT "user_id_task_id_step_id_unique" UNIQUE("user_id","task_id","step_id")
 );
 --> statement-breakpoint
 CREATE TABLE "step" (
@@ -90,9 +93,11 @@ CREATE TABLE "task_progress" (
 	"task_id" uuid NOT NULL,
 	"user_id" uuid NOT NULL,
 	"steps_completed_count" integer DEFAULT 0 NOT NULL,
+	"incorrect_steps_count" integer DEFAULT 0 NOT NULL,
 	"earned_experience_points" integer,
 	"started_at" timestamp with time zone NOT NULL,
-	"completed_at" timestamp with time zone
+	"completed_at" timestamp with time zone,
+	CONSTRAINT "user_id_task_id_unique" UNIQUE("user_id","task_id")
 );
 --> statement-breakpoint
 CREATE TABLE "task" (
@@ -153,6 +158,7 @@ CREATE INDEX "chunks_source_id_order_index" ON "chunk" USING btree ("source_id",
 CREATE INDEX "chunks_source_id_index" ON "chunk" USING btree ("source_id");--> statement-breakpoint
 CREATE INDEX "chunks_embedding_index" ON "chunk" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
 CREATE INDEX "courses_embedding_index" ON "course" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "enrollment_user_id_course_id_index" ON "enrollment" USING btree ("user_id","course_id");--> statement-breakpoint
 CREATE INDEX "sections_unit_id_order_index" ON "section" USING btree ("unit_id","order");--> statement-breakpoint
 CREATE INDEX "sections_unit_id_index" ON "section" USING btree ("unit_id");--> statement-breakpoint
 CREATE INDEX "sections_embedding_index" ON "section" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
@@ -160,8 +166,11 @@ CREATE INDEX "source_type_index" ON "source" USING btree ("type");--> statement-
 CREATE INDEX "source_course_id_index" ON "source" USING btree ("course_id");--> statement-breakpoint
 CREATE INDEX "source_chunks_count_index" ON "source" USING btree ("chunks_count");--> statement-breakpoint
 CREATE INDEX "source_embedding_index" ON "source" USING hnsw ("embedding" vector_cosine_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX "user_id_step_id_index" ON "step_progress" USING btree ("user_id","step_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "user_id_task_id_step_id_index" ON "step_progress" USING btree ("user_id","task_id","step_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "steps_order_task_id_unique" ON "step" USING btree ("order","task_id");--> statement-breakpoint
 CREATE INDEX "steps_for_task" ON "step" USING btree ("task_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "user_id_task_id_index" ON "task_progress" USING btree ("user_id","task_id");--> statement-breakpoint
 CREATE INDEX "units_course_id_order_index" ON "unit" USING btree ("course_id","order");--> statement-breakpoint
 CREATE INDEX "units_course_id_index" ON "unit" USING btree ("course_id");--> statement-breakpoint
 CREATE INDEX "units_embedding_index" ON "unit" USING hnsw ("embedding" vector_cosine_ops);
