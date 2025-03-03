@@ -101,6 +101,10 @@ export default {
         learning: 'Still Learning',
       },
     },
+    students: {
+      title: 'Students',
+      description: 'View all students enrolled in this course',
+    },
     notes: {
       title: 'My Notes',
       description: 'Review and manage your course notes',

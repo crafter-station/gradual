@@ -19,6 +19,7 @@ export const getCourse = db
     title: schema.course.title,
     description: schema.course.description,
     unitCount: schema.course.unitCount,
+    creatorId: schema.course.creatorId,
   })
   .from(schema.course)
   .where(eq(schema.course.id, sql.placeholder('courseId')))
@@ -71,6 +72,18 @@ export const getFullCourse = db.query.course
     },
   })
   .prepare('getCourseWithSyllabus');
+
+export const getStudents = db
+  .select({
+    id: schema.user.id,
+    fullname: schema.user.fullname,
+    avatarUrl: schema.user.avatarUrl,
+    enrollmentDate: schema.enrollment.startedAt,
+  })
+  .from(schema.user)
+  .innerJoin(schema.enrollment, eq(schema.user.id, schema.enrollment.userId))
+  .where(eq(schema.enrollment.courseId, sql.placeholder('courseId')))
+  .prepare('getStudents');
 
 export const getTaskProgress = db
   .select({
