@@ -1,9 +1,8 @@
+import { MarkdownComponents } from '@/components/markdown-components';
 import { StepCard } from '@/components/step-card';
 import type { StepContent } from '@/db/schema/step';
-import { LightbulbIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
-import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
@@ -29,41 +28,31 @@ export const ActiveSolvedExerciseStep = ({
             {/* Content */}
             <div className="relative space-y-6">
               {/* Title */}
-              <div className="flex items-center justify-center gap-3">
-                <div className="relative">
-                  <div className="-inset-1 absolute animate-pulse rounded-full bg-primary/20 blur-md" />
-                  <div className="relative rounded-full border border-primary/20 bg-primary/5 p-2">
-                    <LightbulbIcon className="h-4 w-4 text-primary" />
-                  </div>
-                </div>
-                <h2 className="text-center font-medium font-mono text-foreground/80 text-lg tracking-tight">
-                  {content.title}
-                </h2>
-              </div>
+              <h2 className="text-center font-bold font-serif text-xl uppercase tracking-wide [word-spacing:6px]">
+                {content.title}
+              </h2>
 
               {/* Problem */}
-              <div className="prose prose-neutral dark:prose-invert max-w-none prose-p:text-muted-foreground/90 prose-strong:text-foreground/90 prose-p:leading-relaxed">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm, remarkMath]}
-                  rehypePlugins={[rehypeKatex, rehypeRaw]}
-                >
-                  {content.body}
-                </ReactMarkdown>
-              </div>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                components={MarkdownComponents}
+              >
+                {content.body}
+              </ReactMarkdown>
 
               {/* Solution */}
-              <div className="rounded-xl border border-primary/10 bg-primary/[0.02] p-6">
-                <h3 className="mb-4 font-medium text-primary/60 text-sm uppercase tracking-wide">
+              <div className="space-y-4 border border-primary/10 bg-primary/[0.02] p-6">
+                <h3 className="font-bold text-flexoki-blue tracking-wide">
                   Solution
                 </h3>
-                <div className="prose prose-neutral dark:prose-invert max-w-none prose-em:text-primary/60 prose-p:text-muted-foreground/90 prose-strong:text-foreground/90 prose-p:leading-relaxed">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeKatex, rehypeRaw]}
-                  >
-                    {content.solution}
-                  </ReactMarkdown>
-                </div>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={MarkdownComponents}
+                >
+                  {content.solution}
+                </ReactMarkdown>
               </div>
             </div>
           </div>

@@ -17,10 +17,10 @@ export const ActiveFunFactStep = ({ content }: ActiveFunFactStepProps) => {
           <div className="relative">
             {/* Background decoration */}
             <div className="-top-12 -left-12 absolute h-24 w-24 rounded-full bg-gradient-to-br from-flexoki-yellow/20 via-flexoki-orange/10 to-transparent blur-2xl" />
-            <div className="-bottom-12 -right-12 absolute h-24 w-24 rounded-full bg-gradient-to-br from-flexoki-blue/20 via-flexoki-purple/10 to-transparent blur-2xl" />
+            <div className="-bottom-12 -right-12 absolute h-24 w-24 rounded-full bg-gradient-to-br from-flexoki-yellow/20 via-flexoki-orange/10 to-transparent blur-2xl" />
 
             {/* Content */}
-            <div className="relative rounded-2xl border border-flexoki-yellow/10 bg-gradient-to-b from-flexoki-yellow/[0.02] to-transparent p-8">
+            <div className="relative rounded-2xl border border-flexoki-yellow/10 bg-background/20 bg-gradient-to-b from-flexoki-yellow/[0.02] to-transparent p-8 backdrop-blur-xs">
               {/* Icon */}
               <div className="mb-6 flex justify-center">
                 <div className="relative">
@@ -32,18 +32,12 @@ export const ActiveFunFactStep = ({ content }: ActiveFunFactStepProps) => {
               </div>
 
               {/* Title */}
-              <h2 className="mb-4 text-center font-medium font-mono text-foreground/80 text-lg tracking-tight">
+              <h2 className="mb-6 text-center font-bold font-serif text-xl uppercase tracking-wide [word-spacing:6px]">
                 {content.title}
               </h2>
 
               {/* Body */}
-              <p className="text-base text-muted-foreground leading-relaxed">
-                {content.body}
-              </p>
-
-              {/* Decorative elements */}
-              <div className="-translate-y-1/2 absolute top-1/2 left-6 h-24 w-[1px] bg-gradient-to-b from-transparent via-flexoki-yellow/10 to-transparent" />
-              <div className="-translate-y-1/2 absolute top-1/2 right-6 h-24 w-[1px] bg-gradient-to-b from-transparent via-flexoki-yellow/10 to-transparent" />
+              <p className="text-base leading-relaxed">{content.body}</p>
             </div>
           </div>
         </div>

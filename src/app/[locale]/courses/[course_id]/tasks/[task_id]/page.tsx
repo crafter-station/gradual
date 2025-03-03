@@ -193,8 +193,6 @@ export default async function TaskPage({
                   id={currentVisibleStep.id}
                   key={currentVisibleStep.id}
                   content={currentVisibleStep.content}
-                  stepOrder={currentStepIndex + 1}
-                  totalSteps={currentTask.stepsCount}
                   progressState={currentVisibleStepProgress.state}
                 />
               ) : (
@@ -207,8 +205,6 @@ export default async function TaskPage({
                     ),
                   ].sort(() => Math.random() - 0.5)}
                   questionBody={currentVisibleStep.content.questionBody}
-                  stepOrder={currentStepIndex + 1}
-                  totalSteps={currentTask.stepsCount}
                 />
               ))}
             {currentVisibleStep.type === 'INTRODUCTION' &&
@@ -275,8 +271,6 @@ export default async function TaskPage({
                 <ActiveTutorialStep
                   key={currentVisibleStep.id}
                   content={currentVisibleStep.content}
-                  stepOrder={currentStepIndex + 1}
-                  totalSteps={currentTask.stepsCount}
                 />
               ))}
             {currentVisibleStep.type === 'BINARY' &&

@@ -14,19 +14,11 @@ export const ActiveDefinitionStep = ({
 }: ActiveDefinitionStepProps) => {
   return (
     <StepCard stepType="Definition">
-      <div className="relative space-y-6">
-        {/* Term */}
-        <h1 className="text-center font-medium font-mono text-2xl text-foreground/90 tracking-tight transition-colors duration-300 group-hover:text-primary">
-          {content.term}
-        </h1>
+      <h1 className="mt-1 text-center font-extrabold font-serif text-flexoki-black/90 text-xl uppercase tracking-wide [word-spacing:6px]">
+        {content.term}
+      </h1>
 
-        {/* Definition */}
-        <div className="mx-auto max-w-[600px]">
-          <p className="text-base text-muted-foreground/90 leading-relaxed">
-            {content.definition}
-          </p>
-        </div>
-      </div>
+      <p className="text-center leading-[1.58rem]">{content.definition}</p>
     </StepCard>
   );
 };

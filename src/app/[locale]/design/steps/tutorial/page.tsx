@@ -1,4 +1,5 @@
 import { ActiveTutorialStep } from '@/app/[locale]/courses/[course_id]/tasks/[task_id]/tutorial-step/active';
+import { DoneTutorialStep } from '@/app/[locale]/courses/[course_id]/tasks/[task_id]/tutorial-step/done';
 import type { StepContent, StepType } from '@/db/schema';
 import { getStepProgress, getSteps } from '../helpers';
 
@@ -16,16 +17,14 @@ export default async function StepsPage() {
         return (
           <div key={step.id} className="space-y-4">
             <ActiveTutorialStep
-              stepOrder={step.order}
-              totalSteps={steps.length}
               content={step.content as StepContent & { type: 'TUTORIAL' }}
             />
 
             {progress?.completedAt && (
-              <ActiveTutorialStep
+              <DoneTutorialStep
+                content={step.content as StepContent & { type: 'TUTORIAL' }}
                 stepOrder={step.order}
                 totalSteps={steps.length}
-                content={step.content as StepContent & { type: 'TUTORIAL' }}
               />
             )}
           </div>

@@ -149,7 +149,12 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: var(--font-heebo-sans);
+  font-family: var(--font-geist);
+}
+
+code {
+  font-family: var(--font-geist-mono);
+  font-size: 0.875rem;
 }
 
 @layer utilities {
@@ -194,10 +199,14 @@ body {
   }
 
   .font-sans {
-    font-family: var(--font-heebo-sans);
+    font-family: var(--font-geist);
   }
 
   .font-mono {
     font-family: var(--font-geist-mono);
+  }
+
+  .font-serif {
+    font-family: var(--font-noto-serif-khojki);
   }
 }

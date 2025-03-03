@@ -1,5 +1,6 @@
 'use client';
 
+import { MarkdownComponents } from '@/components/markdown-components';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -23,7 +24,6 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
-import 'katex/dist/katex.min.css';
 
 interface Note {
   id: string;
@@ -192,45 +192,6 @@ System responses to disturbances:
   ];
 
   // Custom components for ReactMarkdown
-  const MarkdownComponents: Record<
-    string,
-    React.ComponentType<{ children: React.ReactNode }>
-  > = {
-    h1: ({ children }: { children: React.ReactNode }) => (
-      <h1 className="mt-8 mb-4 scroll-m-20 border-b pb-2 font-bold text-2xl tracking-tight lg:text-3xl">
-        {children}
-      </h1>
-    ),
-    h2: ({ children }: { children: React.ReactNode }) => (
-      <h2 className="mt-8 mb-4 scroll-m-20 border-b pb-2 font-semibold text-xl tracking-tight lg:text-2xl">
-        {children}
-      </h2>
-    ),
-    h3: ({ children }: { children: React.ReactNode }) => (
-      <h3 className="mt-8 mb-4 scroll-m-20 font-semibold text-lg tracking-tight lg:text-xl">
-        {children}
-      </h3>
-    ),
-    p: ({ children }: { children: React.ReactNode }) => (
-      <p className="leading-7 [&:not(:first-child)]:mt-4">{children}</p>
-    ),
-    ul: ({ children }: { children: React.ReactNode }) => (
-      <ul className="my-6 ml-6 list-disc [&>li]:mt-2">{children}</ul>
-    ),
-    ol: ({ children }: { children: React.ReactNode }) => (
-      <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">{children}</ol>
-    ),
-    blockquote: ({ children }: { children: React.ReactNode }) => (
-      <blockquote className="mt-6 border-flexoki-blue border-l-2 pl-6 text-muted-foreground italic">
-        {children}
-      </blockquote>
-    ),
-    code: ({ children }: { children: React.ReactNode }) => (
-      <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
-        {children}
-      </code>
-    ),
-  };
 
   return (
     <div className="h-[calc(100vh-12rem)]">

@@ -15,7 +15,9 @@ export default function StepsLayout({
           <StepButton key={x} type={x} />
         ))}
       </div>
-      <div className="mx-auto grid max-w-lg grid-cols-1 gap-16">{children}</div>
+      <div className="mx-auto grid max-w-2xl grid-cols-1 gap-16">
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { StepCard } from '@/components/step-card';
 import type { StepContent } from '@/db/schema/step';
-import { QuoteIcon } from 'lucide-react';
 
 interface ActiveQuoteStepProps {
   content: StepContent & {
@@ -11,22 +10,19 @@ interface ActiveQuoteStepProps {
 export const ActiveQuoteStep = ({ content }: ActiveQuoteStepProps) => {
   return (
     <StepCard stepType="Quote">
-      <div className="relative space-y-8">
+      <div className="relative flex h-full flex-col items-center space-y-6 pt-4">
         <div className="mx-auto max-w-[700px]">
           {/* Quote */}
           <figure className="relative">
-            <QuoteIcon
-              className="-top-8 -left-8 absolute h-16 w-16 text-primary/5"
-              aria-hidden="true"
-            />
             <blockquote className="relative">
-              <p className="text-left font-serif text-3xl text-foreground/90 italic tracking-tight md:text-4xl">
+              <p className="relative block font-serif text-[24px] leading-[1.33] md:text-[30px] [&>p]:inline [&>p]:font-medium [&>p]:font-serif [&>p]:leading-[inherit]">
                 “{content.body}”
               </p>
             </blockquote>
             <figcaption className="mt-8">
-              <div className="text-right font-medium text-base text-muted-foreground">
-                — {content.author}
+              <div className="mt-[25px] ml-auto flex w-full items-center gap-2 text-base text-muted-foreground md:w-[50%]">
+                <div className="hidden h-px flex-grow bg-muted-foreground/30 md:block" />
+                {content.author}
               </div>
             </figcaption>
           </figure>

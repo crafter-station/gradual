@@ -50,7 +50,7 @@ export default async function CoursesPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="flex h-12 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="flex h-12 shrink-0 items-center gap-2 border-b bg-card backdrop-blur supports-[backdrop-filter]:bg-card">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1 animate-fade-in" />
           <Separator orientation="vertical" className="mr-2 h-4" />
@@ -94,7 +94,7 @@ export default async function CoursesPage() {
               return (
                 <Card
                   key={course.id}
-                  className="group relative animate-fade-up overflow-hidden border-border/40 bg-gradient-to-b from-background to-background/80 transition-all duration-500 hover:border-border/60 hover:shadow-lg hover:shadow-primary/5"
+                  className="group relative animate-fade-up overflow-hidden border-border/40 bg-gradient-to-b from-card to-card/80 transition-all duration-500 hover:border-border/60 hover:shadow-lg hover:shadow-primary/5"
                   style={{ animationDelay: `${index * 75}ms` }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.075] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
