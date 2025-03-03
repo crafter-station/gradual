@@ -1,8 +1,6 @@
 import { GradualLogo } from '@/components/gradual-logo';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { getI18n } from '@/locales/server';
-import { ArrowRightIcon } from 'lucide-react';
+import { WaitlistForm } from './form';
 
 export default async function Home() {
   const t = await getI18n();
@@ -145,28 +143,7 @@ export default async function Home() {
                     </p>
                   </div>
 
-                  <form className="space-y-3">
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                      <Input
-                        type="text"
-                        placeholder={t('landing.waitlist.namePlaceholder')}
-                        className="h-12"
-                      />
-                      <Input
-                        type="email"
-                        placeholder={t('landing.waitlist.emailPlaceholder')}
-                        className="h-12"
-                      />
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="group h-12 min-w-[140px] gap-2"
-                      >
-                        {t('landing.waitlist.joinButton')}
-                        <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                      </Button>
-                    </div>
-                  </form>
+                  <WaitlistForm />
                 </div>
               </div>
             </div>
