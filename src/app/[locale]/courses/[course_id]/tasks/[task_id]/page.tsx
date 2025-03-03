@@ -110,6 +110,25 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
     steps.push(step as SelectStep);
 
+    const [enrollment] = await db
+      .select()
+      .from(schema.enrollment)
+      .where(
+        and(
+          eq(schema.enrollment.userId, userId),
+          eq(schema.enrollment.courseId, course_id),
+        ),
+      )
+      .limit(1);
+
+    if (!enrollment) {
+      await db.insert(schema.enrollment).values({
+        userId,
+        courseId: course_id,
+        startedAt: now,
+      });
+    }
+
     const taskProgressId = uuidv4();
 
     const [_taskProgress] = await db

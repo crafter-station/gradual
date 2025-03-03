@@ -15,4 +15,11 @@ export class CourseRepo {
       taskCount: course.taskCount,
     });
   }
+  async enrollCreator(course: Course): Promise<void> {
+    await db.insert(schema.enrollment).values({
+      userId: course.creatorId,
+      courseId: course.id,
+      startedAt: new Date(),
+    });
+  }
 }

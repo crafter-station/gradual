@@ -103,6 +103,10 @@ export default {
         learning: 'Aprendiendo',
       },
     },
+    students: {
+      title: 'Estudiantes',
+      description: 'Ver todos los estudiantes inscritos en este curso',
+    },
     notes: {
       title: 'Mis Notas',
       description: 'Revisa y administra tus notas del curso',
