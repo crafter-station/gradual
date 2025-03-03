@@ -17,7 +17,11 @@ if (!global.db) {
     global.sql = neon(process.env.DATABASE_URL);
   }
 
-  global.db = drizzle({ client: global.sql, schema });
+  global.db = drizzle({
+    client: global.sql,
+    schema,
+    logger: process.env.NODE_ENV === 'development',
+  });
 }
 
 // biome-ignore lint/suspicious/noRedeclare: <explanation>
