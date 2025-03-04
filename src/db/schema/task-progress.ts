@@ -3,7 +3,6 @@ import {
   integer,
   pgTable,
   timestamp,
-  unique,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
@@ -33,7 +32,6 @@ export const taskProgress = pgTable(
   },
   (table) => [
     uniqueIndex('user_id_task_id_index').on(table.userId, table.taskId),
-    unique('user_id_task_id_unique').on(table.userId, table.taskId),
   ],
 );
 export type SelectTaskProgress = typeof taskProgress.$inferSelect;

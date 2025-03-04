@@ -7,7 +7,7 @@ import type {
 } from '@/db/schema';
 import { currentUser } from '@clerk/nextjs/server';
 import { and, eq, inArray } from 'drizzle-orm';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 import { ActiveIntroductionStep } from './introduction-step/active';
 import { DoneIntroductionStep } from './introduction-step/done';
@@ -24,7 +24,7 @@ type PageProps = {
 
 export default async function TaskPage({ params }: Readonly<PageProps>) {
   const params_ = await params;
-  const { task_id, course_id } = params_;
+  const { task_id: taskId, course_id: courseId } = params_;
 
   const now = new Date();
 
@@ -39,8 +39,8 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
         order: true,
       },
       where: and(
-        eq(schema.task.id, task_id),
-        eq(schema.task.courseId, course_id),
+        eq(schema.task.id, taskId),
+        eq(schema.task.courseId, courseId),
       ),
       with: {
         section: {
@@ -71,6 +71,21 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
   if (!task) return notFound();
 
+  const [enrollment] = await db
+    .select()
+    .from(schema.enrollment)
+    .where(
+      and(
+        eq(schema.enrollment.userId, userId),
+        eq(schema.enrollment.courseId, courseId),
+      ),
+    )
+    .limit(1);
+
+  if (!enrollment) {
+    return redirect(`/courses/${courseId}?enroll-first=true`);
+  }
+
   const steps: SelectStep[] = [];
 
   let currentTaskProgress: SelectTaskProgress | undefined;
@@ -78,17 +93,22 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
   const stepProgress = (await db
     .select({
       id: schema.stepProgress.id,
+
+      userId: schema.stepProgress.userId,
+      stepId: schema.stepProgress.stepId,
+      taskId: schema.stepProgress.taskId,
+
+      taskProgressId: schema.stepProgress.taskProgressId,
+
       startedAt: schema.stepProgress.startedAt,
       completedAt: schema.stepProgress.completedAt,
-      stepId: schema.stepProgress.stepId,
-      taskProgressId: schema.stepProgress.taskProgressId,
       state: schema.stepProgress.state,
     })
     .from(schema.stepProgress)
     .where(
       and(
         eq(schema.stepProgress.userId, userId),
-        eq(schema.stepProgress.taskId, task_id),
+        eq(schema.stepProgress.taskId, taskId),
       ),
     )) as SelectStepProgress[];
 
@@ -101,7 +121,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
         order: schema.step.order,
       })
       .from(schema.step)
-      .where(and(eq(schema.step.taskId, task_id), eq(schema.step.order, 1)))
+      .where(and(eq(schema.step.taskId, taskId), eq(schema.step.order, 1)))
       .limit(1);
 
     if (!step) {
@@ -110,25 +130,6 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
     steps.push(step as SelectStep);
 
-    const [enrollment] = await db
-      .select()
-      .from(schema.enrollment)
-      .where(
-        and(
-          eq(schema.enrollment.userId, userId),
-          eq(schema.enrollment.courseId, course_id),
-        ),
-      )
-      .limit(1);
-
-    if (!enrollment) {
-      await db.insert(schema.enrollment).values({
-        userId,
-        courseId: course_id,
-        startedAt: now,
-      });
-    }
-
     const taskProgressId = uuidv4();
 
     const [_taskProgress] = await db
@@ -136,14 +137,10 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       .values({
         id: taskProgressId,
         userId,
-        taskId: task_id,
+        taskId,
         startedAt: now,
       })
       .returning();
-
-    if (!_taskProgress) {
-      throw new Error('Task progress not found');
-    }
 
     currentTaskProgress = _taskProgress as SelectTaskProgress;
 
@@ -151,10 +148,10 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       .insert(schema.stepProgress)
       .values({
         userId,
-        taskId: task_id,
+        taskId,
         startedAt: now,
         stepId: step.id,
-        taskProgressId: taskProgressId,
+        taskProgressId,
       })
       .returning();
 
@@ -187,7 +184,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       .where(
         inArray(
           schema.step.id,
-          stepProgress.map((step) => step.stepId),
+          stepProgress.map((p) => p.stepId),
         ),
       );
 
@@ -218,7 +215,12 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
             order: schema.step.order,
           })
           .from(schema.step)
-          .where(eq(schema.step.order, lastStep.order + 1))
+          .where(
+            and(
+              eq(schema.step.order, lastStep.order + 1),
+              eq(schema.step.taskId, taskId),
+            ),
+          )
           .limit(1);
 
         if (!nextStep) {
@@ -227,14 +229,15 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
 
         steps.push(nextStep as SelectStep);
 
-        const [_stepProgress] = await db
+        const [_nextStepProgress] = await db
           .insert(schema.stepProgress)
           .values({
             userId,
-            taskId: task_id,
-            startedAt: now,
             stepId: nextStep.id,
+            taskId,
             taskProgressId: lastStepProgress.taskProgressId,
+
+            startedAt: now,
           })
           .returning();
 
@@ -242,7 +245,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           throw new Error('Step progress not found');
         }
 
-        stepProgress.push(_stepProgress as SelectStepProgress);
+        stepProgress.push(_nextStepProgress as SelectStepProgress);
       }
     }
   }
@@ -324,8 +327,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
         })}
 
         <form action={submitStepAction}>
-          <input type="hidden" name="taskId" value={task_id} />
-          <input type="hidden" name="courseId" value={course_id} />
+          <input type="hidden" name="taskId" value={taskId} />
 
           {lastVisibleStep?.type === 'QUESTION' &&
             (lastVisibleStepProgress?.state?.type === 'QUESTION' ? (

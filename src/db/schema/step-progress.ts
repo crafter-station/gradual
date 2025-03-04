@@ -4,7 +4,6 @@ import {
   jsonb,
   pgTable,
   timestamp,
-  unique,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
@@ -43,14 +42,8 @@ export const stepProgress = pgTable(
   },
   (table) => [
     uniqueIndex('user_id_step_id_index').on(table.userId, table.stepId),
-    unique('user_id_step_id_unique').on(table.userId, table.stepId),
 
     uniqueIndex('user_id_task_id_step_id_index').on(
-      table.userId,
-      table.taskId,
-      table.stepId,
-    ),
-    unique('user_id_task_id_step_id_unique').on(
       table.userId,
       table.taskId,
       table.stepId,

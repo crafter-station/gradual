@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import { CourseHeader } from './components/course-header';
 import { CourseHero } from './components/course-hero';
 import { Tabs } from './components/tabs';
+import React from 'react';
+import { Enrollment } from './components/enrollment';
 
 export const metadata = {
   title: 'Course',
@@ -23,6 +25,7 @@ export async function generateStaticParams() {
 }
 
 export const revalidate = 3600;
+export const experimental_ppr = true;
 
 export default async function CoursePage({
   params,
@@ -55,6 +58,10 @@ export default async function CoursePage({
           unitCount={course.unitCount}
           t={t}
         />
+
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <Enrollment courseId={courseId} />
+        </React.Suspense>
 
         <div className="mx-auto max-w-7xl px-6">
           <Tabs courseId={courseId} />
