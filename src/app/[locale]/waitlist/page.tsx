@@ -1,3 +1,4 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -6,12 +7,26 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { getI18n } from '@/locales/server';
-import { getWaitlistUser } from './helpers';
+import type { WaitRecord } from '@/core/domain/wait-record';
+import { useI18n } from '@/locales/client';
+import React from 'react';
+import { toast } from 'sonner';
+import { updateUserStatus } from './update-user.action';
 
-export default async function WaitlistPage() {
-  const users = await getWaitlistUser();
-  const t = await getI18n();
+interface WaitlistPageProps {
+  users: WaitRecord[];
+}
+
+export default function WaitlistPage({ users }: WaitlistPageProps) {
+  const [state, formAction] = React.useActionState(updateUserStatus, undefined);
+  const t = useI18n();
+
+  React.useEffect(() => {
+    if (state?.success) {
+      toast.success(t('waitlist.updateSuccess'));
+      window.location.reload();
+    }
+  }, [state, t]);
 
   return (
     <div className="container mx-auto flex-1 overflow-auto p-6">
@@ -44,10 +59,24 @@ export default async function WaitlistPage() {
                   })}
                 </p>
                 <div className="flex gap-2 *:w-full">
-                  <Button type="submit">{t('waitlist.acceptButton')}</Button>
-                  <Button type="submit" variant="outline">
-                    {t('waitlist.rejectButton')}
-                  </Button>
+                  <form action={formAction}>
+                    <input type="hidden" name="id" value={user.id} />
+                    <input type="hidden" name="name" value={user.name} />
+                    <input type="hidden" name="email" value={user.email} />
+                    <input type="hidden" name="status" value="ACCEPTED" />
+                    <Button type="submit" className="w-full">
+                      {t('waitlist.acceptButton')}
+                    </Button>
+                  </form>
+                  <form action={formAction}>
+                    <input type="hidden" name="id" value={user.id} />
+                    <input type="hidden" name="name" value={user.name} />
+                    <input type="hidden" name="email" value={user.email} />
+                    <input type="hidden" name="status" value="REJECTED" />
+                    <Button type="submit" variant="outline" className="w-full">
+                      {t('waitlist.rejectButton')}
+                    </Button>
+                  </form>
                 </div>
               </CardContent>
             </Card>
