@@ -3,6 +3,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 CREATE TYPE "public"."SOURCE_TYPE_ENUM" AS ENUM('FILE', 'URL');--> statement-breakpoint
 CREATE TYPE "public"."STEP_TYPE_ENUM" AS ENUM('INTRODUCTION', 'DEFINITION', 'ANALOGY', 'TUTORIAL', 'SOLVED_EXERCISE', 'FUN_FACT', 'QUOTE', 'QUESTION', 'FILL_IN_THE_BLANK', 'MULTIPLE_CHOICE', 'BINARY');--> statement-breakpoint
 CREATE TYPE "public"."TASK_TYPE_ENUM" AS ENUM('LESSON', 'QUIZ', 'MULTISTEP');--> statement-breakpoint
+CREATE TYPE "public"."WAITLIST_STATUS" AS ENUM('PENDING', 'ACCEPTED', 'REJECTED');--> statement-breakpoint
 CREATE TABLE "chunk" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"source_id" uuid NOT NULL,
@@ -73,9 +74,7 @@ CREATE TABLE "step_progress" (
 	"state" jsonb,
 	"is_correct" boolean,
 	"started_at" timestamp with time zone NOT NULL,
-	"completed_at" timestamp with time zone,
-	CONSTRAINT "user_id_step_id_unique" UNIQUE("user_id","step_id"),
-	CONSTRAINT "user_id_task_id_step_id_unique" UNIQUE("user_id","task_id","step_id")
+	"completed_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "step" (
@@ -96,8 +95,7 @@ CREATE TABLE "task_progress" (
 	"incorrect_steps_count" integer DEFAULT 0 NOT NULL,
 	"earned_experience_points" integer,
 	"started_at" timestamp with time zone NOT NULL,
-	"completed_at" timestamp with time zone,
-	CONSTRAINT "user_id_task_id_unique" UNIQUE("user_id","task_id")
+	"completed_at" timestamp with time zone
 );
 --> statement-breakpoint
 CREATE TABLE "task" (
@@ -135,6 +133,14 @@ CREATE TABLE "user" (
 	"email" varchar NOT NULL,
 	"avatar_url" text NOT NULL,
 	CONSTRAINT "user_clerk_id_unique" UNIQUE("clerk_id")
+);
+--> statement-breakpoint
+CREATE TABLE "waitlist" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" varchar NOT NULL,
+	"email" varchar NOT NULL,
+	"created_at" text DEFAULT now() NOT NULL,
+	"status" "WAITLIST_STATUS" DEFAULT 'PENDING' NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "chunk" ADD CONSTRAINT "chunk_source_id_source_id_fk" FOREIGN KEY ("source_id") REFERENCES "public"."source"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

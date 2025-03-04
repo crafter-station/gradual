@@ -1,5 +1,5 @@
 {
-  "id": "1da41468-e776-468a-846a-94e73409f222",
+  "id": "09b551ed-c36d-405d-a297-2feaf9b87e14",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -789,18 +789,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "user_id_step_id_unique": {
-          "name": "user_id_step_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["user_id", "step_id"]
-        },
-        "user_id_task_id_step_id_unique": {
-          "name": "user_id_task_id_step_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["user_id", "task_id", "step_id"]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1011,13 +1000,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "user_id_task_id_unique": {
-          "name": "user_id_task_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["user_id", "task_id"]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1320,6 +1303,53 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.waitlist": {
+      "name": "waitlist",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "status": {
+          "name": "status",
+          "type": "WAITLIST_STATUS",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -1349,6 +1379,11 @@
       "name": "TASK_TYPE_ENUM",
       "schema": "public",
       "values": ["LESSON", "QUIZ", "MULTISTEP"]
+    },
+    "public.WAITLIST_STATUS": {
+      "name": "WAITLIST_STATUS",
+      "schema": "public",
+      "values": ["PENDING", "ACCEPTED", "REJECTED"]
     }
   },
   "schemas": {},

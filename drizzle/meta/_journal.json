@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1740972453308,
-      "tag": "0000_steady_gladiator",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1740803452071,
-      "tag": "0001_third_maximus",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1740882725328,
-      "tag": "0002_eminent_zodiak",
+      "when": 1741120449750,
+      "tag": "0000_thin_mephistopheles",
       "breakpoints": true
     }
   ]
