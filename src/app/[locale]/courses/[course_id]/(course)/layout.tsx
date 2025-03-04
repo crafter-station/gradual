@@ -59,7 +59,7 @@ export default async function CoursePage({
           t={t}
         />
 
-        <React.Suspense fallback={<div>Loading...</div>}>
+        <React.Suspense>
           <Enrollment courseId={courseId} />
         </React.Suspense>
 
