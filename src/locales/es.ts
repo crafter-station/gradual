@@ -161,5 +161,6 @@ export default {
     acceptButton: 'Aceptar',
     rejectButton: 'Rechazar',
     joinToast: 'Te has unido a la lista de espera',
+    updateSuccess: 'Estado actualizado con éxito',
   },
 } as const;
