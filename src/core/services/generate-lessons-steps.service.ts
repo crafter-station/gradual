@@ -82,7 +82,14 @@ export class GenerateLessonStepsService {
     });
 
     const steps = result.steps.map((step, index) => {
-      return new Step(uuidv4(), index, step, step.type, lesson.id);
+      return new Step(
+        uuidv4(),
+        // +1 to start counting from 1
+        index + 1,
+        step,
+        step.type,
+        lesson.id,
+      );
     });
 
     await this.taskRepo.updateStepsCount(lesson.id, steps.length);

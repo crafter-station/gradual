@@ -14,7 +14,7 @@ import { course } from './course';
 import { section } from './section';
 
 export const unit = pgTable(
-  'units',
+  'unit',
   {
     id: uuid('id').primaryKey().defaultRandom(),
 
@@ -22,6 +22,9 @@ export const unit = pgTable(
     title: varchar('title').notNull(),
     description: text('description').notNull(),
     embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+
+    sectionCount: integer('section_count').notNull(),
+    taskCount: integer('task_count').notNull(),
 
     courseId: uuid('course_id')
       .notNull()

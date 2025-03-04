@@ -1,8 +1,18 @@
 import { GradualLogo } from '@/components/gradual-logo';
-import { getI18n } from '@/locales/server';
+import { getI18n, getStaticParams } from '@/locales/server';
+import { setStaticParamsLocale } from 'next-international/server';
 import { WaitlistForm } from './form';
 
-export default async function Home() {
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
+export default async function Home({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const t = await getI18n();
 
   return (

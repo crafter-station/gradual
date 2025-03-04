@@ -7,5 +7,8 @@ export class Course {
     public readonly description: string,
     public readonly creatorId: string,
     public readonly embedding: Embedding,
+    public readonly unitCount: number,
+    public readonly sectionCount: number,
+    public readonly taskCount: number,
   ) {}
 }

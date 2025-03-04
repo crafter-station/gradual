@@ -7,10 +7,10 @@ import type { GenerateCourseSyllabusServiceTask } from '@/core/services/generate
 import type { GenerateLessonsStepsServiceTask } from '@/core/services/generate-lessons-steps.service';
 import type { GenerateSyllabusEmbeddingsServiceTask } from '@/core/services/generate-syllabus-embeddings.service';
 import type { ParseSourceServiceTask } from '@/core/services/parse-source.service';
+import type { StoreCourseServiceTask } from '@/core/services/store-course.service';
 import type { SumarizeChunksContentsServiceTask } from '@/core/services/summarize-chunk-content.service';
 import type { SummarizeSourceContentServiceTask } from '@/core/services/summarize-source-content.service';
 import { CHUNK_SIZE } from '@/lib/constants';
-import type { StoreCourseServiceTask } from '../services/store-course.service';
 
 export class CreateCourseUseCase {
   constructor(
@@ -108,7 +108,6 @@ export class CreateCourseUseCase {
         sectionEmbeddings,
         lessonEmbeddings,
         payload.userId,
-        sourceId,
       );
 
     await this.storeCourseService.execute(

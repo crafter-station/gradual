@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { db } from '@/db';
 import { bookStylesDark } from '@/lib/constants';
-import { getI18n } from '@/locales/server';
+import { getI18n, getStaticParams } from '@/locales/server';
 import {
   ArrowRightIcon,
   BookOpenIcon,
@@ -22,15 +22,25 @@ import {
   HomeIcon,
   TargetIcon,
 } from 'lucide-react';
+import { setStaticParamsLocale } from 'next-international/server';
 import Link from 'next/link';
 
 export const metadata = {
   title: 'Courses',
 };
 
-export const revalidate = 0;
+export const revalidate = 3600;
 
-export default async function CoursesPage() {
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
+export default async function CoursesPage({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const t = await getI18n();
 
   const courses = await db.query.course.findMany({

@@ -12,6 +12,7 @@ export class Task {
     public readonly order: number,
     public readonly stepsCount: number,
     public readonly sectionId: string,
+    public readonly courseId: string,
   ) {}
 
   unitOrder(sections: Section[], units: Unit[]): number {

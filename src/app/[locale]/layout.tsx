@@ -3,12 +3,13 @@ import { Geist_Mono, Heebo } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { I18nProviderClient } from '@/locales/client';
+import { ClerkProvider } from '@clerk/nextjs';
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { extractRouterConfig } from 'uploadthing/server';
 import { gradualFileRouter } from '../api/uploadthing/core';
 
 const heebo = Heebo({
-  variable: '--font-heebo',
+  variable: '--font-heebo-sans',
   subsets: ['latin'],
   weight: ['400', '500', '700'],
 });
@@ -33,14 +34,18 @@ export default async function RootLayout({
   const { locale } = await params;
 
   return (
-    <html lang={locale}>
-      <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
-        <NextSSRPlugin routerConfig={extractRouterConfig(gradualFileRouter)} />
-        <I18nProviderClient locale={locale}>
-          {children}
-          <Toaster />
-        </I18nProviderClient>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang={locale}>
+        <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
+          <NextSSRPlugin
+            routerConfig={extractRouterConfig(gradualFileRouter)}
+          />
+          <I18nProviderClient locale={locale}>
+            {children}
+            <Toaster />
+          </I18nProviderClient>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

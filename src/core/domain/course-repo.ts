@@ -10,6 +10,16 @@ export class CourseRepo {
       description: course.description,
       creatorId: course.creatorId,
       embedding: course.embedding,
+      unitCount: course.unitCount,
+      sectionCount: course.sectionCount,
+      taskCount: course.taskCount,
+    });
+  }
+  async enrollCreator(course: Course): Promise<void> {
+    await db.insert(schema.enrollment).values({
+      userId: course.creatorId,
+      courseId: course.id,
+      startedAt: new Date(),
     });
   }
 }

@@ -53,8 +53,7 @@ export default {
       },
     },
     stats: {
-      topics: '{count} Temas',
-      sections: '{count} Secciones',
+      units: '{count} Unidades',
       continue: {
         title: 'Continuar Aprendiendo',
         subtitle: 'Continúa donde lo dejaste',
@@ -103,6 +102,10 @@ export default {
         mastered: 'Mastered',
         learning: 'Aprendiendo',
       },
+    },
+    students: {
+      title: 'Estudiantes',
+      description: 'Ver todos los estudiantes inscritos en este curso',
     },
     notes: {
       title: 'Mis Notas',

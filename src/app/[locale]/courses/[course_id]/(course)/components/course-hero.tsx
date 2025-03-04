@@ -1,9 +1,7 @@
 import { Cover } from '@/components/cover';
 import { Badge } from '@/components/ui/badge';
-import type { CourseWithRelations } from '@/db/types';
 import type { TFunction } from '@/locales/types';
 import {
-  BookOpenIcon,
   ClockIcon,
   DatabaseIcon,
   LayersIcon,
@@ -12,15 +10,20 @@ import {
 } from 'lucide-react';
 
 interface CourseHeroProps {
-  course: CourseWithRelations;
+  courseTitle: string;
+  unitCount: number;
   t: TFunction;
 }
 
-export function CourseHero({ course, t }: Readonly<CourseHeroProps>) {
+export function CourseHero({
+  courseTitle,
+  unitCount,
+  t,
+}: Readonly<CourseHeroProps>) {
   return (
     <div className="relative animate-fade-in">
       <Cover
-        title={course.title ?? ''}
+        title={courseTitle}
         variant="gradient"
         size="lg"
         textured
@@ -35,11 +38,7 @@ export function CourseHero({ course, t }: Readonly<CourseHeroProps>) {
         stats={[
           {
             icon: <LayersIcon className="h-4 w-4" />,
-            label: t('course.stats.topics', { count: course.units.length }),
-          },
-          {
-            icon: <BookOpenIcon className="h-4 w-4" />,
-            label: t('course.stats.sections', { count: 5 }),
+            label: t('course.stats.units', { count: unitCount }),
           },
           {
             icon: <TrophyIcon className="h-4 w-4" />,

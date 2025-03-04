@@ -51,8 +51,7 @@ export default {
       },
     },
     stats: {
-      topics: '{count} Topics',
-      sections: '{count} Sections',
+      units: '{count} Units',
       continue: {
         title: 'Continue Learning',
         subtitle: 'Pick up where you left off',
@@ -101,6 +100,10 @@ export default {
         mastered: 'Mastered',
         learning: 'Still Learning',
       },
+    },
+    students: {
+      title: 'Students',
+      description: 'View all students enrolled in this course',
     },
     notes: {
       title: 'My Notes',
