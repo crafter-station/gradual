@@ -33,7 +33,7 @@
     "@radix-ui/react-tooltip": "^1.1.8",
     "@supabase/ssr": "^0.5.2",
     "@tailwindcss/postcss": "^4.0.4",
-    "@trigger.dev/sdk": "^3.3.16",
+    "@trigger.dev/sdk": "3.3.17",
     "@uploadthing/react": "^7.3.0",
     "ai": "^4.1.41",
     "class-variance-authority": "^0.7.1",
@@ -73,7 +73,7 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@eslint/eslintrc": "^3",
-    "@trigger.dev/build": "^3.3.16",
+    "@trigger.dev/build": "3.3.17",
     "@types/bun": "^1.2.2",
     "@types/node": "^20",
     "@types/pdf-parse": "^1.1.4",
