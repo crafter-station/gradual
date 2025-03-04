@@ -59,4 +59,4 @@ export const CHUNK_SIZE = 2048;
 export const AI_GENERATION_BATCH_SIZE = 40;
 export const AI_GENERATION_DELAY = 5000;
 
-export const EMAIL_SENDER = 'Gradual AI <no-reply@send.crafter-station.com>';
+export const EMAIL_SENDER = 'Gradual <no-reply@send.crafter-station.com>';
