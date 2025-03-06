@@ -41,7 +41,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang={locale}>
-        <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
+        <body
+          className={`${geist.variable} ${geistMono.variable} ${notoSerifKhojki.variable} antialiased`}
+        >
           <NextSSRPlugin
             routerConfig={extractRouterConfig(gradualFileRouter)}
           />
