@@ -163,7 +163,7 @@ export default async function Home({
 
       {/* Legal Links Footer */}
       <footer className="relative z-10 pb-8">
-        <div className="container flex justify-center">
+        <div className="flex w-full justify-center">
           <div className="flex items-center gap-8 text-muted-foreground text-sm">
             <a
               href="https://docs.google.com/document/d/1kOZ_caLqJvJDXPQlEduQfuKQnJCYlCdxRtZs8emLJW4"

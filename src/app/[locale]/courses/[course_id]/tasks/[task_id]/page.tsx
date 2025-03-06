@@ -13,6 +13,24 @@ import { ActiveIntroductionStep } from './introduction-step/active';
 import { DoneIntroductionStep } from './introduction-step/done';
 import { ActiveQuestionStep } from './question-step/active';
 import { DoneQuestionStep } from './question-step/done';
+import { ActiveMultipleChoiceStep } from './multiple-choice-step/active';
+import { DoneMultipleChoiceStep } from './multiple-choice-step/done';
+import { ActiveBinaryStep } from './binary-step/active';
+import { DoneBinaryStep } from './binary-step/done';
+import { ActiveFillInTheBlankStep } from './fill-in-the-blank-step/active';
+import { DoneFillInTheBlankStep } from './fill-in-the-blank-step/done';
+import { ActiveDefinitionStep } from './definition-step/active';
+import { DoneDefinitionStep } from './definition-step/done';
+import { ActiveQuoteStep } from './quote-step/active';
+import { DoneQuoteStep } from './quote-step/done';
+import { ActiveFunFactStep } from './fun-fact-step/active';
+import { DoneFunFactStep } from './fun-fact-step/done';
+import { ActiveAnalogyStep } from './analogy-step/active';
+import { DoneAnalogyStep } from './analogy-step/done';
+import { ActiveSolvedExerciseStep } from './solved-exercise-step/active';
+import { DoneSolvedExerciseStep } from './solved-exercise-step/done';
+import { ActiveTutorialStep } from './tutorial-step/active';
+import { DoneTutorialStep } from './tutorial-step/done';
 import StatsCard from './stats';
 import { submitStepAction } from './submit/action';
 import { SubmitButton } from './submit/button';
@@ -323,6 +341,89 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
             );
           }
 
+          if (
+            step.type === 'MULTIPLE_CHOICE' &&
+            progress.state?.type === 'MULTIPLE_CHOICE'
+          ) {
+            return (
+              <DoneMultipleChoiceStep
+                id={step.id}
+                key={step.id}
+                content={step.content}
+                progressState={progress.state}
+              />
+            );
+          }
+
+          if (step.type === 'BINARY' && progress.state?.type === 'BINARY') {
+            return (
+              <DoneBinaryStep
+                id={step.id}
+                key={step.id}
+                content={step.content}
+                stepOrder={stepIndex + 1}
+                totalSteps={task.stepsCount}
+                progressState={progress.state}
+              />
+            );
+          }
+
+          if (
+            step.type === 'FILL_IN_THE_BLANK' &&
+            progress.state?.type === 'FILL_IN_THE_BLANK'
+          ) {
+            return (
+              <DoneFillInTheBlankStep
+                id={step.id}
+                key={step.id}
+                content={step.content}
+                stepOrder={stepIndex + 1}
+                totalSteps={task.stepsCount}
+                progressState={progress.state}
+              />
+            );
+          }
+
+          if (step.type === 'DEFINITION') {
+            return (
+              <DoneDefinitionStep
+                key={step.id}
+                content={step.content}
+                stepOrder={stepIndex + 1}
+                totalSteps={task.stepsCount}
+              />
+            );
+          }
+
+          if (step.type === 'QUOTE') {
+            return <DoneQuoteStep key={step.id} content={step.content} />;
+          }
+
+          if (step.type === 'FUN_FACT') {
+            return <DoneFunFactStep key={step.id} content={step.content} />;
+          }
+
+          if (step.type === 'ANALOGY') {
+            return <DoneAnalogyStep key={step.id} content={step.content} />;
+          }
+
+          if (step.type === 'SOLVED_EXERCISE') {
+            return (
+              <DoneSolvedExerciseStep key={step.id} content={step.content} />
+            );
+          }
+
+          if (step.type === 'TUTORIAL') {
+            return (
+              <DoneTutorialStep
+                key={step.id}
+                content={step.content}
+                stepOrder={stepIndex + 1}
+                totalSteps={task.stepsCount}
+              />
+            );
+          }
+
           return <pre key={step.id}>{JSON.stringify(step, null, 2)}</pre>;
         })}
 
@@ -369,9 +470,147 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
                 totalSteps={task.stepsCount}
               />
             ))}
-          {!['QUESTION', 'INTRODUCTION'].includes(
-            lastVisibleStep?.type ?? '',
-          ) && (
+          {lastVisibleStep?.type === 'MULTIPLE_CHOICE' &&
+            (lastVisibleStepProgress?.state?.type === 'MULTIPLE_CHOICE' ? (
+              <DoneMultipleChoiceStep
+                id={lastVisibleStep.id}
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                progressState={lastVisibleStepProgress?.state}
+              />
+            ) : (
+              <ActiveMultipleChoiceStep
+                id={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ))}
+          {lastVisibleStep?.type === 'BINARY' &&
+            (lastVisibleStepProgress?.state?.type === 'BINARY' ? (
+              <DoneBinaryStep
+                id={lastVisibleStep.id}
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={steps.length}
+                totalSteps={task.stepsCount}
+                progressState={lastVisibleStepProgress?.state}
+              />
+            ) : (
+              <ActiveBinaryStep
+                id={lastVisibleStep.id}
+                stepOrder={lastVisibleStep.order}
+                totalSteps={task.stepsCount}
+                questionBody={lastVisibleStep.content.questionBody}
+              />
+            ))}
+          {lastVisibleStep?.type === 'FILL_IN_THE_BLANK' &&
+            (lastVisibleStepProgress?.state?.type === 'FILL_IN_THE_BLANK' ? (
+              <DoneFillInTheBlankStep
+                id={lastVisibleStep.id}
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={steps.length}
+                totalSteps={task.stepsCount}
+                progressState={lastVisibleStepProgress?.state}
+              />
+            ) : (
+              <ActiveFillInTheBlankStep
+                id={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={lastVisibleStep.order}
+                totalSteps={task.stepsCount}
+              />
+            ))}
+          {lastVisibleStep?.type === 'DEFINITION' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneDefinitionStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={steps.length}
+                totalSteps={task.stepsCount}
+              />
+            ) : (
+              <ActiveDefinitionStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={lastVisibleStep.order}
+                totalSteps={task.stepsCount}
+              />
+            ))}
+          {lastVisibleStep?.type === 'QUOTE' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneQuoteStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ) : (
+              <ActiveQuoteStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ))}
+          {lastVisibleStep?.type === 'FUN_FACT' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneFunFactStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ) : (
+              <ActiveFunFactStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ))}
+          {lastVisibleStep?.type === 'ANALOGY' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneAnalogyStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ) : (
+              <ActiveAnalogyStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ))}
+          {lastVisibleStep?.type === 'SOLVED_EXERCISE' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneSolvedExerciseStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ) : (
+              <ActiveSolvedExerciseStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ))}
+          {lastVisibleStep?.type === 'TUTORIAL' &&
+            (lastVisibleStepProgress.completedAt ? (
+              <DoneTutorialStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+                stepOrder={steps.length}
+                totalSteps={task.stepsCount}
+              />
+            ) : (
+              <ActiveTutorialStep
+                key={lastVisibleStep.id}
+                content={lastVisibleStep.content}
+              />
+            ))}
+          {![
+            'QUESTION',
+            'INTRODUCTION',
+            'MULTIPLE_CHOICE',
+            'BINARY',
+            'FILL_IN_THE_BLANK',
+            'DEFINITION',
+            'QUOTE',
+            'FUN_FACT',
+            'ANALOGY',
+            'SOLVED_EXERCISE',
+            'TUTORIAL',
+          ].includes(lastVisibleStep?.type ?? '') && (
             <Test>
               <pre key={lastVisibleStep?.id}>
                 {JSON.stringify(lastVisibleStep, null, 2)}

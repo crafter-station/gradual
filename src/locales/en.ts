@@ -3,7 +3,7 @@ export default {
     navigation: 'Navigation',
     home: 'Home',
     courses: 'Courses',
-    upload: 'Create New Course',
+    upload: 'New Course',
     stats: 'Stats',
   },
   hello: 'Hello',
@@ -162,7 +162,7 @@ export default {
     },
     hero: {
       description:
-        'A adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.',
+        'An adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.',
       startButton: 'Start Learning',
       methodologyButton: 'Our Method',
       methodologyHint: 'See how our system works',
@@ -194,7 +194,7 @@ export default {
     },
   },
   createCourse: {
-    title: 'Create New Course',
+    title: 'New Course',
     subtitle: 'Add a new course to Gradual',
     form: {
       tabs: {

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist_Mono, Heebo } from 'next/font/google';
+import { Geist, Geist_Mono, Noto_Serif_Khojki } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { I18nProviderClient } from '@/locales/client';
@@ -8,15 +8,20 @@ import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { extractRouterConfig } from 'uploadthing/server';
 import { gradualFileRouter } from '../api/uploadthing/core';
 
-const heebo = Heebo({
-  variable: '--font-heebo-sans',
+const geist = Geist({
+  variable: '--font-geist',
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
 });
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
+});
+
+const notoSerifKhojki = Noto_Serif_Khojki({
+  variable: '--font-noto-serif-khojki',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +41,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang={locale}>
-        <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
+        <body
+          className={`${geist.variable} ${geistMono.variable} ${notoSerifKhojki.variable} antialiased`}
+        >
           <NextSSRPlugin
             routerConfig={extractRouterConfig(gradualFileRouter)}
           />

@@ -41,6 +41,12 @@ export default async function UploadPage({
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
+                <BreadcrumbLink href="/courses">
+                  {t('breadcrumbs.courses')}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
                 <BreadcrumbPage>{t('createCourse.title')}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>

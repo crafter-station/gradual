@@ -27,6 +27,8 @@ import { SolvedExerciseStepContentSchema } from './solved-exercise';
 import { TutorialStepContentSchema } from './tutorial';
 // Re-export all step content types
 
+export * from './progress-state';
+
 export const StepContentSchema = z.union([
   // Theoretical steps
   IntroductionStepContentSchema,
@@ -47,6 +49,8 @@ export const StepContentSchema = z.union([
 export const StepTypes = StepContentSchema.options.map(
   (option) => option.shape.type.value,
 );
+
+export type StepType = (typeof StepTypes)[number];
 
 export const stepTypeEnum = pgEnum('STEP_TYPE_ENUM', [
   StepTypes[0],
