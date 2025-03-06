@@ -231,5 +231,6 @@ export default {
     acceptButton: 'Accept',
     rejectButton: 'Reject',
     joinToast: 'You have joined the waitlist',
+    updateSuccess: 'Waitlist updated successfully',
   },
 } as const;
