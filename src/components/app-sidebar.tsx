@@ -20,12 +20,12 @@ import {
   FlagIcon,
   GraduationCapIcon,
   HomeIcon,
-  StarIcon,
   UploadIcon,
 } from 'lucide-react';
 
 import { useI18n } from '@/locales/client';
 import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
+import { GradualLogo } from './gradual-logo';
 
 const navData = [
   {
@@ -124,7 +124,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <div className="relative mt-2 flex items-center gap-3">
-          <StarIcon className="ml-1 size-6 shrink-0" />
+          <GradualLogo className="ml-1 size-6 shrink-0" />
           <h1 className="absolute left-[calc(1rem+20px)] origin-left whitespace-nowrap font-mono font-semibold text-lg transition-all duration-300 group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
             Gradual
           </h1>
