@@ -47,3 +47,5 @@ next-env.d.ts
 .env*.local
 
 .trigger
+# clerk configuration (can include secrets)
+/.clerk/

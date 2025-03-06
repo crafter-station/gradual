@@ -51,8 +51,7 @@ export default {
       },
     },
     stats: {
-      topics: '{count} Temas',
-      sections: '{count} Secciones',
+      units: '{count} Unidades',
       continue: {
         title: 'Continuar Aprendiendo',
         subtitle: 'Continúa donde lo dejaste',
@@ -102,6 +101,10 @@ export default {
         mastered: 'Dominadas',
         learning: 'Aprendiendo',
       },
+    },
+    students: {
+      title: 'Estudiantes',
+      description: 'Ver todos los estudiantes inscritos en este curso',
     },
     notes: {
       title: 'Mis Notas',
@@ -221,5 +224,14 @@ export default {
         description: 'Error al crear el curso',
       },
     },
+  },
+  waitlist: {
+    title: 'Lista de Espera',
+    empty: 'No hay usuarios en la lista de espera',
+    requested: 'Solicitado el',
+    acceptButton: 'Aceptar',
+    rejectButton: 'Rechazar',
+    joinToast: 'Te has unido a la lista de espera',
+    updateSuccess: 'Estado actualizado con éxito',
   },
 } as const;

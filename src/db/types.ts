@@ -10,6 +10,7 @@ import type {
   stepProgress,
   unit,
   user,
+  waitlist,
 } from '@/db/schema';
 import type { InferSelectModel } from 'drizzle-orm';
 
@@ -24,6 +25,7 @@ export type TaskProgress = SelectTaskProgress;
 export type StepProgress = InferSelectModel<typeof stepProgress>;
 export type Enrollment = InferSelectModel<typeof enrollment>;
 export type Source = InferSelectModel<typeof source>;
+export type Waitlist = InferSelectModel<typeof waitlist>;
 
 // Re-export step content types
 export type { StepContent };

@@ -12,6 +12,8 @@ interface ActiveQuestionStepProps {
   alternatives: string[];
   correctAnswer?: string;
   selectedAnswer?: string;
+  stepOrder: number;
+  totalSteps: number;
 }
 
 export const ActiveQuestionStep = ({
@@ -20,6 +22,8 @@ export const ActiveQuestionStep = ({
   questionBody,
   correctAnswer,
   selectedAnswer,
+  stepOrder,
+  totalSteps,
 }: ActiveQuestionStepProps) => {
   const status = useFormStatus();
 

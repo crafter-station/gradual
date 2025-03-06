@@ -425,3 +425,33 @@
   --color-stone-900: #525137;
   --color-stone-950: #3f3d2c;
 }
+
+div[data-clerk-component="UserButton"] {
+  width: 100%;
+}
+
+div[data-clerk-component="UserButton"] > button {
+  width: 100%;
+  color: var(--color-foreground);
+  padding: 0.25rem 0.5rem;
+}
+
+div[data-clerk-component="UserButton"] > button:hover {
+  background-color: var(--color-muted);
+}
+
+div[data-clerk-component="UserButton"] > button > span {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  flex-direction: row-reverse;
+  gap: 0;
+}
+
+div[data-clerk-component="UserButton"]
+  > button
+  > span
+  > .cl-userButtonOuterIdentifier {
+  margin-left: 0;
+}

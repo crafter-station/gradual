@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import {
   boolean,
   index,
+  integer,
   pgTable,
   text,
   timestamp,
@@ -23,6 +24,10 @@ export const course = pgTable(
     title: varchar('title').notNull(),
     description: text('description').notNull(),
     embedding: vector('embedding', { dimensions: 1536 }).notNull(),
+
+    unitCount: integer('unit_count').notNull(),
+    sectionCount: integer('section_count').notNull(),
+    taskCount: integer('task_count').notNull(),
 
     isPublic: boolean('is_public').notNull().default(true),
 

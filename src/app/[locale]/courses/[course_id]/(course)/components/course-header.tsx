@@ -8,16 +8,15 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import type { CourseWithRelations } from '@/db/types';
 import type { TFunction } from '@/locales/types';
 import { HomeIcon } from 'lucide-react';
 
 interface CourseHeaderProps {
-  course: CourseWithRelations;
+  courseTitle: string;
   t: TFunction;
 }
 
-export function CourseHeader({ course, t }: Readonly<CourseHeaderProps>) {
+export function CourseHeader({ courseTitle, t }: Readonly<CourseHeaderProps>) {
   return (
     <header className="sticky top-0 z-50 flex h-16 shrink-0 animate-fade-in items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center gap-2 px-6">
@@ -45,7 +44,7 @@ export function CourseHeader({ course, t }: Readonly<CourseHeaderProps>) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{course.title}</BreadcrumbPage>
+              <BreadcrumbPage>{courseTitle}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

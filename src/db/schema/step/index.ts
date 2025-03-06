@@ -11,6 +11,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { z } from 'zod';
 import { task } from '../task';
+export * from './progress-state';
 
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { AnalogyStepContentSchema } from './analogy';

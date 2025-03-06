@@ -15,12 +15,16 @@ interface DoneQuestionStepProps {
   content: StepContent & {
     type: 'QUESTION';
   };
+  stepOrder: number;
+  totalSteps: number;
 }
 
 export const DoneQuestionStep = ({
   id,
   progressState,
   content,
+  stepOrder,
+  totalSteps,
 }: DoneQuestionStepProps) => {
   const alternatives = [
     {

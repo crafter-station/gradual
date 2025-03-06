@@ -23,6 +23,8 @@ export default async function StepsPage() {
                 ...step.content.distractors.map((d) => d.alternative),
                 step.content.correctAlternative,
               ].toSorted((a, b) => a.localeCompare(b))}
+              stepOrder={step.order}
+              totalSteps={steps.length}
             />
 
             {progress?.completedAt && (
@@ -32,6 +34,8 @@ export default async function StepsPage() {
                   progress.state as StepProgressState & { type: typeof type }
                 }
                 content={step.content}
+                stepOrder={step.order}
+                totalSteps={steps.length}
               />
             )}
           </div>

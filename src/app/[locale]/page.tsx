@@ -1,11 +1,18 @@
 import { GradualLogo } from '@/components/gradual-logo';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { getI18n } from '@/locales/server';
-import { ArrowRightIcon } from 'lucide-react';
-import Link from 'next/link';
+import { getI18n, getStaticParams } from '@/locales/server';
+import { setStaticParamsLocale } from 'next-international/server';
+import { WaitlistForm } from './form';
 
-export default async function Home() {
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
+export default async function Home({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const t = await getI18n();
 
   return (
@@ -146,31 +153,7 @@ export default async function Home() {
                     </p>
                   </div>
 
-                  <form className="space-y-3">
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                      <Input
-                        type="text"
-                        placeholder={t('landing.waitlist.namePlaceholder')}
-                        className="h-12"
-                      />
-                      <Input
-                        type="email"
-                        placeholder={t('landing.waitlist.emailPlaceholder')}
-                        className="h-12"
-                      />
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="group h-12 min-w-[140px]"
-                        asChild
-                      >
-                        <Link href="/courses">
-                          {t('landing.waitlist.joinButton')}
-                          <ArrowRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </form>
+                  <WaitlistForm />
                 </div>
               </div>
             </div>

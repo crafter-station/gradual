@@ -8,11 +8,21 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { getI18n } from '@/locales/server';
+import { getI18n, getStaticParams } from '@/locales/server';
 import { HomeIcon } from 'lucide-react';
+import { setStaticParamsLocale } from 'next-international/server';
 import { CreateCourseForm } from './form';
 
-export default async function UploadPage() {
+export function generateStaticParams() {
+  return getStaticParams();
+}
+
+export default async function UploadPage({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  setStaticParamsLocale(locale);
+
   const t = await getI18n();
 
   return (

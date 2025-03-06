@@ -1,12 +1,15 @@
-import { getCurrentUser } from '@/db/utils';
+import { currentUser } from '@clerk/nextjs/server';
 import { type FileRouter, createUploadthing } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 
 const f = createUploadthing();
 
 const auth = async (req: Request) => {
-  const currentUser = await getCurrentUser.execute();
-  return currentUser;
+  const user = await currentUser();
+
+  if (!user) throw new UploadThingError('Unauthorized');
+
+  return user;
 };
 
 // FileRouter for your app, can contain multiple FileRoutes

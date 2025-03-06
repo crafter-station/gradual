@@ -41,7 +41,6 @@ export class CreateCourseService {
       unitOrder: number;
     }[],
     userId: string,
-    sourceId: string,
   ): Promise<{
     course: Course;
     units: Unit[];
@@ -54,6 +53,15 @@ export class CreateCourseService {
       syllabus.description,
       userId,
       courseEmbedding,
+      syllabus.units.length,
+      syllabus.units
+        .flatMap((unit) => unit.sections.length)
+        .reduce((a, b) => a + b, 0),
+      syllabus.units
+        .flatMap((unit) =>
+          unit.sections.flatMap((section) => section.lessons.length),
+        )
+        .reduce((a, b) => a + b, 0),
     );
 
     const units = syllabus.units.map((unit) => {
@@ -64,6 +72,10 @@ export class CreateCourseService {
         unit.description,
         unitEmbeddings.find((u) => u.unitOrder === unit.order)?.embedding ?? [],
         course.id,
+        unit.sections.length,
+        unit.sections
+          .flatMap((section) => section.lessons.length)
+          .reduce((a, b) => a + b, 0),
       );
     });
 
@@ -78,7 +90,9 @@ export class CreateCourseService {
             (u) =>
               u.sectionOrder === section.order && u.unitOrder === unit.order,
           )?.embedding ?? [],
-          units.find((u) => u.order === unit.order)?.id ?? '',
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          units.find((u) => u.order === unit.order)!.id,
+          section.lessons.length,
         );
       }),
     );
@@ -116,6 +130,7 @@ export class CreateCourseService {
             lesson.order,
             0,
             getsectionId(unit.order, section.order),
+            course.id,
           );
         }),
       ),

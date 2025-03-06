@@ -51,8 +51,7 @@ export default {
       },
     },
     stats: {
-      topics: '{count} Topics',
-      sections: '{count} Sections',
+      units: '{count} Units',
       continue: {
         title: 'Continue Learning',
         subtitle: 'Pick up where you left off',
@@ -101,6 +100,10 @@ export default {
         mastered: 'Mastered',
         learning: 'Still Learning',
       },
+    },
+    students: {
+      title: 'Students',
+      description: 'View all students enrolled in this course',
     },
     notes: {
       title: 'My Notes',
@@ -220,5 +223,14 @@ export default {
         description: 'Failed to create course',
       },
     },
+  },
+  waitlist: {
+    title: 'Join the Waitlist',
+    empty: 'No waitlist users found',
+    requested: 'Requested',
+    acceptButton: 'Accept',
+    rejectButton: 'Reject',
+    joinToast: 'You have joined the waitlist',
+    updateSuccess: 'Waitlist updated successfully',
   },
 } as const;

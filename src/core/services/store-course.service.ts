@@ -41,6 +41,7 @@ export class StoreCourseService implements IStoreCourseService {
     await this.sectionRepo.storeMany(sections);
     await this.taskRepo.storeMany(tasks);
     await this.sourceRepo.updateCourseId(sourceId, course.id);
+    await this.courseRepo.enrollCreator(course);
   }
 }
 

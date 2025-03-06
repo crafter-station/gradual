@@ -12,6 +12,8 @@ export class UnitRepo {
         description: unit.description,
         embedding: unit.embedding,
         courseId: unit.courseId,
+        sectionCount: unit.sectionCount,
+        taskCount: unit.taskCount,
       })),
     );
   }

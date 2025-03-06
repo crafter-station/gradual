@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Noto_Serif_Khojki } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { I18nProviderClient } from '@/locales/client';
+import { ClerkProvider } from '@clerk/nextjs';
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { extractRouterConfig } from 'uploadthing/server';
 import { gradualFileRouter } from '../api/uploadthing/core';
@@ -42,11 +43,15 @@ export default async function RootLayout({
       <body
         className={`${geist.variable} ${geistMono.variable} ${notoSerifKhojki.variable} antialiased`}
       >
-        <NextSSRPlugin routerConfig={extractRouterConfig(gradualFileRouter)} />
-        <I18nProviderClient locale={locale}>
-          {children}
-          <Toaster />
-        </I18nProviderClient>
+        <ClerkProvider>
+          <NextSSRPlugin
+            routerConfig={extractRouterConfig(gradualFileRouter)}
+          />
+          <I18nProviderClient locale={locale}>
+            {children}
+            <Toaster />
+          </I18nProviderClient>
+        </ClerkProvider>
       </body>
     </html>
   );
