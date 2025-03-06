@@ -39,11 +39,9 @@ export default async function RootLayout({
   const { locale } = await params;
 
   return (
-    <html lang={locale}>
-      <body
-        className={`${geist.variable} ${geistMono.variable} ${notoSerifKhojki.variable} antialiased`}
-      >
-        <ClerkProvider>
+    <ClerkProvider>
+      <html lang={locale}>
+        <body className={`${heebo.variable} ${geistMono.variable} antialiased`}>
           <NextSSRPlugin
             routerConfig={extractRouterConfig(gradualFileRouter)}
           />
@@ -51,8 +49,8 @@ export default async function RootLayout({
             {children}
             <Toaster />
           </I18nProviderClient>
-        </ClerkProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
