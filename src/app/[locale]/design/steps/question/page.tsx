@@ -18,8 +18,6 @@ export default async function StepsPage() {
           <div key={step.id} className="space-y-4">
             <ActiveQuestionStep
               id={step.id}
-              stepOrder={step.order}
-              totalSteps={steps.length}
               questionBody={step.content.questionBody}
               alternatives={[
                 ...step.content.distractors.map((d) => d.alternative),
@@ -30,8 +28,6 @@ export default async function StepsPage() {
             {progress?.completedAt && (
               <DoneQuestionStep
                 id={step.id}
-                stepOrder={step.order}
-                totalSteps={steps.length}
                 progressState={
                   progress.state as StepProgressState & { type: typeof type }
                 }
