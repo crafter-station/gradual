@@ -159,7 +159,7 @@ export default {
     },
     hero: {
       description:
-        'A adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.',
+        'An adaptive learning platform that breaks down complex subjects into digestible steps. Learn what you need, when you need it.',
       startButton: 'Start Learning',
       methodologyButton: 'Our Method',
       methodologyHint: 'See how our system works',

@@ -9,6 +9,7 @@ const bookVariants = cva('relative inline-block w-fit [perspective:900px]', {
     variant: {
       simple: '',
       default: '',
+      goodnotes: '',
     },
     size: {
       sm: 'w-[150px]',
@@ -34,6 +35,7 @@ const bookRotateVariants = cva(
       variant: {
         simple: '',
         default: 'flex flex-col',
+        goodnotes: 'flex flex-col',
       },
     },
     defaultVariants: {
@@ -49,6 +51,7 @@ interface BookProps
   illustration?: React.ReactNode;
   color?: string;
   textColor?: string;
+  subtitle?: string;
 }
 
 const Book = React.forwardRef<HTMLDivElement, BookProps>(
@@ -62,6 +65,7 @@ const Book = React.forwardRef<HTMLDivElement, BookProps>(
       illustration,
       color,
       textColor,
+      subtitle,
       ...props
     },
     ref,
@@ -83,7 +87,7 @@ const Book = React.forwardRef<HTMLDivElement, BookProps>(
           <div
             className="absolute inset-0 h-full w-full overflow-hidden rounded-[6px_4px_4px_6px] border [transform:translateZ(14.5cqw)]"
             style={{
-              background: 'var(--border)',
+              background: variant === 'goodnotes' ? bookColor : 'var(--border)',
               boxShadow: 'var(--book-shadow)',
             }}
           >
@@ -107,6 +111,34 @@ const Book = React.forwardRef<HTMLDivElement, BookProps>(
                     </div>
                   </div>
                 </div>
+              ) : variant === 'goodnotes' ? (
+                <div className="flex h-full flex-col">
+                  <div className="flex flex-1 items-center justify-center p-4">
+                    {illustration && (
+                      <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-white/20">
+                        {illustration}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-col items-center justify-end p-4 pb-8">
+                    <div className="w-full rounded-md bg-white/20 p-3">
+                      <h3
+                        className="text-balance text-center font-medium text-base leading-tight tracking-tight"
+                        style={{ color: bookTextColor }}
+                      >
+                        {title}
+                      </h3>
+                      {subtitle && (
+                        <p
+                          className="mt-1 text-balance text-center text-xs opacity-80"
+                          style={{ color: bookTextColor }}
+                        >
+                          {subtitle}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <>
                   <div
@@ -124,7 +156,7 @@ const Book = React.forwardRef<HTMLDivElement, BookProps>(
                       aria-hidden="true"
                     />
                     <div className="flex flex-1 flex-col justify-between bg-book! p-[6.1%]">
-                      <span className="text-balance font-semibold text-sm leading-5 tracking-tight">
+                      <span className="line-clamp-3 text-balance font-semibold text-sm leading-5 tracking-tight">
                         {title}
                       </span>
                     </div>
@@ -158,7 +190,9 @@ const Book = React.forwardRef<HTMLDivElement, BookProps>(
               background:
                 variant === 'simple' && illustration
                   ? bookColor
-                  : `linear-gradient(to bottom, ${bookColor} 40%, hsl(var(--card)) 40%)`,
+                  : variant === 'goodnotes'
+                    ? bookColor
+                    : `linear-gradient(to bottom, ${bookColor} 40%, hsl(var(--card)) 40%)`,
             }}
             aria-hidden="true"
           />
