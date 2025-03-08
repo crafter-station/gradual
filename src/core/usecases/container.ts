@@ -16,9 +16,18 @@ import { CreateCourseUseCase } from '@/core/usecases/create-course.usecase';
 import { JoinWaitlistUseCase } from './join-waitlist.usecase';
 import { ListPendingWaitlistUseCase } from './list-pending-waitlist.usecase';
 import { UpdateWaitlistStatusUseCase } from './update-waitlist-status.usecase';
+import { CreateAlternativeStepsUseCase } from './create-alternative-steps.usecase';
+import { StepRepo } from '../domain/step-repo';
+import { AlternativeStepRepo } from '../domain/alternative-step-repo';
+import { OpenAIGenerator } from '../domain/aigen';
 
-const waitRecordRepo = new WaitRecordRepo();
+const aiGenerator = new OpenAIGenerator();
+
 const mailSender = new ResendMailSender(process.env.RESEND_API_KEY as string);
+
+const alternativeStepRepo = new AlternativeStepRepo();
+const stepRepo = new StepRepo();
+const waitRecordRepo = new WaitRecordRepo();
 
 const createCourseUseCase = new CreateCourseUseCase(
   service(ParseSourceServiceTask),
@@ -42,6 +51,11 @@ const updateWaitlistStatusUseCase = new UpdateWaitlistStatusUseCase(
   mailSender,
   waitRecordRepo,
 );
+const createAlternativeStepsUseCase = new CreateAlternativeStepsUseCase(
+  stepRepo,
+  alternativeStepRepo,
+  aiGenerator,
+);
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type UseCaseConstructor<T> = new (...args: any[]) => T;
@@ -56,6 +70,8 @@ export function useCase<T>(uc: UseCaseConstructor<T>): T {
       return listPendingWaitlistUseCase as T;
     case UpdateWaitlistStatusUseCase:
       return updateWaitlistStatusUseCase as T;
+    case CreateAlternativeStepsUseCase:
+      return createAlternativeStepsUseCase as T;
   }
 
   throw new Error(`UseCase not registered ${uc.name}`);
