@@ -1,3 +1,4 @@
+export * from './alternative-step';
 export * from './chunk';
 export * from './course';
 export * from './enrollment';
