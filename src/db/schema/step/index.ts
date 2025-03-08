@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
+  type AnyPgColumn,
   index,
   integer,
   jsonb,
@@ -8,10 +9,11 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
+  real,
 } from 'drizzle-orm/pg-core';
 import { z } from 'zod';
 import { task } from '../task';
-export * from './progress-state';
+export * from '../step-progress/progress-state';
 
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { AnalogyStepContentSchema } from './analogy';
@@ -25,9 +27,8 @@ import { QuestionStepContentSchema } from './question';
 import { QuoteStepContentSchema } from './quote';
 import { SolvedExerciseStepContentSchema } from './solved-exercise';
 import { TutorialStepContentSchema } from './tutorial';
-// Re-export all step content types
 
-export * from './progress-state';
+export * from '../step-progress/progress-state';
 
 export const StepContentSchema = z.union([
   // Theoretical steps
@@ -65,6 +66,7 @@ export const step = pgTable(
   'step',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    parentStepId: uuid('parent_step_id').references((): AnyPgColumn => step.id),
 
     order: integer('order').notNull(),
     content: jsonb('content').$type<StepContent>().notNull(),
@@ -74,6 +76,16 @@ export const step = pgTable(
     taskId: uuid('task_id')
       .notNull()
       .references(() => task.id),
+
+    correctResponseCount: integer('correct_response_count')
+      .notNull()
+      .default(0), // number of correct responses
+    incorrectResponseCount: integer('incorrect_response_count')
+      .notNull()
+      .default(0), // number of incorrect responses
+    totalResponseDuration: real('total_response_duration').notNull().default(0), // sum of the time it took each user to respond to the step in seconds
+
+    difficultyScore: real('difficulty_score').notNull().default(0), // function of the correct / incorrect response count and the total response time
 
     createdAt: timestamp('created_at', { withTimezone: true })
       .notNull()
@@ -88,10 +100,17 @@ export const step = pgTable(
   ],
 );
 
-export const stepRelations = relations(step, ({ one }) => ({
+export const stepRelations = relations(step, ({ one, many }) => ({
   task: one(task, {
     fields: [step.taskId],
     references: [task.id],
+  }),
+  parentStep: one(step, {
+    fields: [step.parentStepId],
+    references: [step.id],
+  }),
+  secondarySteps: many(step, {
+    relationName: 'secondarySteps', // Secondary steps (for reviews) generated from a parent step (a lesson step)
   }),
 }));
 
