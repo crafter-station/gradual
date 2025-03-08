@@ -14,4 +14,9 @@ export class StepRepo {
       })),
     );
   }
+
+  async findById(id: string): Promise<Step | null> {
+    // TODO: implement this
+    return null;
+  }
 }
