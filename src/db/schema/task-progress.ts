@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import {
   integer,
+  real,
   pgTable,
   timestamp,
   uniqueIndex,
@@ -23,7 +24,14 @@ export const taskProgress = pgTable(
       .references(() => user.id),
 
     stepsCompletedCount: integer('steps_completed_count').notNull().default(0),
+
     incorrectStepsCount: integer('incorrect_steps_count').notNull().default(0),
+    correctStepsCount: integer('correct_steps_count').notNull().default(0),
+    totalResponseDuration: real('total_response_duration').notNull().default(0), // sum of the time it took the user to respond to all steps of the task in seconds
+
+    relativeDifficultyScore: real('relative_difficulty_score')
+      .notNull()
+      .default(0), // function of the correct / incorrect response count and the total response time (relative to this user)
 
     earnedExperiencePoints: integer('earned_experience_points'),
 

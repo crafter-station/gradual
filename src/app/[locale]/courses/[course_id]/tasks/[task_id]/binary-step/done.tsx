@@ -1,6 +1,6 @@
 import { StepCard } from '@/components/step-card';
 import type { StepContent } from '@/db/schema/step';
-import type { StepProgressState } from '@/db/schema/step/progress-state';
+import type { StepProgressState } from '@/db/schema/step-progress/progress-state';
 import { cn } from '@/lib/utils';
 import { CheckIcon, XIcon } from 'lucide-react';
 
