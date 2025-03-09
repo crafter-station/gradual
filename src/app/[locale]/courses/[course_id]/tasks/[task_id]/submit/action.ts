@@ -72,8 +72,6 @@ export async function submitStepAction(formData: FormData) {
 
     const { isCorrect, state } = getData(currentStep as SelectStep, formData);
 
-    console.log(isCorrect, state);
-
     await db
       .update(schema.stepProgress)
       .set({
@@ -142,8 +140,6 @@ function getData(currentStep: SelectStep, formData: FormData) {
       const filledBlanks = z
         .array(z.string())
         .parse(formData.getAll('filledBlanks'));
-
-      console.log(filledBlanks);
 
       state = {
         type: 'FILL_IN_THE_BLANK',
