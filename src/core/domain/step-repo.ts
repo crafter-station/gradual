@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import * as schema from '@/db/schema';
-import type { Step } from './step';
+import { Step } from './step';
+import { eq } from 'drizzle-orm';
 
 export class StepRepo {
   async storeMany(steps: Step[]): Promise<void> {
@@ -16,7 +17,21 @@ export class StepRepo {
   }
 
   async findById(id: string): Promise<Step | null> {
-    // TODO: implement this
-    return null;
+    const existing = await db
+      .select()
+      .from(schema.step)
+      .where(eq(schema.step.id, id));
+
+    if (existing.length === 0) {
+      return null;
+    }
+
+    return new Step(
+      existing[0].id,
+      existing[0].order,
+      existing[0].content,
+      existing[0].type,
+      existing[0].taskId,
+    );
   }
 }
