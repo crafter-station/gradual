@@ -73,9 +73,7 @@ export const step = pgTable(
 
     type: stepTypeEnum('type').notNull(),
 
-    taskId: uuid('task_id')
-      .notNull()
-      .references(() => task.id),
+    taskId: uuid('task_id').references(() => task.id),
 
     correctResponseCount: integer('correct_response_count')
       .notNull()
