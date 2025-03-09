@@ -4,9 +4,6 @@ import { cn } from '@/lib/utils';
 import { CheckIcon, XIcon } from 'lucide-react';
 
 interface DoneFillInTheBlankStepProps {
-  id: string;
-  stepOrder: number;
-  totalSteps: number;
   progressState: StepProgressState & {
     type: 'FILL_IN_THE_BLANK';
   };
@@ -16,7 +13,6 @@ interface DoneFillInTheBlankStepProps {
 }
 
 export const DoneFillInTheBlankStep = ({
-  id,
   content,
   progressState,
 }: DoneFillInTheBlankStepProps) => {
@@ -24,8 +20,8 @@ export const DoneFillInTheBlankStep = ({
   const parts = content.body.split('__');
 
   // Create an array of all possible answers
-  const allAnswers = [...content.blanks, ...content.distractors].sort(
-    () => Math.random() - 0.5,
+  const allAnswers = [...content.blanks, ...content.distractors].sort((a, b) =>
+    a.localeCompare(b),
   );
 
   // Check if all answers are correct
@@ -35,7 +31,7 @@ export const DoneFillInTheBlankStep = ({
 
   // Generate unique keys for sentence parts
   const sentenceParts = parts.map((part, index) => ({
-    id: `${id}-sentence-part-${index}`,
+    id: `sentence-part-${index}`,
     content: part,
     isLast: index === parts.length - 1,
   }));

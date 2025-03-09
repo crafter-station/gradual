@@ -1,5 +1,5 @@
 'use client';
-import type { StepContent } from '@/db/schema/step';
+
 import { cn } from '@/lib/utils';
 import type { ParentConfig, ParentRecord } from '@formkit/drag-and-drop';
 import { animations } from '@formkit/drag-and-drop';
@@ -7,29 +7,21 @@ import { useDragAndDrop } from '@formkit/drag-and-drop/react';
 import { useFormStatus } from 'react-dom';
 
 interface ActiveFillInTheBlankStepProps {
-  id: string;
-  stepOrder: number;
-  totalSteps: number;
-  content: StepContent & {
-    type: 'FILL_IN_THE_BLANK';
-  };
+  body: string;
+  alternatives: string[];
 }
 
 export const ActiveFillInTheBlankStep = ({
-  id,
-  content,
+  body,
+  alternatives,
 }: ActiveFillInTheBlankStepProps) => {
   const status = useFormStatus();
 
   // Split the body text into parts using ____ as delimiter
-  const parts = content.body.split('____');
+  const parts = body.split('____');
 
   // Create initial pool of answers
-  const initialAnswers = (() => {
-    const correctPair = content.blanks;
-    const distractorPairs = content.distractors.map((d) => d.split('; '));
-    return [...correctPair, ...distractorPairs.flat()];
-  })();
+  const initialAnswers = alternatives;
 
   // Configure drag and drop zones with the same group
   const dragConfig: Partial<ParentConfig<string>> = {
@@ -83,9 +75,6 @@ export const ActiveFillInTheBlankStep = ({
     string
   >([], blank2Config);
 
-  // Fixed width for blanks and options
-  const FIXED_WIDTH = '160px';
-
   // Handle double click to unselect
   const handleDoubleClick = (blankIndex: number) => {
     const value = blankIndex === 0 ? blank1Value[0] : blank2Value[0];
@@ -121,10 +110,7 @@ export const ActiveFillInTheBlankStep = ({
               {/* Sentence with blanks */}
               <div className="text-center font-medium text-2xl leading-relaxed">
                 {parts.map((part, i) => (
-                  <span
-                    key={`${id}-part-${part}`}
-                    className="whitespace-normal"
-                  >
+                  <span key={`part-${part}`} className="whitespace-normal">
                     {part}
                     {i < parts.length - 1 && (
                       <span
@@ -204,16 +190,20 @@ export const ActiveFillInTheBlankStep = ({
               </div>
 
               {/* Hidden inputs for form submission */}
-              <input
-                type="hidden"
-                name="blank_0"
-                value={blank1Value[0] || ''}
-              />
-              <input
-                type="hidden"
-                name="blank_1"
-                value={blank2Value[0] || ''}
-              />
+              {blank1Value[0] && (
+                <input
+                  type="hidden"
+                  name="filledBlanks"
+                  value={blank1Value[0]}
+                />
+              )}
+              {blank2Value[0] && (
+                <input
+                  type="hidden"
+                  name="filledBlanks"
+                  value={blank2Value[0]}
+                />
+              )}
 
               {/* Loading state */}
               {status.pending && (

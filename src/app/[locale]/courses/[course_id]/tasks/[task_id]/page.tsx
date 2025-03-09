@@ -166,10 +166,12 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       .insert(schema.stepProgress)
       .values({
         userId,
-        taskId,
-        startedAt: now,
+
         stepId: step.id,
+        taskId,
         taskProgressId,
+
+        startedAt: now,
       })
       .returning();
 
@@ -251,6 +253,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           .insert(schema.stepProgress)
           .values({
             userId,
+
             stepId: nextStep.id,
             taskId,
             taskProgressId: lastStepProgress.taskProgressId,
@@ -347,7 +350,6 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           ) {
             return (
               <DoneMultipleChoiceStep
-                id={step.id}
                 key={step.id}
                 content={step.content}
                 progressState={progress.state}
@@ -358,11 +360,8 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           if (step.type === 'BINARY' && progress.state?.type === 'BINARY') {
             return (
               <DoneBinaryStep
-                id={step.id}
                 key={step.id}
                 content={step.content}
-                stepOrder={stepIndex + 1}
-                totalSteps={task.stepsCount}
                 progressState={progress.state}
               />
             );
@@ -374,11 +373,8 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           ) {
             return (
               <DoneFillInTheBlankStep
-                id={step.id}
                 key={step.id}
                 content={step.content}
-                stepOrder={stepIndex + 1}
-                totalSteps={task.stepsCount}
                 progressState={progress.state}
               />
             );
@@ -442,16 +438,13 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
               />
             ) : (
               <ActiveQuestionStep
-                id={lastVisibleStep.id}
                 alternatives={[
                   lastVisibleStep.content.correctAlternative,
                   ...lastVisibleStep.content.distractors.map(
                     (distractor) => distractor.alternative,
                   ),
-                ].sort(() => Math.random() - 0.5)}
+                ].sort((a, b) => a.localeCompare(b))}
                 questionBody={lastVisibleStep.content.questionBody}
-                stepOrder={lastVisibleStep.order}
-                totalSteps={task.stepsCount}
               />
             ))}
           {lastVisibleStep?.type === 'INTRODUCTION' &&
@@ -473,51 +466,46 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
           {lastVisibleStep?.type === 'MULTIPLE_CHOICE' &&
             (lastVisibleStepProgress?.state?.type === 'MULTIPLE_CHOICE' ? (
               <DoneMultipleChoiceStep
-                id={lastVisibleStep.id}
                 key={lastVisibleStep.id}
                 content={lastVisibleStep.content}
                 progressState={lastVisibleStepProgress?.state}
               />
             ) : (
               <ActiveMultipleChoiceStep
-                id={lastVisibleStep.id}
-                content={lastVisibleStep.content}
+                key={lastVisibleStep.id}
+                questionBody={lastVisibleStep.content.questionBody}
+                alternatives={[
+                  ...lastVisibleStep.content.correctAlternatives,
+                  ...lastVisibleStep.content.distractors,
+                ].sort((a, b) => a.localeCompare(b))}
               />
             ))}
           {lastVisibleStep?.type === 'BINARY' &&
             (lastVisibleStepProgress?.state?.type === 'BINARY' ? (
               <DoneBinaryStep
-                id={lastVisibleStep.id}
                 key={lastVisibleStep.id}
                 content={lastVisibleStep.content}
-                stepOrder={steps.length}
-                totalSteps={task.stepsCount}
                 progressState={lastVisibleStepProgress?.state}
               />
             ) : (
               <ActiveBinaryStep
-                id={lastVisibleStep.id}
-                stepOrder={lastVisibleStep.order}
-                totalSteps={task.stepsCount}
                 questionBody={lastVisibleStep.content.questionBody}
               />
             ))}
           {lastVisibleStep?.type === 'FILL_IN_THE_BLANK' &&
             (lastVisibleStepProgress?.state?.type === 'FILL_IN_THE_BLANK' ? (
               <DoneFillInTheBlankStep
-                id={lastVisibleStep.id}
                 key={lastVisibleStep.id}
                 content={lastVisibleStep.content}
-                stepOrder={steps.length}
-                totalSteps={task.stepsCount}
                 progressState={lastVisibleStepProgress?.state}
               />
             ) : (
               <ActiveFillInTheBlankStep
-                id={lastVisibleStep.id}
-                content={lastVisibleStep.content}
-                stepOrder={lastVisibleStep.order}
-                totalSteps={task.stepsCount}
+                body={lastVisibleStep.content.body}
+                alternatives={[
+                  ...lastVisibleStep.content.distractors,
+                  ...lastVisibleStep.content.blanks,
+                ].sort((a, b) => a.localeCompare(b))}
               />
             ))}
           {lastVisibleStep?.type === 'DEFINITION' &&

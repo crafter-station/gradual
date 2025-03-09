@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import { CheckCircle2Icon, XCircleIcon } from 'lucide-react';
 
 interface DoneMultipleChoiceStepProps {
-  id: string;
   content: StepContent & {
     type: 'MULTIPLE_CHOICE';
   };
@@ -15,7 +14,6 @@ interface DoneMultipleChoiceStepProps {
 }
 
 export const DoneMultipleChoiceStep = ({
-  id,
   content,
   progressState,
 }: DoneMultipleChoiceStepProps) => {
@@ -23,7 +21,7 @@ export const DoneMultipleChoiceStep = ({
   const allAlternatives = [
     ...content.correctAlternatives,
     ...content.distractors,
-  ].sort(() => Math.random() - 0.5);
+  ].sort((a, b) => a.localeCompare(b));
 
   // Check if all selected answers are correct and no incorrect ones are selected
   const isAllCorrect =

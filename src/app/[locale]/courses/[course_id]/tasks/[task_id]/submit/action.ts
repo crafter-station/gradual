@@ -72,6 +72,8 @@ export async function submitStepAction(formData: FormData) {
 
     const { isCorrect, state } = getData(currentStep as SelectStep, formData);
 
+    console.log(isCorrect, state);
+
     await db
       .update(schema.stepProgress)
       .set({
@@ -118,7 +120,6 @@ export async function submitStepAction(formData: FormData) {
 function getData(currentStep: SelectStep, formData: FormData) {
   let isCorrect: boolean | undefined;
   let state: StepProgressState | undefined;
-  let explanation: string | undefined;
   let correctAlternative: string | undefined;
 
   switch (currentStep.type) {
@@ -135,40 +136,30 @@ function getData(currentStep: SelectStep, formData: FormData) {
         correctAlternative = currentStep.content.correctAlternative;
 
         isCorrect = correctAlternative === selectedAlternative;
-
-        explanation = isCorrect
-          ? currentStep.content.correctAlternativeExplanation
-          : currentStep.content.distractors.find(
-              (distractor) => distractor.alternative === selectedAlternative,
-            )?.explanation;
       }
       break;
     case 'FILL_IN_THE_BLANK': {
-      const filledBlanks = ['test1', 'test2'];
+      const filledBlanks = z
+        .array(z.string())
+        .parse(formData.getAll('filledBlanks'));
+
+      console.log(filledBlanks);
 
       state = {
         type: 'FILL_IN_THE_BLANK',
         filledBlanks,
       };
 
-      isCorrect = filledBlanks.length === currentStep.content.blanks.length;
-      if (isCorrect) {
-        for (let i = 0; i < filledBlanks.length; i++) {
-          if (filledBlanks[i] !== currentStep.content.blanks[i]) {
-            isCorrect = false;
-            break;
-          }
-        }
-      }
+      const correctBlanks = currentStep.content.blanks.join(',');
 
-      correctAlternative = currentStep.content.body;
-      for (const blank of currentStep.content.blanks) {
-        correctAlternative = correctAlternative.replace('____', blank);
-      }
+      isCorrect = filledBlanks.join(',') === correctBlanks;
+
       break;
     }
     case 'MULTIPLE_CHOICE': {
-      const selectedAlternatives = ['test1', 'test2'];
+      const selectedAlternatives = z
+        .array(z.string())
+        .parse(formData.getAll('selectedAlternatives'));
 
       state = {
         type: 'MULTIPLE_CHOICE',
@@ -183,12 +174,14 @@ function getData(currentStep: SelectStep, formData: FormData) {
           .toSorted((a, b) => a.localeCompare(b))
           .join(',');
 
-      explanation = currentStep.content.explanation;
-
       break;
     }
     case 'BINARY': {
-      const selectedAnswer = true;
+      const _selectedAnswer = z
+        .enum(['true', 'false'])
+        .parse(formData.getAll('selectedAnswer')[0]);
+
+      const selectedAnswer = _selectedAnswer === 'true';
 
       state = {
         type: 'BINARY',
@@ -196,7 +189,6 @@ function getData(currentStep: SelectStep, formData: FormData) {
       };
 
       isCorrect = selectedAnswer === currentStep.content.correctAnswer;
-      explanation = currentStep.content.explanation;
 
       break;
     }
@@ -207,7 +199,6 @@ function getData(currentStep: SelectStep, formData: FormData) {
   return {
     state,
     isCorrect,
-    explanation,
     correctAlternative,
   };
 }

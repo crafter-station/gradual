@@ -32,7 +32,7 @@ export const DoneQuestionStep = ({
       explanation: content.correctAlternativeExplanation,
     },
     ...content.distractors,
-  ].sort(() => Math.random() - 0.5);
+  ].sort((a, b) => a.alternative.localeCompare(b.alternative));
 
   const isCorrect =
     progressState.selectedAlternative === content.correctAlternative;

@@ -5,9 +5,6 @@ import { cn } from '@/lib/utils';
 import { CheckIcon, XIcon } from 'lucide-react';
 
 interface DoneBinaryStepProps {
-  id: string;
-  stepOrder: number;
-  totalSteps: number;
   progressState: StepProgressState & {
     type: 'BINARY';
   };
@@ -17,9 +14,6 @@ interface DoneBinaryStepProps {
 }
 
 export const DoneBinaryStep = ({
-  id,
-  stepOrder,
-  totalSteps,
   progressState,
   content,
 }: DoneBinaryStepProps) => {

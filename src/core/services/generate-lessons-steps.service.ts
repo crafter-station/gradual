@@ -50,7 +50,7 @@ export class GenerateLessonStepsService {
     unitTitle: string,
     sectionTitle: string,
   ): Promise<Step[]> {
-    const MAX_SIMILAR_CHUNKS = 5;
+    const MAX_SIMILAR_CHUNKS = 3;
 
     const lessonEmbedding = await this.taskRepo.findEmbedding(lesson.id);
 
