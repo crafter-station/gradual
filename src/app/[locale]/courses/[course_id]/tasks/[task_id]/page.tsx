@@ -184,7 +184,12 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
     const [_taskProgress] = await db
       .select()
       .from(schema.taskProgress)
-      .where(eq(schema.taskProgress.id, stepProgress[0].taskProgressId))
+      .where(
+        and(
+          eq(schema.taskProgress.id, stepProgress[0].taskProgressId),
+          eq(schema.taskProgress.userId, userId),
+        ),
+      )
       .limit(1);
 
     if (!_taskProgress) {
