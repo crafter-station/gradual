@@ -16,18 +16,10 @@ export default async function StepsPage() {
 
         return (
           <div key={step.id} className="space-y-4">
-            <ActiveBinaryStep
-              id={step.id}
-              stepOrder={step.order}
-              totalSteps={steps.length}
-              questionBody={step.content.questionBody}
-            />
+            <ActiveBinaryStep questionBody={step.content.questionBody} />
 
             {progress?.completedAt && (
               <DoneBinaryStep
-                id={step.id}
-                stepOrder={step.order}
-                totalSteps={steps.length}
                 content={step.content}
                 progressState={
                   progress.state as StepProgressState & { type: typeof type }
