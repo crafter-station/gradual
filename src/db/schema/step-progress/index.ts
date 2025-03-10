@@ -38,10 +38,14 @@ export const stepProgress = pgTable(
     state: jsonb('state').$type<StepProgressState>(),
 
     isCorrect: boolean('is_correct'),
-    responseDuration: real('response_duration'),
+    responseDuration: real('response_duration').default(0).notNull(),
 
     startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
     completedAt: timestamp('completed_at', { withTimezone: true }),
+
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (table) => [
     uniqueIndex('user_id_step_id_index').on(table.userId, table.stepId),

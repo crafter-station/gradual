@@ -34,7 +34,7 @@ import { DoneTutorialStep } from './tutorial-step/done';
 import StatsCard from './stats';
 import { submitStepAction } from './submit/action';
 import { SubmitButton } from './submit/button';
-import { Test } from './test';
+import { UpdateDuration } from './update-duration';
 
 type PageProps = {
   params: Promise<{ task_id: string; course_id: string }>;
@@ -86,7 +86,6 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
   const userId = user.privateMetadata.userId as string | undefined;
 
   if (!userId) return notFound();
-
   if (!task) return notFound();
 
   const [enrollment] = await db
@@ -154,8 +153,10 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       .insert(schema.taskProgress)
       .values({
         id: taskProgressId,
+
         userId,
         taskId,
+
         startedAt: now,
       })
       .returning();
@@ -186,8 +187,8 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
       .from(schema.taskProgress)
       .where(
         and(
-          eq(schema.taskProgress.id, stepProgress[0].taskProgressId),
           eq(schema.taskProgress.userId, userId),
+          eq(schema.taskProgress.taskId, taskId),
         ),
       )
       .limit(1);
@@ -276,8 +277,16 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
     }
   }
 
+  steps.sort((a, b) => a.order - b.order);
+
   const lastVisibleStep = steps[steps.length - 1];
-  const lastVisibleStepProgress = stepProgress[stepProgress.length - 1];
+  const lastVisibleStepProgress = stepProgress.find(
+    (step) => step.stepId === lastVisibleStep.id,
+  );
+
+  if (!lastVisibleStepProgress) {
+    throw new Error('Last visible step progress not found');
+  }
 
   let stats:
     | {
@@ -591,27 +600,16 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
                 content={lastVisibleStep.content}
               />
             ))}
-          {![
-            'QUESTION',
-            'INTRODUCTION',
-            'MULTIPLE_CHOICE',
-            'BINARY',
-            'FILL_IN_THE_BLANK',
-            'DEFINITION',
-            'QUOTE',
-            'FUN_FACT',
-            'ANALOGY',
-            'SOLVED_EXERCISE',
-            'TUTORIAL',
-          ].includes(lastVisibleStep?.type ?? '') && (
-            <Test>
-              <pre key={lastVisibleStep?.id}>
-                {JSON.stringify(lastVisibleStep, null, 2)}
-              </pre>
-            </Test>
-          )}
-          <SubmitButton />
+
+          {!(
+            lastVisibleStep.order === task.stepsCount &&
+            lastVisibleStepProgress.completedAt
+          ) && <SubmitButton />}
         </form>
+
+        {lastVisibleStepProgress.completedAt === null && (
+          <UpdateDuration stepId={lastVisibleStep.id} taskId={taskId} />
+        )}
       </div>
 
       {stats && (
