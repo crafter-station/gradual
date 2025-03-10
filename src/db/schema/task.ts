@@ -48,6 +48,7 @@ export const task = pgTable('task', {
     .notNull()
     .defaultNow(),
 });
+
 export const InsertTaskSchema = createInsertSchema(task);
 export const SelectTaskSchema = createSelectSchema(task);
 

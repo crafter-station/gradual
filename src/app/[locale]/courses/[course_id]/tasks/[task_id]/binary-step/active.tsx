@@ -1,23 +1,16 @@
 'use client';
 
 import { StepCard } from '@/components/step-card';
-import { cn } from '@/lib/utils';
 import { CheckIcon, XIcon } from 'lucide-react';
 import { useFormStatus } from 'react-dom';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 interface ActiveBinaryStepProps {
-  id: string;
-  stepOrder: number;
-  totalSteps: number;
   questionBody: string;
 }
 
-export const ActiveBinaryStep = ({
-  id,
-  stepOrder,
-  totalSteps,
-  questionBody,
-}: ActiveBinaryStepProps) => {
+export const ActiveBinaryStep = ({ questionBody }: ActiveBinaryStepProps) => {
   const status = useFormStatus();
 
   return (
@@ -31,42 +24,46 @@ export const ActiveBinaryStep = ({
 
       {/* Binary options */}
       <div className="mx-auto w-full max-w-[700px]">
-        <div className="grid grid-cols-2 gap-4">
-          <button
-            type="submit"
-            name="binaryAnswer"
-            value="true"
-            disabled={status.pending}
-            className={cn(
-              'group/option relative flex items-center justify-center gap-3 p-6',
-              'rounded-xl border border-flexoki-green/10 transition-all duration-300',
-              'hover:border-flexoki-green/20 hover:bg-flexoki-green/[0.02]',
-              'active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50',
-            )}
-          >
-            <CheckIcon className="h-8 w-8 text-flexoki-green/60" />
-            <span className="font-medium text-flexoki-green/80 text-xl">
-              True
-            </span>
-          </button>
-          <button
-            type="submit"
-            name="binaryAnswer"
-            value="false"
-            disabled={status.pending}
-            className={cn(
-              'group/option relative flex items-center justify-center gap-3 p-6',
-              'rounded-xl border border-flexoki-red/10 transition-all duration-300',
-              'hover:border-flexoki-red/20 hover:bg-flexoki-red/[0.02]',
-              'active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50',
-            )}
-          >
-            <XIcon className="h-8 w-8 text-flexoki-red/60" />
-            <span className="font-medium text-flexoki-red/80 text-xl">
-              False
-            </span>
-          </button>
-        </div>
+        <RadioGroup
+          name="selectedAnswer"
+          className="grid grid-cols-2 gap-4"
+          disabled={status.pending}
+          required
+        >
+          <div className="relative flex items-center">
+            <RadioGroupItem
+              value="true"
+              id="true"
+              className="peer absolute opacity-0"
+            />
+            <Label
+              htmlFor="true"
+              className="flex h-32 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-flexoki-green/10 transition-all duration-300 hover:border-flexoki-green/20 hover:bg-flexoki-green/20 peer-data-[state=checked]:border-flexoki-green/20 peer-data-[state=checked]:bg-flexoki-green/20"
+            >
+              <CheckIcon className="h-8 w-8 text-flexoki-green/60" />
+              <span className="font-medium text-flexoki-green/80 text-xl">
+                True
+              </span>
+            </Label>
+          </div>
+
+          <div className="relative flex items-center">
+            <RadioGroupItem
+              value="false"
+              id="false"
+              className="peer absolute opacity-0"
+            />
+            <Label
+              htmlFor="false"
+              className="flex h-32 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-flexoki-red/10 transition-all duration-300 hover:border-flexoki-red/20 hover:bg-flexoki-red/20 peer-data-[state=checked]:border-flexoki-red/20 peer-data-[state=checked]:bg-flexoki-red/20"
+            >
+              <XIcon className="h-8 w-8 text-flexoki-red/60" />
+              <span className="font-medium text-flexoki-red/80 text-xl">
+                False
+              </span>
+            </Label>
+          </div>
+        </RadioGroup>
       </div>
 
       {/* Loading state */}

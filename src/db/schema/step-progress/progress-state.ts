@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { BinaryQuestionStepProgressStateSchema } from './binary';
-import { FillInTheBlankStepProgressStateSchema } from './fill-in-the-blank';
-import { MultipleChoiceQuestionStepProgressStateSchema } from './multiple-choice';
-import { QuestionStepProgressStateSchema } from './question';
+import { BinaryQuestionStepProgressStateSchema } from '../step/binary';
+import { FillInTheBlankStepProgressStateSchema } from '../step/fill-in-the-blank';
+import { MultipleChoiceQuestionStepProgressStateSchema } from '../step/multiple-choice';
+import { QuestionStepProgressStateSchema } from '../step/question';
 
 export const StepProgressStateSchema = z.union([
   QuestionStepProgressStateSchema,

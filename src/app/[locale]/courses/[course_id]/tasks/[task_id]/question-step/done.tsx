@@ -2,7 +2,7 @@ import { StepCard } from '@/components/step-card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import type { StepContent } from '@/db/schema/step';
-import type { StepProgressState } from '@/db/schema/step/progress-state';
+import type { StepProgressState } from '@/db/schema/step-progress/progress-state';
 import { cn } from '@/lib/utils';
 import { CheckIcon, XIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -32,7 +32,7 @@ export const DoneQuestionStep = ({
       explanation: content.correctAlternativeExplanation,
     },
     ...content.distractors,
-  ].sort(() => Math.random() - 0.5);
+  ].sort((a, b) => a.alternative.localeCompare(b.alternative));
 
   const isCorrect =
     progressState.selectedAlternative === content.correctAlternative;

@@ -105,7 +105,6 @@ export function BookCardShowcase() {
         {colors.map((color, index) => {
           // Cycle through the sample book data
           const bookInfo = bookData[index % bookData.length];
-          console.log(bookInfo);
 
           return (
             <div key={color} className="mb-10 h-[280px] px-2">

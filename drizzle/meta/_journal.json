@@ -8,6 +8,41 @@
       "when": 1741120449750,
       "tag": "0000_thin_mephistopheles",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1741462031235,
+      "tag": "0001_classy_albert_cleary",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741462112065,
+      "tag": "0002_smooth_firedrake",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1741569057800,
+      "tag": "0003_lonely_captain_midlands",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1741569089056,
+      "tag": "0004_sleepy_ezekiel",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1741571690686,
+      "tag": "0005_sloppy_lifeguard",
+      "breakpoints": true
     }
   ]
 }

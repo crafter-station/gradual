@@ -17,14 +17,11 @@ export default async function StepsPage() {
         return (
           <div key={step.id} className="space-y-4">
             <ActiveQuestionStep
-              id={step.id}
               questionBody={step.content.questionBody}
               alternatives={[
                 ...step.content.distractors.map((d) => d.alternative),
                 step.content.correctAlternative,
               ].toSorted((a, b) => a.localeCompare(b))}
-              stepOrder={step.order}
-              totalSteps={steps.length}
             />
 
             {progress?.completedAt && (

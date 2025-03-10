@@ -1,0 +1,1 @@
+ALTER TABLE "step_progress" ALTER COLUMN "response_duration" SET NOT NULL;

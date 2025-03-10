@@ -17,17 +17,15 @@ export default async function StepsPage() {
         return (
           <div key={step.id} className="space-y-4">
             <ActiveFillInTheBlankStep
-              id={step.id}
-              stepOrder={step.order}
-              totalSteps={steps.length}
-              content={step.content}
+              body={step.content.body}
+              alternatives={[
+                ...step.content.blanks,
+                ...step.content.distractors,
+              ].sort((a, b) => a.localeCompare(b))}
             />
 
             {progress?.completedAt && (
               <DoneFillInTheBlankStep
-                id={step.id}
-                stepOrder={step.order}
-                totalSteps={steps.length}
                 progressState={
                   progress.state as StepProgressState & { type: typeof type }
                 }

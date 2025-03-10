@@ -42,6 +42,9 @@ export function getGenerateLessonPrompt({
 </context>
 
 Important: Focus only on the current topic. Do not cover material from other sections in the syllabus:
+If you have content (chunks) that is not related to the current topic, ignore it.
+Remember that we are crearing a course and there are other lessons of the course that will cover the other content.
+Just focus on the current topic and the content related to it.
 
 Required step count: 15-20 steps total
 
@@ -154,6 +157,8 @@ MULTIPLE_CHOICE steps should:
 - Have 2-3 carefully crafted correct alternatives
 - Have 3-4 carefully crafted distractors
 - Include the explanation for the solution
+- Unlike questions, multiple choice steps must have multiple correct alternatives
+- 2 or 3 correct alternatives are preferred
 - Examples:
   {
     type: "MULTIPLE_CHOICE",
@@ -187,6 +192,11 @@ FILL_IN_THE_BLANK steps should:
 - Have 1-2 blanks
 - A blank can be a single word or phrase
 - Represent the blank with ____ (four underscores)
+- Have 3-4 distractors
+- Each distractor should be different from the other distractors
+- Each distractor is a single word or phrase
+- Return an array of strings in the blanks properly
+- Return an array of strings in the distractors properly
 - Include the explanation for the solution
 - Write the full sentence in the body
 - Provide the blanks as a list of strings in the blanks property

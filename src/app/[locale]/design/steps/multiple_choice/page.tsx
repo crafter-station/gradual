@@ -16,11 +16,16 @@ export default async function StepsPage() {
 
         return (
           <div key={step.id} className="space-y-4">
-            <ActiveMultipleChoiceStep id={step.id} content={step.content} />
+            <ActiveMultipleChoiceStep
+              questionBody={step.content.questionBody}
+              alternatives={[
+                ...step.content.correctAlternatives,
+                ...step.content.distractors,
+              ].sort((a, b) => a.localeCompare(b))}
+            />
 
             {progress?.completedAt && (
               <DoneMultipleChoiceStep
-                id={step.id}
                 progressState={
                   progress.state as StepProgressState & { type: typeof type }
                 }

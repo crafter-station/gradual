@@ -4,35 +4,21 @@ import { StepCard } from '@/components/step-card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
+import React from 'react';
 import { useFormStatus } from 'react-dom';
 
 interface ActiveQuestionStepProps {
-  id: string;
   questionBody: string;
   alternatives: string[];
-  correctAnswer?: string;
-  selectedAnswer?: string;
-  stepOrder: number;
-  totalSteps: number;
 }
 
 export const ActiveQuestionStep = ({
-  id,
   alternatives,
   questionBody,
-  correctAnswer,
-  selectedAnswer,
-  stepOrder,
-  totalSteps,
 }: ActiveQuestionStepProps) => {
   const status = useFormStatus();
 
-  const getAnswerState = (alternative: string) => {
-    if (!selectedAnswer) return 'default';
-    if (alternative === correctAnswer) return 'correct';
-    if (alternative === selectedAnswer) return 'incorrect';
-    return 'muted';
-  };
+  const id = React.useId();
 
   return (
     <StepCard stepType="Question">
@@ -45,49 +31,36 @@ export const ActiveQuestionStep = ({
       <RadioGroup
         className="mt-8 space-y-3"
         name="selectedAlternative"
-        disabled={status.pending || !!selectedAnswer}
+        disabled={status.pending}
       >
         {alternatives.map((alternative, index) => {
-          const state = getAnswerState(alternative);
           return (
-            <Label
-              key={alternative}
-              htmlFor={`question-${id}-alternative-${index}`}
-              className={cn(
-                'group/option relative cursor-pointer transition-all duration-300',
-                'rounded-lg border',
-                state === 'default' &&
+            <div key={alternative} className="relative flex items-center">
+              <RadioGroupItem
+                value={alternative}
+                id={`question-${id}-alternative-${index}`}
+                className="peer absolute opacity-0"
+              />
+              <Label
+                htmlFor={`question-${id}-alternative-${index}`}
+                className={cn(
+                  'w-full cursor-pointer transition-all duration-300',
+                  'rounded-lg border',
                   'border-border/40 hover:border-border/60',
-                state === 'correct' &&
-                  'border-flexoki-green/40 bg-flexoki-green/5',
-                state === 'incorrect' &&
-                  'border-flexoki-red/40 bg-flexoki-red/5',
-                state === 'muted' && 'border-border/20 opacity-50',
-              )}
-            >
-              <div className="relative flex h-full items-center gap-3 px-4 py-3">
-                <RadioGroupItem
-                  value={alternative}
-                  id={`question-${id}-alternative-${index}`}
-                  index={index}
-                  className={cn(
-                    state === 'correct' && 'text-flexoki-green',
-                    state === 'incorrect' && 'text-flexoki-red',
-                    state === 'muted' && 'text-muted-foreground',
-                  )}
-                />
-                <div
-                  className={cn(
-                    'flex-1 font-medium leading-6',
-                    state === 'correct' && 'text-flexoki-green',
-                    state === 'incorrect' && 'text-flexoki-red',
-                    state === 'muted' && 'text-muted-foreground',
-                  )}
-                >
-                  {alternative}
+                  'peer-data-[state=checked]:border-primary/50',
+                  'peer-data-[state=checked]:bg-primary/10',
+                )}
+              >
+                <div className="relative flex h-full items-center gap-3 px-4 py-3">
+                  <div className="flex h-4 w-4 items-center justify-center rounded-full border border-primary">
+                    <div className="h-2 w-2 rounded-full bg-primary opacity-0 peer-data-[state=checked]:opacity-100" />
+                  </div>
+                  <div className={cn('flex-1 font-medium leading-6')}>
+                    {alternative}
+                  </div>
                 </div>
-              </div>
-            </Label>
+              </Label>
+            </div>
           );
         })}
       </RadioGroup>

@@ -3,15 +3,16 @@ import {
   boolean,
   jsonb,
   pgTable,
+  real,
   timestamp,
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { step } from './step';
-import type { StepProgressState } from './step/progress-state';
-import { task } from './task';
-import { taskProgress } from './task-progress';
-import { user } from './user';
+import { step } from '../step';
+import type { StepProgressState } from './progress-state';
+import { task } from '../task';
+import { taskProgress } from '../task-progress';
+import { user } from '../user';
 
 export const stepProgress = pgTable(
   'step_progress',
@@ -35,10 +36,16 @@ export const stepProgress = pgTable(
       .references(() => taskProgress.id),
 
     state: jsonb('state').$type<StepProgressState>(),
+
     isCorrect: boolean('is_correct'),
+    responseDuration: real('response_duration').default(0).notNull(),
 
     startedAt: timestamp('started_at', { withTimezone: true }).notNull(),
     completedAt: timestamp('completed_at', { withTimezone: true }),
+
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
   },
   (table) => [
     uniqueIndex('user_id_step_id_index').on(table.userId, table.stepId),
