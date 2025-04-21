@@ -6,8 +6,17 @@ export default {
     upload: 'New Course',
     stats: 'Stats',
   },
-  hello: 'Hello',
-  'hello.world': 'Hello world!',
+  home: {
+    title: 'What do you want to learn?',
+    contribute: 'Contribute',
+    videos: 'Videos',
+    greeting: 'Good {time}, {name}',
+    subtitle: 'What do you want to learn?',
+    placeholder: 'I want to learn about...',
+    signIn: 'Sign In',
+    think: 'Think',
+    deepSearch: 'DeepSearch',
+  },
   welcome: 'Hello {name}!',
   dashboard: {
     title: 'Dashboard',
@@ -232,5 +241,85 @@ export default {
     rejectButton: 'Reject',
     joinToast: 'You have joined the waitlist',
     updateSuccess: 'Waitlist updated successfully',
+  },
+  sidebar: {
+    brand: {
+      title: 'Gradual',
+      subtitle: 'Learn anything, anywhere',
+    },
+    search: {
+      placeholder: 'Search...',
+      tooltip: 'Search navigation and features',
+    },
+    navigation: {
+      overview: {
+        title: 'Overview',
+        items: {
+          dashboard: 'Dashboard',
+          recentActivity: 'Recent Activity',
+          statistics: 'Statistics',
+        },
+      },
+      learn: {
+        title: 'Learn',
+        items: {
+          myCourses: 'My Courses',
+          flashcards: 'Flashcards',
+          studyPlans: 'Study Plans',
+          progress: 'Progress',
+        },
+      },
+      create: {
+        title: 'Create',
+        items: {
+          newCourse: 'New Course',
+          flashcardDeck: 'Flashcard Deck',
+          studyGuide: 'Study Guide',
+          quizBuilder: 'Quiz Builder',
+        },
+      },
+      ai: {
+        title: 'AI Tools',
+        items: {
+          courseGenerator: 'Course Generator',
+          flashcardAI: 'Flashcard AI',
+          studyAssistant: 'Study Assistant',
+          contentAnalyzer: 'Content Analyzer',
+        },
+      },
+      resources: {
+        title: 'Resources',
+        items: {
+          library: 'Library',
+          templates: 'Templates',
+          community: 'Community',
+          helpCenter: 'Help Center',
+        },
+      },
+    },
+    powerTools: {
+      title: 'Advanced Tools',
+      items: {
+        markdownEditor: 'Markdown Editor',
+        pdfImport: 'PDF Import',
+        contentOrganizer: 'Content Organizer',
+        batchProcessing: 'Batch Processing',
+      },
+    },
+    integrations: {
+      title: 'Integrations',
+      items: {
+        github: 'GitHub',
+        notion: 'Notion',
+        linear: 'Linear',
+        discord: 'Discord',
+        slack: 'Slack',
+        gmail: 'Gmail',
+        googleCalendar: 'Google Calendar',
+        googleDocs: 'Google Docs',
+        microsoftTeams: 'Microsoft Teams',
+      },
+      soon: 'Soon',
+    },
   },
 } as const;

@@ -7,6 +7,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin';
 import { extractRouterConfig } from 'uploadthing/server';
 import { gradualFileRouter } from '../api/uploadthing/core';
+import { cn } from '@/lib/utils';
 
 const geist = Geist({
   variable: '--font-geist',
@@ -83,7 +84,12 @@ export default async function RootLayout({
     >
       <html lang={locale}>
         <body
-          className={`${geist.variable} ${geistMono.variable} ${notoSerifKhojki.variable} antialiased`}
+          className={cn(
+            geist.variable,
+            geistMono.variable,
+            notoSerifKhojki.variable,
+            'antialiased selection:bg-primary selection:text-primary-foreground',
+          )}
         >
           <NextSSRPlugin
             routerConfig={extractRouterConfig(gradualFileRouter)}

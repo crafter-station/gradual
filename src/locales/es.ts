@@ -234,4 +234,92 @@ export default {
     joinToast: 'Te has unido a la lista de espera',
     updateSuccess: 'Estado actualizado con éxito',
   },
+  home: {
+    greeting: 'Buen{time}, {name}',
+    subtitle: '¿Qué quieres aprender hoy?',
+    placeholder: 'Quiero aprender sobre...',
+    signIn: 'Iniciar Sesión',
+    think: 'Pensar',
+    deepSearch: 'DeepSearch',
+  },
+  sidebar: {
+    brand: {
+      title: 'Gradual',
+      subtitle: 'Aprende de todo, donde quieras.',
+    },
+    search: {
+      placeholder: 'Buscar...',
+      tooltip: 'Buscar navegación y funciones',
+    },
+    navigation: {
+      overview: {
+        title: 'Vista General',
+        items: {
+          dashboard: 'Panel de Control',
+          recentActivity: 'Actividad Reciente',
+          statistics: 'Estadísticas',
+        },
+      },
+      learn: {
+        title: 'Aprender',
+        items: {
+          myCourses: 'Mis Cursos',
+          flashcards: 'Tarjetas de Memoria',
+          studyPlans: 'Planes de Estudio',
+          progress: 'Progreso',
+        },
+      },
+      create: {
+        title: 'Crear',
+        items: {
+          newCourse: 'Nuevo Curso',
+          flashcardDeck: 'Mazo de Tarjetas',
+          studyGuide: 'Guía de Estudio',
+          quizBuilder: 'Constructor de Cuestionarios',
+        },
+      },
+      ai: {
+        title: 'Herramientas IA',
+        items: {
+          courseGenerator: 'Generador de Cursos',
+          flashcardAI: 'IA de Tarjetas',
+          studyAssistant: 'Asistente de Estudio',
+          contentAnalyzer: 'Analizador de Contenido',
+        },
+      },
+      resources: {
+        title: 'Recursos',
+        items: {
+          library: 'Biblioteca',
+          templates: 'Plantillas',
+          community: 'Comunidad',
+          helpCenter: 'Centro de Ayuda',
+        },
+      },
+    },
+    powerTools: {
+      title: 'Herramientas Avanzadas',
+      items: {
+        markdownEditor: 'Editor Markdown',
+        pdfImport: 'Importar PDF',
+        contentOrganizer: 'Organizador de Contenido',
+        batchProcessing: 'Procesamiento por Lotes',
+      },
+    },
+    integrations: {
+      title: 'Integraciones',
+      items: {
+        github: 'GitHub',
+        notion: 'Notion',
+        linear: 'Linear',
+        discord: 'Discord',
+        slack: 'Slack',
+        gmail: 'Gmail',
+        googleCalendar: 'Google Calendar',
+        googleDocs: 'Google Docs',
+        microsoftTeams: 'Microsoft Teams',
+      },
+      soon: 'Próximamente',
+    },
+  },
 } as const;
