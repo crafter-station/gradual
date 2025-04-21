@@ -93,8 +93,8 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className='font-medium text-sm leading-none'>{title}</div>
-          <p className='line-clamp-2 text-muted-foreground text-sm leading-snug'>
+          <div className="font-medium text-sm leading-none">{title}</div>
+          <p className="line-clamp-2 text-muted-foreground text-sm leading-snug">
             {children}
           </p>
         </a>
@@ -111,76 +111,9 @@ export default function LandingLayout({
 }>) {
   return (
     <div className="relative flex min-h-screen flex-col">
-      {/* Advanced background with layered elements */}
-      <div className="-z-10 fixed inset-0 overflow-hidden">
-        {/* Gradient mesh background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90" />
-
-        {/* Subtle grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
-          }}
-        />
-
-        {/* Abstract shapes */}
-        <div
-          className="absolute top-1/4 left-[15%] h-[400px] w-[400px] animate-float-slow"
-          style={{
-            background:
-              'radial-gradient(circle at center, var(--color-flexoki-blue) 0%, transparent 70%)',
-            opacity: 0.15,
-            filter: 'blur(60px)',
-            animation: 'float 20s ease-in-out infinite',
-            transformOrigin: 'center center',
-          }}
-        />
-        <div
-          className="absolute right-[15%] bottom-1/3 h-[350px] w-[350px] animate-float"
-          style={{
-            background:
-              'radial-gradient(circle at center, var(--color-flexoki-green) 0%, transparent 70%)',
-            opacity: 0.12,
-            filter: 'blur(50px)',
-            animation: 'float 25s ease-in-out infinite reverse',
-            transformOrigin: '60% 40%',
-          }}
-        />
-
-        {/* Diagonal lines */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-0 h-full w-full">
-            {[
-              { id: 'line-1', position: 10 },
-              { id: 'line-2', position: 25 },
-              { id: 'line-3', position: 40 },
-              { id: 'line-4', position: 55 },
-              { id: 'line-5', position: 70 },
-              { id: 'line-6', position: 85 },
-              { id: 'line-7', position: 100 },
-              { id: 'line-8', position: 115 },
-            ].map((line, i) => (
-              <div
-                key={line.id}
-                className="absolute h-[1px] w-[200%] bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                style={{
-                  top: `${line.position}%`,
-                  left: '-50%',
-                  transform: 'rotate(-15deg)',
-                  opacity: 0.5 - i * 0.05,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Asymmetrical header with dynamic elements */}
-      <header className="relative z-10 w-full border-white/5 border-b">
-        <div className="container mx-auto flex h-20 items-center justify-between">
+      <header className="!bg-background/80 fixed top-0 right-0 left-0 z-10 w-full border-white/5 border-b backdrop-blur-sm">
+        <div className="container mx-auto flex h-14 items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/">
               <GradualLogo width={32} height={32} className="text-primary" />
@@ -413,7 +346,7 @@ export default function LandingLayout({
             </div>
           </div>
 
-          <div className='mt-12 border-white/10 border-t pt-8'>
+          <div className="mt-12 border-white/10 border-t pt-8">
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
               <p className="text-muted-foreground text-sm">
                 © {new Date().getFullYear()} Gradual. All rights reserved.

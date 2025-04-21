@@ -11,6 +11,7 @@ export const Enrollment = async ({ courseId }: { courseId: string }) => {
   if (!user) {
     return null;
   }
+  console.log('user', user);
 
   const userId = user.privateMetadata.userId as string;
   if (!userId) {

@@ -17,15 +17,23 @@ import { usePathname } from 'next/navigation';
 
 import {
   ChartPieIcon,
-  FlagIcon,
   GraduationCapIcon,
   HomeIcon,
+  LogIn,
   UploadIcon,
 } from 'lucide-react';
 
 import { useI18n } from '@/locales/client';
-import { SignInButton, UserButton, useAuth } from '@clerk/nextjs';
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useAuth,
+} from '@clerk/nextjs';
 import { GradualLogo } from './gradual-logo';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const navData = [
   {
@@ -75,9 +83,7 @@ function NavMain({ items }: Readonly<{ items: typeof navData }>) {
               >
                 <a
                   href={item.url}
-                  className={
-                    item.isActive ? 'text-foreground' : 'text-muted-foreground'
-                  }
+                  className="text-foreground"
                   onClick={(e) => item.isActive && e.preventDefault()}
                 >
                   <item.icon className="h-4 w-4" />
@@ -97,38 +103,64 @@ function UserNav() {
   const { state } = useSidebar();
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        {isSignedIn ? (
-          <UserButton showName={state === 'expanded'} />
-        ) : (
-          <SignInButton />
-        )}
-      </SidebarMenuItem>
-      <SidebarMenuItem>
-        <SidebarMenuButton asChild tooltip="Help">
-          <a href="/help" onClick={(e) => e.preventDefault()}>
-            <FlagIcon className="h-4 w-4" />
-            <span className="ml-1 origin-left transition-all duration-300 group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
-              Feedback
-            </span>
-          </a>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    </SidebarMenu>
+    <SidebarGroup className="p-0">
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SignedIn>
+            <SidebarMenuButton
+              className="!p-0 group-data-[collapsible=icon]:!p-0 flex w-full items-center justify-start gap-2 text-foreground text-sm transition-colors hover:bg-muted/50"
+              tooltip="User Profile"
+              asChild
+            >
+              <UserButton showName={true} />
+            </SidebarMenuButton>
+          </SignedIn>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <SidebarMenuButton
+                className={cn(
+                  'flex h-10 w-full items-center justify-center gap-1.5 rounded-sm px-2 py-1 font-medium text-base transition-colors duration-150',
+                  'active:!bg-sidebar-accent/60 active:!text-foreground bg-sidebar-accent text-foreground hover:bg-sidebar-accent/80 hover:text-foreground',
+                  'group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-1 group-data-[collapsible=icon]:text-[10px]',
+                  'aria-label:Sign in to your account',
+                )}
+              >
+                <LogIn className="h-6 w-6 shrink-0" />
+                <span className="group-data-[collapsible=icon]:hidden">
+                  Sign In
+                </span>
+              </SidebarMenuButton>
+            </SignInButton>
+          </SignedOut>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarGroup>
   );
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <div className="relative mt-2 flex items-center gap-3">
-          <GradualLogo className="ml-1 size-6 shrink-0" />
-          <h1 className="absolute left-[calc(1rem+20px)] origin-left whitespace-nowrap font-mono font-semibold text-lg transition-all duration-300 group-data-[collapsible=icon]:scale-0 group-data-[collapsible=icon]:opacity-0">
-            Gradual
-          </h1>
-        </div>
+      <SidebarHeader className="flex flex-row items-center gap-2 pt-2">
+        <SidebarMenuButton
+          size="lg"
+          className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          asChild
+        >
+          <Link href="/">
+            <div className="rounded-lg border border-border bg-background p-1">
+              <GradualLogo className="size-5" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold text-base text-foreground leading-tight">
+                Gradual
+              </span>
+              <span className="text-foreground text-xs">
+                Learn anything, anywhere
+              </span>
+            </div>
+          </Link>
+        </SidebarMenuButton>
       </SidebarHeader>
       <SidebarContent className="overflow-hidden">
         <NavMain items={navData} />

@@ -1,4 +1,3 @@
-
 import { getI18n, getStaticParams } from '@/locales/server';
 import { setStaticParamsLocale } from 'next-international/server';
 import { WaitlistForm } from '../form';
@@ -36,14 +35,7 @@ export default async function Home({
         <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/90" />
 
         {/* Enhanced grid overlay with animation */}
-        <div
-          className='absolute inset-0 animate-pulse-slow opacity-[0.03]'
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
-            backgroundSize: '80px 80px',
-          }}
-        />
+        <div className="absolute inset-0 animate-pulse-slow opacity-[0.03] [background-image:linear-gradient(to_right,_var(--color-foreground)_1px,_transparent_1px),_linear-gradient(to_bottom,_var(--color-foreground)_1px,_transparent_1px)] [background-size:80px_80px]" />
 
         {/* More vibrant abstract shapes */}
         <div
@@ -69,7 +61,7 @@ export default async function Home({
           }}
         />
         <div
-          className='absolute top-[60%] left-[30%] h-[400px] w-[400px] animate-float-slow'
+          className="absolute top-[60%] left-[30%] h-[400px] w-[400px] animate-float-slow"
           style={{
             background:
               'radial-gradient(circle at center, var(--color-flexoki-purple) 0%, transparent 70%)',
@@ -79,37 +71,6 @@ export default async function Home({
             transformOrigin: '40% 60%',
           }}
         />
-
-        {/* Enhanced diagonal lines with animation */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 left-0 h-full w-full">
-            {[
-              { id: 'line-1', position: 10, delay: '0s' },
-              { id: 'line-2', position: 25, delay: '0.5s' },
-              { id: 'line-3', position: 40, delay: '1s' },
-              { id: 'line-4', position: 55, delay: '1.5s' },
-              { id: 'line-5', position: 70, delay: '2s' },
-              { id: 'line-6', position: 85, delay: '2.5s' },
-              { id: 'line-7', position: 100, delay: '3s' },
-              { id: 'line-8', position: 115, delay: '3.5s' },
-              { id: 'line-9', position: 130, delay: '4s' },
-              { id: 'line-10', position: 145, delay: '4.5s' },
-            ].map((line, i) => (
-              <div
-                key={line.id}
-                className="absolute h-[1px] w-[200%] bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                style={{
-                  top: `${line.position}%`,
-                  left: '-50%',
-                  transform: 'rotate(-15deg)',
-                  opacity: 0.5 - i * 0.04,
-                  animation: 'pulse 8s ease-in-out infinite',
-                  animationDelay: line.delay,
-                }}
-              />
-            ))}
-          </div>
-        </div>
 
         {/* Particle effect (subtle dots) */}
         <div className="absolute inset-0 overflow-hidden">
@@ -136,7 +97,7 @@ export default async function Home({
           <div className="container mx-auto px-4 md:px-6">
             <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-5">
               <div className="space-y-8 lg:col-span-3">
-                <div className='inline-flex animate-fade-in items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm backdrop-blur-md'>
+                <div className="inline-flex animate-fade-in items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm backdrop-blur-md">
                   <span className="mr-1 rounded-full bg-primary/20 px-1.5 py-0.5 text-primary text-xs">
                     New
                   </span>
@@ -146,27 +107,27 @@ export default async function Home({
                 </div>
 
                 <h1
-                  className='max-w-3xl animate-fade-in-up font-medium text-4xl leading-[0.95] tracking-tight md:text-6xl xl:text-7xl'
+                  className="max-w-3xl animate-fade-in-up font-medium text-4xl leading-[0.95] tracking-tight md:text-6xl xl:text-7xl"
                   style={{ animationDelay: '0.1s' }}
                 >
                   <span className="block text-foreground">
                     Master anything with
                   </span>
-                  <span className='relative bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent'>
+                  <span className="relative bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                     scientific precision
-                    <span className='-bottom-1 absolute left-0 h-[2px] w-full bg-gradient-to-r from-primary to-transparent opacity-30' />
+                    <span className="-bottom-1 absolute left-0 h-[2px] w-full bg-gradient-to-r from-primary to-transparent opacity-30" />
                   </span>
                 </h1>
 
                 <p
-                  className='max-w-xl animate-fade-in-up text-lg text-muted-foreground leading-relaxed'
+                  className="max-w-xl animate-fade-in-up text-lg text-muted-foreground leading-relaxed"
                   style={{ animationDelay: '0.2s' }}
                 >
                   {t('landing.hero.description')}
                 </p>
 
                 <div
-                  className='flex animate-fade-in-up flex-col gap-4 pt-4 sm:flex-row'
+                  className="flex animate-fade-in-up flex-col gap-4 pt-4 sm:flex-row"
                   style={{ animationDelay: '0.3s' }}
                 >
                   <Button size="lg" className="group relative overflow-hidden">
@@ -181,7 +142,7 @@ export default async function Home({
                   <Button
                     variant="outline"
                     size="lg"
-                    className='border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10'
+                    className="border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
                   >
                     <BookOpenIcon className="mr-2 h-4 w-4" />
                     Learn More
@@ -189,7 +150,7 @@ export default async function Home({
                 </div>
 
                 <div
-                  className='flex animate-fade-in-up flex-col gap-8 pt-6'
+                  className="flex animate-fade-in-up flex-col gap-8 pt-6"
                   style={{ animationDelay: '0.4s' }}
                 >
                   {/* Refined user avatars with subtle animation */}
@@ -224,7 +185,7 @@ export default async function Home({
                       ].map((avatar) => (
                         <div
                           key={avatar.id}
-                          className='absolute h-10 w-10 overflow-hidden rounded-full border border-background/50 bg-muted shadow-sm transition-all duration-300 hover:z-10 hover:scale-110 hover:border-white/20'
+                          className="absolute h-10 w-10 overflow-hidden rounded-full border border-background/50 bg-muted shadow-sm transition-all duration-300 hover:z-10 hover:scale-110 hover:border-white/20"
                           style={{ left: avatar.position }}
                         >
                           <div
@@ -244,20 +205,20 @@ export default async function Home({
                   {/* Refined trust indicators */}
                   <div className="flex flex-wrap gap-3">
                     <div className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10">
-                      <StarIcon className='h-3.5 w-3.5 text-amber-400/80 transition-colors group-hover:text-amber-400' />
-                      <span className='text-muted-foreground transition-colors group-hover:text-foreground'>
+                      <StarIcon className="h-3.5 w-3.5 text-amber-400/80 transition-colors group-hover:text-amber-400" />
+                      <span className="text-muted-foreground transition-colors group-hover:text-foreground">
                         4.9/5 average rating
                       </span>
                     </div>
                     <div className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10">
-                      <ShieldIcon className='h-3.5 w-3.5 text-primary/80 transition-colors group-hover:text-primary' />
-                      <span className='text-muted-foreground transition-colors group-hover:text-foreground'>
+                      <ShieldIcon className="h-3.5 w-3.5 text-primary/80 transition-colors group-hover:text-primary" />
+                      <span className="text-muted-foreground transition-colors group-hover:text-foreground">
                         Enterprise-grade security
                       </span>
                     </div>
                     <div className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10">
-                      <CheckCircleIcon className='h-3.5 w-3.5 text-green-400/80 transition-colors group-hover:text-green-400' />
-                      <span className='text-muted-foreground transition-colors group-hover:text-foreground'>
+                      <CheckCircleIcon className="h-3.5 w-3.5 text-green-400/80 transition-colors group-hover:text-green-400" />
+                      <span className="text-muted-foreground transition-colors group-hover:text-foreground">
                         Scientifically validated
                       </span>
                     </div>
@@ -266,17 +227,17 @@ export default async function Home({
               </div>
 
               <div
-                className='relative animate-fade-in lg:col-span-2'
+                className="relative animate-fade-in lg:col-span-2"
                 style={{ animationDelay: '0.3s' }}
               >
                 <div className="relative mx-auto aspect-square w-full max-w-md lg:mx-0">
-                  <div className='group absolute inset-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl shadow-primary/5 backdrop-blur-sm transition-all duration-500 hover:border-white/20 hover:shadow-primary/10'>
+                  <div className="group absolute inset-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl shadow-primary/5 backdrop-blur-sm transition-all duration-500 hover:border-white/20 hover:shadow-primary/10">
                     {/* Animated gradient background */}
-                    <div className='absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 opacity-70 transition-opacity duration-500 group-hover:opacity-100' />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
 
                     {/* Animated grid pattern */}
                     <div
-                      className='absolute inset-0 opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.05]'
+                      className="absolute inset-0 opacity-[0.03] transition-opacity duration-500 group-hover:opacity-[0.05]"
                       style={{
                         backgroundImage:
                           'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
@@ -286,7 +247,7 @@ export default async function Home({
 
                     {/* Glowing orb that follows mouse */}
                     <div
-                      className='absolute h-32 w-32 rounded-full bg-primary/10 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100'
+                      className="absolute h-32 w-32 rounded-full bg-primary/10 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"
                       style={{
                         left: '50%',
                         top: '50%',
@@ -331,7 +292,7 @@ export default async function Home({
                         ].map((feature, index) => (
                           <div
                             key={feature.id}
-                            className='feature-card hover:-translate-y-1 group/card relative overflow-hidden rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-500 hover:translate-x-1 hover:border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-primary/5'
+                            className="feature-card hover:-translate-y-1 group/card relative overflow-hidden rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-500 hover:translate-x-1 hover:border-white/20 hover:bg-white/10 hover:shadow-lg hover:shadow-primary/5"
                             style={{
                               animationDelay: feature.animation,
                               transform: 'perspective(1000px) rotateX(0deg)',
@@ -345,7 +306,7 @@ export default async function Home({
 
                             {/* Animated border glow */}
                             <div
-                              className='-z-5 absolute inset-0 rounded-lg opacity-0 transition-opacity duration-500 group-hover/card:opacity-100'
+                              className="-z-5 absolute inset-0 rounded-lg opacity-0 transition-opacity duration-500 group-hover/card:opacity-100"
                               style={{
                                 boxShadow:
                                   '0 0 15px 1px rgba(var(--color-primary-rgb), 0.3)',
@@ -353,22 +314,22 @@ export default async function Home({
                               }}
                             />
 
-                            <div className='relative z-10 flex items-start gap-4'>
-                              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/30 to-primary/10 shadow-md ring-4 ring-primary/5 transition-all duration-300 group-hover/card:ring-primary/20'>
-                                <div className='transform text-primary transition-transform duration-300 group-hover/card:scale-110'>
+                            <div className="relative z-10 flex items-start gap-4">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/30 to-primary/10 shadow-md ring-4 ring-primary/5 transition-all duration-300 group-hover/card:ring-primary/20">
+                                <div className="transform text-primary transition-transform duration-300 group-hover/card:scale-110">
                                   {feature.icon}
                                 </div>
                               </div>
                               <div className="flex-1">
-                                <h3 className='font-medium text-sm transition-colors duration-300 group-hover/card:text-primary'>
+                                <h3 className="font-medium text-sm transition-colors duration-300 group-hover/card:text-primary">
                                   {feature.title}
                                 </h3>
-                                <p className='mt-1 text-muted-foreground text-xs transition-colors duration-300 group-hover/card:text-foreground/80'>
+                                <p className="mt-1 text-muted-foreground text-xs transition-colors duration-300 group-hover/card:text-foreground/80">
                                   {feature.description}
                                 </p>
 
                                 {/* Animated arrow that appears on hover */}
-                                <div className='mt-2 flex translate-x-[-10px] transform items-center text-primary text-xs opacity-0 transition-all duration-300 group-hover/card:translate-x-0 group-hover/card:opacity-100'>
+                                <div className="mt-2 flex translate-x-[-10px] transform items-center text-primary text-xs opacity-0 transition-all duration-300 group-hover/card:translate-x-0 group-hover/card:opacity-100">
                                   <span>Learn more</span>
                                   <ArrowRightIcon className="ml-1 h-3 w-3 transition-transform group-hover/card:translate-x-1" />
                                 </div>
@@ -376,7 +337,7 @@ export default async function Home({
                             </div>
 
                             {/* Particle effects on hover */}
-                            <div className='absolute right-0 bottom-0 opacity-0 transition-opacity duration-500 group-hover/card:opacity-100'>
+                            <div className="absolute right-0 bottom-0 opacity-0 transition-opacity duration-500 group-hover/card:opacity-100">
                               {Array(5)
                                 .fill(null)
                                 .map((_, i) => (
@@ -403,36 +364,36 @@ export default async function Home({
                   </div>
 
                   {/* Enhanced decorative elements */}
-                  <div className='-top-4 -right-4 absolute h-32 w-32 animate-pulse-slow rounded-full bg-primary/10 blur-xl' />
+                  <div className="-top-4 -right-4 absolute h-32 w-32 animate-pulse-slow rounded-full bg-primary/10 blur-xl" />
                   <div
-                    className='-bottom-8 -left-8 absolute h-40 w-40 animate-pulse-slow rounded-full bg-primary/10 blur-xl'
+                    className="-bottom-8 -left-8 absolute h-40 w-40 animate-pulse-slow rounded-full bg-primary/10 blur-xl"
                     style={{ animationDelay: '2s' }}
                   />
                   <div
-                    className='-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 h-24 w-24 animate-pulse-slow rounded-full bg-primary/5 blur-lg'
+                    className="-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2 h-24 w-24 animate-pulse-slow rounded-full bg-primary/5 blur-lg"
                     style={{ animationDelay: '1s' }}
                   />
 
                   {/* Floating elements around the card */}
                   <div
-                    className='-top-6 absolute left-1/4 h-12 w-12 animate-float-slow rounded-full border border-white/10 bg-white/5 backdrop-blur-sm'
+                    className="-top-6 absolute left-1/4 h-12 w-12 animate-float-slow rounded-full border border-white/10 bg-white/5 backdrop-blur-sm"
                     style={{ animationDelay: '0.5s' }}
                   />
                   <div
-                    className='-bottom-4 absolute right-1/4 h-8 w-8 animate-float rounded-full border border-white/10 bg-white/5 backdrop-blur-sm'
+                    className="-bottom-4 absolute right-1/4 h-8 w-8 animate-float rounded-full border border-white/10 bg-white/5 backdrop-blur-sm"
                     style={{ animationDelay: '1.5s' }}
                   />
                   <div
-                    className='-right-4 absolute top-1/3 h-10 w-10 rotate-12 animate-float-slow rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm'
+                    className="-right-4 absolute top-1/3 h-10 w-10 rotate-12 animate-float-slow rounded-lg border border-white/10 bg-white/5 backdrop-blur-sm"
                     style={{ animationDelay: '1s' }}
                   />
 
                   {/* Animated code snippets floating around */}
-                  <div className='-left-12 absolute top-1/4 max-w-[120px] rotate-[-6deg] transform animate-float-slow rounded-lg border border-white/10 bg-white/5 p-2 font-mono text-[8px] text-primary/70 opacity-70 backdrop-blur-sm transition-opacity hover:opacity-100'>
+                  <div className="-left-12 absolute top-1/4 max-w-[120px] rotate-[-6deg] transform animate-float-slow rounded-lg border border-white/10 bg-white/5 p-2 font-mono text-[8px] text-primary/70 opacity-70 backdrop-blur-sm transition-opacity hover:opacity-100">
                     <pre>{'function recall() {\n  return memory * 2;\n}'}</pre>
                   </div>
                   <div
-                    className='-right-10 absolute bottom-1/4 max-w-[100px] rotate-[8deg] transform animate-float rounded-lg border border-white/10 bg-white/5 p-2 font-mono text-[8px] text-primary/70 opacity-70 backdrop-blur-sm transition-opacity hover:opacity-100'
+                    className="-right-10 absolute bottom-1/4 max-w-[100px] rotate-[8deg] transform animate-float rounded-lg border border-white/10 bg-white/5 p-2 font-mono text-[8px] text-primary/70 opacity-70 backdrop-blur-sm transition-opacity hover:opacity-100"
                     style={{ animationDelay: '2s' }}
                   >
                     <pre>{'const interval = \nlastReview * 2.5;'}</pre>
@@ -451,9 +412,9 @@ export default async function Home({
             <div className="absolute bottom-1/4 left-1/4 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
           </div>
 
-          <div className='container relative mx-auto px-4 md:px-6'>
+          <div className="container relative mx-auto px-4 md:px-6">
             <div className="mx-auto mb-16 max-w-3xl text-center">
-              <div className='mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm'>
+              <div className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm">
                 <span className="text-muted-foreground">Backed by Science</span>
               </div>
               <h2 className="mb-4 font-medium text-3xl md:text-4xl">
@@ -462,7 +423,7 @@ export default async function Home({
                 </span>{' '}
                 learning methods
               </h2>
-              <p className='mx-auto max-w-2xl text-muted-foreground'>
+              <p className="mx-auto max-w-2xl text-muted-foreground">
                 Our platform is built on proven cognitive science principles to
                 maximize your learning efficiency and retention.
               </p>
@@ -491,7 +452,7 @@ export default async function Home({
               ].map((feature, idx) => (
                 <div
                   key={feature.title}
-                  className='group relative rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:translate-y-[-4px] hover:bg-white/10 hover:shadow-lg hover:shadow-primary/5'
+                  className="group relative rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:translate-y-[-4px] hover:bg-white/10 hover:shadow-lg hover:shadow-primary/5"
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
                   <div className="-inset-px -z-10 absolute rounded-xl bg-gradient-to-br from-primary/20 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
@@ -512,19 +473,19 @@ export default async function Home({
             </div>
 
             {/* Code snippet preview */}
-            <div className='mx-auto mt-20 max-w-4xl overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm'>
-              <div className='flex items-center justify-between border-white/10 border-b px-4 py-2'>
+            <div className="mx-auto mt-20 max-w-4xl overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+              <div className="flex items-center justify-between border-white/10 border-b px-4 py-2">
                 <div className="flex items-center space-x-2">
                   <div className="h-3 w-3 rounded-full bg-red-400/50" />
                   <div className="h-3 w-3 rounded-full bg-yellow-400/50" />
                   <div className="h-3 w-3 rounded-full bg-green-400/50" />
                 </div>
-                <div className='text-muted-foreground text-xs'>
+                <div className="text-muted-foreground text-xs">
                   gradual-algorithm.ts
                 </div>
                 <div />
               </div>
-              <div className='overflow-x-auto p-4 font-mono text-muted-foreground text-sm'>
+              <div className="overflow-x-auto p-4 font-mono text-muted-foreground text-sm">
                 <pre className="text-xs">
                   <code>
                     {`// Gradual's Spaced Repetition Algorithm
@@ -554,10 +515,10 @@ function calculateNextReviewDate(
         </section>
 
         {/* Enhanced stats section with dynamic elements */}
-        <section className='relative bg-white/5 py-24'>
+        <section className="relative bg-white/5 py-24">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 opacity-50" />
 
-          <div className='container relative mx-auto px-4 md:px-6'>
+          <div className="container relative mx-auto px-4 md:px-6">
             <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
               <div className="space-y-6">
                 <div className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm">
@@ -592,7 +553,7 @@ function calculateNextReviewDate(
                 <div className="pt-4">
                   <Button
                     variant="outline"
-                    className='border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10'
+                    className="border-white/10 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10"
                   >
                     <Link href="/success-stories" className="flex items-center">
                       View Success Stories
@@ -633,14 +594,14 @@ function calculateNextReviewDate(
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className='group rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:translate-y-[-4px] hover:bg-white/10 hover:shadow-lg hover:shadow-primary/5'
+                    className="group rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:translate-y-[-4px] hover:bg-white/10 hover:shadow-lg hover:shadow-primary/5"
                     style={{ animationDelay: `${stat.delay}ms` }}
                   >
-                    <div className='mb-3 flex items-center gap-3'>
+                    <div className="mb-3 flex items-center gap-3">
                       {stat.icon}
                       <div className="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent" />
                     </div>
-                    <div className='mb-2 font-medium text-3xl transition-colors group-hover:text-primary'>
+                    <div className="mb-2 font-medium text-3xl transition-colors group-hover:text-primary">
                       {stat.value}
                     </div>
                     <div className="text-muted-foreground text-sm">
@@ -658,8 +619,8 @@ function calculateNextReviewDate(
           <div className="-z-10 absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
 
           {/* Decorative elements */}
-          <div className='-translate-y-1/3 absolute top-0 right-0 h-64 w-64 translate-x-1/3 rounded-full bg-primary/10 blur-3xl' />
-          <div className='-translate-x-1/3 absolute bottom-0 left-0 h-64 w-64 translate-y-1/3 rounded-full bg-primary/10 blur-3xl' />
+          <div className="-translate-y-1/3 absolute top-0 right-0 h-64 w-64 translate-x-1/3 rounded-full bg-primary/10 blur-3xl" />
+          <div className="-translate-x-1/3 absolute bottom-0 left-0 h-64 w-64 translate-y-1/3 rounded-full bg-primary/10 blur-3xl" />
 
           {/* Grid pattern */}
           <div
@@ -673,12 +634,12 @@ function calculateNextReviewDate(
 
           <div className="container relative mx-auto px-4 md:px-6">
             <div className="mx-auto max-w-3xl">
-              <div className='relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-primary/5 backdrop-blur-sm md:p-12'>
+              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-primary/5 backdrop-blur-sm md:p-12">
                 <div className="-z-10 -translate-y-1/2 absolute top-0 right-0 h-64 w-64 translate-x-1/2 transform rounded-full bg-primary/10 blur-3xl" />
                 <div className="-z-10 -translate-x-1/2 absolute bottom-0 left-0 h-64 w-64 translate-y-1/2 transform rounded-full bg-primary/10 blur-3xl" />
 
                 <div className="relative space-y-6">
-                  <div className='mx-auto inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm'>
+                  <div className="mx-auto inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm">
                     <span className="mr-1 rounded-full bg-primary/20 px-1.5 py-0.5 text-primary text-xs">
                       Beta
                     </span>
@@ -706,7 +667,7 @@ function calculateNextReviewDate(
                     ].map((item) => (
                       <div
                         key={item.id}
-                        className='flex items-center gap-2 text-muted-foreground text-xs'
+                        className="flex items-center gap-2 text-muted-foreground text-xs"
                       >
                         <CheckCircleIcon className="h-3.5 w-3.5 text-primary/70" />
                         <span>{item.text}</span>
