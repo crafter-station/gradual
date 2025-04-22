@@ -1,7 +1,7 @@
 import type { StepProgressState, StepType } from '@/db/schema';
-import { ActiveQuestionStep } from '../../../(app)/courses/[course_id]/tasks/[task_id]/question-step/active';
-import { DoneQuestionStep } from '../../../(app)/courses/[course_id]/tasks/[task_id]/question-step/done';
 import { getStepProgress, getSteps } from '../helpers';
+import { ActiveQuestionStep } from '@/app/[locale]/(app)/learn/courses/[course_id]/tasks/[task_id]/question-step/active';
+import { DoneQuestionStep } from '@/app/[locale]/(app)/learn/courses/[course_id]/tasks/[task_id]/question-step/done';
 
 export default async function StepsPage() {
   const type: StepType = 'QUESTION';
