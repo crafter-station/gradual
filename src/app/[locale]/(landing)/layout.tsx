@@ -192,8 +192,9 @@ export default function LandingLayout({
               variant="outline"
               size="sm"
               className="hidden border-white/10 bg-transparent hover:border-white/20 sm:flex"
+              asChild
             >
-              Sign In
+              <Link href="/sign-in">Sign In</Link>
             </Button>
             <Button size="sm" className="group relative overflow-hidden">
               <span className="relative z-10">Get Started</span>

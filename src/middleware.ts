@@ -1,6 +1,8 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { createI18nMiddleware } from 'next-international/middleware';
 import { NextResponse } from 'next/server';
+
+const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)']);
 
 const I18nMiddleware = createI18nMiddleware({
   locales: ['en', 'es'],
@@ -13,10 +15,7 @@ export default clerkMiddleware(async (auth, request) => {
     return NextResponse.next();
   }
 
-  if (
-    request.nextUrl.pathname.split('/tasks/').length > 1 &&
-    request.nextUrl.pathname.split('/tasks/')[1].length === 36
-  ) {
+  if (!isPublicRoute(request)) {
     await auth.protect();
   }
 
