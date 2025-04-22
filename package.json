@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.12",
-    "@clerk/nextjs": "^6.12.1",
+    "@clerk/nextjs": "^6.17.0",
     "@faker-js/faker": "^9.4.0",
     "@formkit/drag-and-drop": "^0.4.1",
     "@mendable/firecrawl-js": "^1.17.0",
