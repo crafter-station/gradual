@@ -105,7 +105,7 @@ export default async function TasksPage({
       <div className="flex items-center gap-2">
         <Link
           prefetch
-          href={`/courses/${course_id}/tasks/u/1/s/2`}
+          href={`/learn/courses/${course_id}/tasks/u/1/s/2`}
           className={buttonVariants({ variant: 'outline' })}
         >
           <ArrowRightIcon className="h-4 w-4" />

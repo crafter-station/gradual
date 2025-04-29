@@ -13,14 +13,14 @@ export const Tabs = ({ courseId }: Readonly<{ courseId: string }>) => {
   };
 
   const isOverviewActive = () => {
-    return pathname === `/courses/${courseId}`;
+    return pathname === `/learn/courses/${courseId}`;
   };
 
   return (
     <div className="mb-8 flex w-full justify-start rounded-none bg-transparent p-0">
       <Link
         prefetch
-        href={`/courses/${courseId}`}
+        href={`/learn/courses/${courseId}`}
         data-state={isOverviewActive() ? 'active' : 'inactive'}
         className="relative rounded-none border-transparent border-b-2 bg-transparent px-4 pt-2 pb-3 font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary! data-[state=active]:text-foreground"
       >
@@ -30,7 +30,7 @@ export const Tabs = ({ courseId }: Readonly<{ courseId: string }>) => {
         <Link
           prefetch
           key={tab}
-          href={`/courses/${courseId}/${tab.toLowerCase()}`}
+          href={`/learn/courses/${courseId}/${tab.toLowerCase()}`}
           data-state={isActive(tab) ? 'active' : 'inactive'}
           className="relative rounded-none border-transparent border-b-2 bg-transparent px-4 pt-2 pb-3 font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary! data-[state=active]:text-foreground"
         >

@@ -36,7 +36,7 @@ export function CourseHeader({ courseTitle, t }: Readonly<CourseHeaderProps>) {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink
-                href="/courses"
+                href="/learn/courses"
                 className="transition-colors hover:text-primary"
               >
                 {t('breadcrumbs.courses')}

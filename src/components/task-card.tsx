@@ -151,7 +151,7 @@ export function TaskCardXD({
         )}
 
         <Link
-          href={`/courses/${task.courseId}/tasks/${task.id}`}
+          href={`/learn/courses/${task.courseId}/tasks/${task.id}`}
           className={cn(
             buttonVariants({ variant: 'outline' }),
             'w-full transition-all duration-300',

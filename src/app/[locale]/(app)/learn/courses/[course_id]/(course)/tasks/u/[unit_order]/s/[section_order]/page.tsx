@@ -121,7 +121,7 @@ export default async function TasksPage({
         {sectionOrder > 1 ? (
           <Link
             prefetch
-            href={`/courses/${course_id}/tasks/u/${unitOrder}/s/${sectionOrder - 1}`}
+            href={`/learn/courses/${course_id}/tasks/u/${unitOrder}/s/${sectionOrder - 1}`}
             className={buttonVariants({ variant: 'outline' })}
           >
             <ArrowLeftIcon className="h-4 w-4" />
@@ -131,7 +131,7 @@ export default async function TasksPage({
           unitOrder > 1 && (
             <Link
               prefetch
-              href={`/courses/${course_id}/tasks/u/${unitOrder - 1}/s/1`}
+              href={`/learn/courses/${course_id}/tasks/u/${unitOrder - 1}/s/1`}
               className={buttonVariants({ variant: 'outline' })}
             >
               <ArrowLeftIcon className="h-4 w-4" />
@@ -142,7 +142,7 @@ export default async function TasksPage({
         {sectionOrder < unitSectionCount ? (
           <Link
             prefetch
-            href={`/courses/${course_id}/tasks/u/${unitOrder}/s/${sectionOrder + 1}`}
+            href={`/learn/courses/${course_id}/tasks/u/${unitOrder}/s/${sectionOrder + 1}`}
             className={buttonVariants({ variant: 'outline' })}
           >
             <ArrowRightIcon className="h-4 w-4" />
@@ -152,7 +152,7 @@ export default async function TasksPage({
           unitOrder < courseUnitCount && (
             <Link
               prefetch
-              href={`/courses/${course_id}/tasks/u/${unitOrder + 1}/s/1`}
+              href={`/learn/courses/${course_id}/tasks/u/${unitOrder + 1}/s/1`}
               className={buttonVariants({ variant: 'outline' })}
             >
               <ArrowRightIcon className="h-4 w-4" />

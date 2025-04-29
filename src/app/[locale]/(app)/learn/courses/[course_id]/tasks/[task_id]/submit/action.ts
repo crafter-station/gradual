@@ -109,7 +109,7 @@ export async function submitStepAction(formData: FormData) {
       })
       .where(eq(schema.taskProgress.id, currentStepProgress.taskProgressId));
 
-    revalidatePath(`/courses/${task.courseId}/tasks/${taskId}`);
+    revalidatePath(`/learn/courses/${task.courseId}/tasks/${taskId}`);
   } catch (error) {
     console.log(error);
   }

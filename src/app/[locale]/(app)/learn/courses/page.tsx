@@ -95,7 +95,7 @@ export default async function CoursesPage({
                   style={{ animationDelay: `${index * 75}ms` }}
                 >
                   <Link
-                    href={`/courses/${course.id}`}
+                    href={`/learn/courses/${course.id}`}
                     className="block h-full w-full"
                   >
                     <BookCard

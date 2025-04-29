@@ -101,7 +101,7 @@ export default async function TaskPage({ params }: Readonly<PageProps>) {
     .limit(1);
 
   if (!enrollment) {
-    return redirect(`/courses/${courseId}?enroll-first=true`);
+    return redirect(`/learn/courses/${courseId}?enroll-first=true`);
   }
 
   const steps: SelectStep[] = [];

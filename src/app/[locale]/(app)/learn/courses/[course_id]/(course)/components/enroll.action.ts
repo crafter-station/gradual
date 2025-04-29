@@ -24,5 +24,5 @@ export async function enroll(formData: FormData) {
     startedAt: new Date(),
   });
 
-  revalidatePath(`/courses/${courseId}/students`);
+  revalidatePath(`/learn/courses/${courseId}/students`);
 }
