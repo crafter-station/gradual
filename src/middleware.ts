@@ -2,7 +2,12 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { createI18nMiddleware } from 'next-international/middleware';
 import { NextResponse } from 'next/server';
 
-const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)']);
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/design(.*)',
+]);
 
 const I18nMiddleware = createI18nMiddleware({
   locales: ['en', 'es'],
