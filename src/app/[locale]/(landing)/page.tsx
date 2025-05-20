@@ -471,46 +471,6 @@ export default async function Home({
                 </div>
               ))}
             </div>
-
-            {/* Code snippet preview */}
-            <div className="mx-auto mt-20 max-w-4xl overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
-              <div className="flex items-center justify-between border-white/10 border-b px-4 py-2">
-                <div className="flex items-center space-x-2">
-                  <div className="h-3 w-3 rounded-full bg-red-400/50" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-400/50" />
-                  <div className="h-3 w-3 rounded-full bg-green-400/50" />
-                </div>
-                <div className="text-muted-foreground text-xs">
-                  gradual-algorithm.ts
-                </div>
-                <div />
-              </div>
-              <div className="overflow-x-auto p-4 font-mono text-muted-foreground text-sm">
-                <pre className="text-xs">
-                  <code>
-                    {`// Gradual's Spaced Repetition Algorithm
-function calculateNextReviewDate(
-  difficulty: number,  // 0-1 scale of item difficulty
-  consecutiveCorrect: number,  // number of times correctly recalled
-  lastInterval: number  // previous interval in days
-): number {
-  const baseMultiplier = 2.5;
-  const difficultyFactor = 1 - (difficulty * 0.5);
-  const correctnessFactor = Math.min(2, 1 + (consecutiveCorrect * 0.2));
-  
-  // Calculate new interval with exponential backoff
-  const newInterval = lastInterval * baseMultiplier * 
-                      difficultyFactor * correctnessFactor;
-                      
-  // Apply randomization to prevent clustering
-  const jitter = 0.95 + (Math.random() * 0.1);
-  
-  return Math.round(newInterval * jitter);
-}`}
-                  </code>
-                </pre>
-              </div>
-            </div>
           </div>
         </section>
 
